@@ -316,11 +316,7 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
     </div>
     <div class="form-group">
       <label class="form-label">Icon</label>
-      <div class="emoji-grid">
-        ${['💪','📚','🧘','💧','🏃','🎯','✍️','🌅','🥗','😴','💻','🎵','🚶','🧹','📱','🫀','🌿','⚡','🔥','⭐'].map(e =>
-          `<button class="emoji-btn" onclick="selectEmoji(this,'${e}')">${e}</button>`
-        ).join('')}
-      </div>
+      <div class="emoji-grid" id="emoji-grid"></div>
       <input type="hidden" id="habit-emoji" value="⭐">
     </div>
     <div class="form-group">
@@ -592,20 +588,22 @@ function selectEmoji(btn, emoji) {
 }
 async function saveHabit() {
   const { data: { session } } = await _sb.auth.getSession();
-  if (!session) return;
+  if (!session) { showToast('⚠ Nicht eingeloggt'); return; }
   const name = document.getElementById('habit-name').value.trim();
   const goal = document.getElementById('habit-goal').value.trim();
   const editId = document.getElementById('edit-habit-id').value;
   if (!name) { showToast('⚠ Bitte einen Namen eingeben'); return; }
   if (editId) {
-    await _sb.from('habits').update({ name, emoji: selectedEmoji, goal }).eq('id', editId);
+    const { error } = await _sb.from('habits').update({ name, emoji: selectedEmoji, goal }).eq('id', editId);
+    if (error) { showToast('✗ ' + error.message); return; }
     const h = HABITS.find(h => h.id === editId);
     if (h) { h.name = name; h.emoji = selectedEmoji; h.goal = goal; }
     showToast('✓ Habit aktualisiert');
   } else {
-    const { data } = await _sb.from('habits').insert({
-      user_id: session.user.id, name, emoji: selectedEmoji, goal
+    const { data, error } = await _sb.from('habits').insert({
+      user_id: session.user.id, name, emoji: selectedEmoji, goal: goal || null
     }).select().single();
+    if (error) { showToast('✗ ' + error.message); return; }
     if (data) HABITS.push(data);
     showToast('✓ Habit erstellt');
   }
@@ -755,6 +753,12 @@ async function doLogin() {
   await loadAll();
   document.getElementById('app').style.display = 'grid';
 }
+
+// ── EMOJI GRID ────────────────────────────────────────────────
+const EMOJIS = ['💪','📚','🧘','💧','🏃','🎯','✍️','🌅','🥗','😴','💻','🎵','🚶','🧹','📱','🫀','🌿','⚡','🔥','⭐','🎨','🏋️','🤸','🧠','💊','🛁','☀️','🌙','🥤','📝'];
+document.getElementById('emoji-grid').innerHTML = EMOJIS.map(e =>
+  `<button class="emoji-btn" onclick="selectEmoji(this,'${e}')">${e}</button>`
+).join('');
 
 // ── INIT ──────────────────────────────────────────────────────
 updateTimerDisplay();
