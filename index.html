@@ -482,9 +482,10 @@ function renderStats() {
     days30.push(d.toISOString().split('T')[0]);
   }
   heatmap.innerHTML = days30.map(d => {
-    const total = HABITS.length;
+    const activeHabits = HABITS.filter(h => (h.created_at || todayStr()).split('T')[0] <= d);
+    const total = activeHabits.length;
     if (!total) return `<div style="width:24px;height:24px;border-radius:4px;background:var(--bg3)"></div>`;
-    const done = HABITS.filter(h => ALL_COMPLETIONS.some(c => c.habit_id === h.id && c.completed_date === d)).length;
+    const done = activeHabits.filter(h => ALL_COMPLETIONS.some(c => c.habit_id === h.id && c.completed_date === d)).length;
     const ratio = done / total;
     const isFuture = d > todayStr();
     const bg = isFuture ? 'var(--bg3)' : ratio === 1 ? 'var(--green)' : ratio > 0 ? 'rgba(201,168,76,0.5)' : 'rgba(224,92,92,0.15)';
@@ -762,12 +763,14 @@ function renderWeekView() {
     ${days.map((d,i) => `<div class="week-day ${d === today ? 'today' : ''}">${dayNames[i]}<br><span style="font-size:.55rem">${d.slice(8)}</span></div>`).join('')}
   </div>`;
   HABITS.forEach(h => {
+    const habitCreated = h.created_at ? h.created_at.split('T')[0] : today;
     html += `<div class="week-grid" style="margin-bottom:.35rem">
       <div class="week-habit-name">${h.emoji || '⭐'} ${h.name}</div>
       ${days.map(d => {
         const done = ALL_COMPLETIONS.some(c => c.habit_id === h.id && c.completed_date === d);
         const isFuture = d > today;
-        const cls = done ? 'done' : isFuture ? '' : 'missed';
+        const beforeCreation = d < habitCreated;
+        const cls = done ? 'done' : (isFuture || beforeCreation) ? '' : 'missed';
         return `<div class="week-dot ${cls} ${d === today ? 'today-dot' : ''}" title="${d}"></div>`;
       }).join('')}
     </div>`;
