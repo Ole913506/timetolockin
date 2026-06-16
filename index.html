@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>timetolockin</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080810;--bg2:#0e0e1a;--bg3:#14141f;--bg4:#1c1c2a;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --text:#f0efe8;--text2:#a8a79e;--text3:#5a5a6a;
+  --gold:#c9a84c;--gold2:#e8c97a;--gold-dim:rgba(201,168,76,0.12);
+  --green:#4caf7d;--green-dim:rgba(76,175,125,0.1);
+  --red:#e05c5c;--blue:#5b8dee;
+  --sidebar:220px;
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Mono',monospace;font-size:13px;color:var(--text)}
+button,input,textarea,select{font-family:'DM Mono',monospace}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes checkPop{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+
+/* ── LAYOUT ── */
+.app{display:grid;grid-template-columns:var(--sidebar) 1fr;height:100vh;overflow:hidden}
+.sidebar{background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.main{display:grid;grid-template-rows:auto 1fr;height:100vh;overflow:hidden}
+.panel{padding:1.5rem;overflow-y:auto;height:100%;animation:fadeIn .2s ease}
+.panel:not(.active){display:none}
+.panel.active{display:block}
+
+/* ── SIDEBAR ── */
+.logo{padding:1.25rem 1rem;border-bottom:1px solid var(--border)}
+.logo-text{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:var(--text)}
+.logo-text span{color:var(--gold)}
+.logo-sub{font-size:.58rem;color:var(--text3);margin-top:.15rem;letter-spacing:.06em}
+.nav{flex:1;padding:.75rem .5rem;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
+.nav-section{font-size:.58rem;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;padding:.6rem .5rem .3rem}
+.nav-item{display:flex;align-items:center;gap:.6rem;padding:.5rem .65rem;border-radius:8px;color:var(--text2);font-size:.75rem;cursor:pointer;transition:all .15s;border:1px solid transparent}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.active{background:var(--gold-dim);color:var(--gold);border-color:rgba(201,168,76,0.2)}
+.sidebar-footer{padding:.75rem .5rem;border-top:1px solid var(--border)}
+.streak-badge{display:flex;align-items:center;gap:.5rem;padding:.5rem .65rem;background:var(--gold-dim);border:1px solid rgba(201,168,76,0.2);border-radius:8px;margin-bottom:.5rem}
+.streak-fire{font-size:1rem}
+.streak-info .streak-num{font-size:.85rem;font-weight:700;color:var(--gold)}
+.streak-info .streak-label{font-size:.6rem;color:var(--text3)}
+
+/* ── TOPBAR ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.5rem;border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0}
+.page-title{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;color:var(--text)}
+.topbar-right{display:flex;align-items:center;gap:.75rem}
+.date-badge{font-size:.7rem;color:var(--text3);background:var(--bg3);border:1px solid var(--border);padding:.25rem .65rem;border-radius:6px}
+.btn{padding:.45rem .9rem;border-radius:7px;font-size:.75rem;cursor:pointer;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);transition:all .15s}
+.btn:hover{border-color:var(--gold);color:var(--gold)}
+.btn-primary{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--bg);border:none;font-weight:700}
+.btn-primary:hover{opacity:.9;color:var(--bg)}
+
+/* ── METRICS ── */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.5rem}
+.metric-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem}
+.metric-card.gold{border-color:rgba(201,168,76,0.2);background:linear-gradient(135deg,rgba(201,168,76,0.06),var(--bg2))}
+.metric-card.green{border-color:rgba(76,175,125,0.2);background:linear-gradient(135deg,rgba(76,175,125,0.06),var(--bg2))}
+.m-label{font-size:.6rem;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.4rem}
+.m-val{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--text)}
+.m-sub{font-size:.65rem;color:var(--text3);margin-top:.2rem}
+
+/* ── HABIT CARDS ── */
+.habits-grid{display:flex;flex-direction:column;gap:.5rem}
+.habit-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem;display:flex;align-items:center;gap:.85rem;transition:all .2s;cursor:pointer}
+.habit-card:hover{border-color:var(--border2)}
+.habit-card.done{border-color:rgba(76,175,125,0.3);background:rgba(76,175,125,0.05)}
+.habit-check{width:28px;height:28px;border-radius:50%;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;transition:all .2s;cursor:pointer}
+.habit-card.done .habit-check{background:var(--green);border-color:var(--green);animation:checkPop .3s ease}
+.habit-info{flex:1;min-width:0}
+.habit-name{font-size:.82rem;color:var(--text);font-weight:500}
+.habit-card.done .habit-name{color:var(--text2);text-decoration:line-through}
+.habit-meta{font-size:.65rem;color:var(--text3);margin-top:.15rem}
+.habit-streak{display:flex;align-items:center;gap:.3rem;font-size:.7rem;color:var(--gold)}
+.habit-actions{display:flex;gap:.4rem;opacity:0;transition:opacity .15s}
+.habit-card:hover .habit-actions{opacity:1}
+.icon-btn{width:26px;height:26px;border-radius:6px;border:1px solid var(--border);background:var(--bg3);color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.75rem}
+.icon-btn:hover{border-color:var(--border2);color:var(--text)}
+
+/* ── WEEK VIEW ── */
+.week-grid{display:grid;grid-template-columns:1fr repeat(7,40px);gap:.4rem;margin-bottom:1.5rem;align-items:center}
+.week-day{font-size:.62rem;color:var(--text3);text-align:center}
+.week-day.today{color:var(--gold)}
+.week-dot{width:28px;height:28px;border-radius:50%;margin:0 auto;border:1px solid var(--border)}
+.week-dot.done{background:var(--green);border-color:var(--green)}
+.week-dot.today-dot{border-color:var(--gold)}
+.week-dot.missed{background:rgba(224,92,92,0.15);border-color:rgba(224,92,92,0.3)}
+.week-habit-name{font-size:.72rem;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ── POMODORO ── */
+.pomodoro-wrap{display:flex;flex-direction:column;align-items:center;padding:2rem}
+.timer-circle{width:200px;height:200px;border-radius:50%;border:3px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:2rem;position:relative;background:var(--bg2)}
+.timer-circle.running{border-color:var(--gold)}
+.timer-display{font-family:'Syne',sans-serif;font-size:2.5rem;font-weight:800;color:var(--text)}
+.timer-label{font-size:.65rem;color:var(--text3);margin-top:.25rem;letter-spacing:.06em;text-transform:uppercase}
+.timer-btns{display:flex;gap:.75rem;margin-bottom:1.5rem}
+.pomodoro-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;width:100%;max-width:400px}
+.pomo-stat{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:.85rem;text-align:center}
+.pomo-stat-val{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--gold)}
+.pomo-stat-label{font-size:.62rem;color:var(--text3);margin-top:.2rem}
+
+/* ── JOURNAL ── */
+.journal-entry{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem;margin-bottom:.75rem}
+.journal-date{font-size:.65rem;color:var(--gold);margin-bottom:.5rem}
+.journal-text{font-size:.78rem;color:var(--text2);line-height:1.7;white-space:pre-wrap}
+.journal-input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:.75rem 1rem;color:var(--text);font-family:'DM Mono',monospace;font-size:.8rem;resize:vertical;min-height:120px;line-height:1.7}
+.journal-input:focus{outline:none;border-color:var(--gold)}
+
+/* ── MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:500;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:1.75rem;width:90%;max-width:420px}
+.modal h3{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;margin-bottom:1.25rem}
+.form-group{margin-bottom:.85rem}
+.form-label{font-size:.62rem;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.35rem;display:block}
+.form-input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:.6rem .85rem;color:var(--text);font-size:.82rem}
+.form-input:focus{outline:none;border-color:var(--gold)}
+.emoji-grid{display:flex;flex-wrap:wrap;gap:.4rem}
+.emoji-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.emoji-btn.selected{border-color:var(--gold);background:var(--gold-dim)}
+.modal-actions{display:flex;gap:.5rem;margin-top:1.25rem;justify-content:flex-end}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.section-label{font-size:.65rem;color:var(--text3);letter-spacing:.08em;text-transform:uppercase}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:.6rem 1rem;border-radius:8px;font-size:.75rem;opacity:0;transition:opacity .2s;z-index:999;pointer-events:none}
+#toast.show{opacity:1}
+
+/* ── LOADER ── */
+#app-loader{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1rem}
+#app-loader div:first-child{width:32px;height:32px;background:linear-gradient(135deg,var(--gold),var(--gold2));clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);animation:spin 1s linear infinite}
+
+@media(max-width:768px){
+  .app{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .metrics{grid-template-columns:1fr 1fr}
+  .week-grid{grid-template-columns:1fr repeat(7,32px)}
+}
+</style>
+</head>
+<body>
+
+<div id="app-loader">
+  <div></div>
+  <div style="font-size:.72rem;color:var(--text3)">Wird geladen...</div>
+</div>
+
+<div class="app" id="app" style="display:none">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-text">time<span>tolockin</span></div>
+      <div class="logo-sub">DEIN FOKUS-SYSTEM</div>
+    </div>
+    <nav class="nav">
+      <div class="nav-item active" onclick="goto('dashboard',this)">📊 Dashboard</div>
+      <div class="nav-item" onclick="goto('habits',this)">✅ Habits</div>
+      <div class="nav-item" onclick="goto('week',this)">📅 Wochenübersicht</div>
+      <div class="nav-section">Tools</div>
+      <div class="nav-item" onclick="goto('pomodoro',this)">⏱ Pomodoro</div>
+      <div class="nav-item" onclick="goto('journal',this)">📓 Tagebuch</div>
+      <div class="nav-section">Konto</div>
+      <div class="nav-item" onclick="logout()">↪ Abmelden</div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="streak-badge">
+        <div class="streak-fire">🔥</div>
+        <div class="streak-info">
+          <div class="streak-num" id="sidebar-streak">0</div>
+          <div class="streak-label">Tage Streak</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <div class="page-title" id="page-title">Dashboard</div>
+      <div class="topbar-right">
+        <div class="date-badge" id="today-date"></div>
+        <button class="btn btn-primary" onclick="openAddHabit()">+ Habit</button>
+      </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="panel active" id="panel-dashboard">
+      <div class="metrics">
+        <div class="metric-card gold">
+          <div class="m-label">Heute erledigt</div>
+          <div class="m-val" id="m-today">0/0</div>
+          <div class="m-sub" id="m-today-sub">Noch nichts abgehakt</div>
+        </div>
+        <div class="metric-card green">
+          <div class="m-label">Längste Streak</div>
+          <div class="m-val" id="m-streak">0</div>
+          <div class="m-sub">Tage in Folge</div>
+        </div>
+        <div class="metric-card">
+          <div class="m-label">Erfolgsquote</div>
+          <div class="m-val" id="m-rate">–</div>
+          <div class="m-sub">Letzte 7 Tage</div>
+        </div>
+        <div class="metric-card">
+          <div class="m-label">Pomodoros heute</div>
+          <div class="m-val" id="m-pomos">0</div>
+          <div class="m-sub">à 25 Minuten</div>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <div class="section-label">Heute – <span id="dash-progress"></span></div>
+      </div>
+      <div class="habits-grid" id="dash-habits"></div>
+    </div>
+
+    <!-- HABITS -->
+    <div class="panel" id="panel-habits">
+      <div class="section-header">
+        <div class="section-label">Alle Habits (<span id="habit-count">0</span>)</div>
+      </div>
+      <div class="habits-grid" id="all-habits"></div>
+      <div id="no-habits" style="display:none;text-align:center;padding:3rem;color:var(--text3)">
+        <div style="font-size:2rem;margin-bottom:.75rem">✅</div>
+        <div style="font-size:.82rem;color:var(--text2);margin-bottom:.5rem">Noch keine Habits</div>
+        <div style="font-size:.72rem">Klicke auf „+ Habit" um deinen ersten zu erstellen</div>
+      </div>
+    </div>
+
+    <!-- WEEK VIEW -->
+    <div class="panel" id="panel-week">
+      <div class="section-header" style="margin-bottom:1rem">
+        <div class="section-label">Wochenübersicht</div>
+        <div style="display:flex;gap:.4rem">
+          <button class="btn" onclick="changeWeek(-1)">← Vorherige</button>
+          <button class="btn" onclick="changeWeek(0)">Heute</button>
+          <button class="btn" onclick="changeWeek(1)">Nächste →</button>
+        </div>
+      </div>
+      <div id="week-view"></div>
+    </div>
+
+    <!-- POMODORO -->
+    <div class="panel" id="panel-pomodoro">
+      <div class="pomodoro-wrap">
+        <div class="timer-circle" id="timer-circle">
+          <div class="timer-display" id="timer-display">25:00</div>
+          <div class="timer-label" id="timer-label">FOKUS</div>
+        </div>
+        <div class="timer-btns">
+          <button class="btn" onclick="setMode('focus')">🎯 Fokus</button>
+          <button class="btn" onclick="setMode('short')">☕ Kurze Pause</button>
+          <button class="btn" onclick="setMode('long')">🛋 Lange Pause</button>
+        </div>
+        <div style="display:flex;gap:.75rem;margin-bottom:2rem">
+          <button class="btn btn-primary" id="timer-btn" onclick="toggleTimer()">▶ Start</button>
+          <button class="btn" onclick="resetTimer()">↺ Reset</button>
+        </div>
+        <div class="pomodoro-stats">
+          <div class="pomo-stat"><div class="pomo-stat-val" id="pomo-count">0</div><div class="pomo-stat-label">Heute</div></div>
+          <div class="pomo-stat"><div class="pomo-stat-val" id="pomo-minutes">0</div><div class="pomo-stat-label">Minuten</div></div>
+          <div class="pomo-stat"><div class="pomo-stat-val" id="pomo-total">0</div><div class="pomo-stat-label">Gesamt</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JOURNAL -->
+    <div class="panel" id="panel-journal">
+      <div class="section-header">
+        <div class="section-label">Heutiger Eintrag</div>
+        <button class="btn btn-primary" onclick="saveJournal()">Speichern</button>
+      </div>
+      <textarea class="journal-input" id="journal-today" placeholder="Was hast du heute gemacht? Was war gut? Was möchtest du morgen besser machen?"></textarea>
+
+      <div style="margin-top:1.5rem">
+        <div class="section-label" style="margin-bottom:.75rem">Frühere Einträge</div>
+        <div id="journal-entries"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ADD HABIT MODAL -->
+<div class="modal-overlay" id="habit-modal">
+  <div class="modal">
+    <h3 id="modal-title">Neues Habit</h3>
+    <input type="hidden" id="edit-habit-id">
+    <div class="form-group">
+      <label class="form-label">Name</label>
+      <input class="form-input" id="habit-name" placeholder="z.B. Sport treiben, Lesen, Meditieren...">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Icon</label>
+      <div class="emoji-grid">
+        ${['💪','📚','🧘','💧','🏃','🎯','✍️','🌅','🥗','😴','💻','🎵','🚶','🧹','📱','🫀','🌿','⚡','🔥','⭐'].map(e =>
+          `<button class="emoji-btn" onclick="selectEmoji(this,'${e}')">${e}</button>`
+        ).join('')}
+      </div>
+      <input type="hidden" id="habit-emoji" value="⭐">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Ziel (optional)</label>
+      <input class="form-input" id="habit-goal" placeholder="z.B. 10.000 Schritte, 30 Minuten...">
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeHabitModal()">Abbrechen</button>
+      <button class="btn btn-primary" onclick="saveHabit()">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const SUPA_URL = 'https://ikvwvyjipcrmskblmpyt.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlrdnd2eWppcGNybXNrYmxtcHl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5NzQ3ODUsImV4cCI6MjA5NDU1MDc4NX0.co8zmRcPjXzCZylSvoSVZqroFYvy6HTxW3PkvCtt4s8';
+const _sb = window.supabase.createClient(SUPA_URL, SUPA_KEY);
+
+let HABITS = [];
+let TODAY_COMPLETIONS = new Set();
+let ALL_COMPLETIONS = [];
+let currentWeekOffset = 0;
+let timerInterval = null;
+let timerSeconds = 25 * 60;
+let timerRunning = false;
+let timerMode = 'focus';
+let pomosToday = 0;
+let pomosTotal = 0;
+let toastTimer;
+
+const MODES = { focus: 25*60, short: 5*60, long: 15*60 };
+const TODAY = new Date().toISOString().split('T')[0];
+
+// ── NAVIGATION ──────────────────────────────────────────────
+const PAGE_TITLES = {
+  dashboard:'Dashboard', habits:'Habits', week:'Wochenübersicht',
+  pomodoro:'Pomodoro Timer', journal:'Tagebuch'
+};
+function goto(id, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  if (el) el.classList.add('active');
+  document.getElementById('page-title').textContent = PAGE_TITLES[id] || id;
+  if (id === 'week') renderWeekView();
+  if (id === 'journal') loadJournal();
+  if (id === 'habits') renderAllHabits();
+}
+
+// ── TOAST ────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ── DATE ─────────────────────────────────────────────────────
+function formatDate(d) {
+  return new Date(d).toLocaleDateString('de-DE', {weekday:'short', day:'2-digit', month:'long', year:'numeric'});
+}
+function todayStr() { return new Date().toISOString().split('T')[0]; }
+function getWeekDays(offset = 0) {
+  const days = [];
+  const now = new Date();
+  const day = now.getDay() || 7;
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - day + 1 + offset * 7);
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    days.push(d.toISOString().split('T')[0]);
+  }
+  return days;
+}
+
+// ── AUTH ─────────────────────────────────────────────────────
+function logout() {
+  _sb.auth.signOut().then(() => window.location.href = '/login.html');
+}
+
+// ── DATA LOADING ─────────────────────────────────────────────
+async function loadAll() {
+  const { data: { session } } = await _sb.auth.getSession();
+  if (!session) { window.location.href = '/login.html'; return; }
+
+  // Load habits
+  const { data: habits } = await _sb.from('habits')
+    .select('*').eq('user_id', session.user.id).order('created_at');
+  HABITS = habits || [];
+
+  // Load completions (last 30 days)
+  const since = new Date();
+  since.setDate(since.getDate() - 30);
+  const { data: completions } = await _sb.from('habit_completions')
+    .select('*').eq('user_id', session.user.id)
+    .gte('completed_date', since.toISOString().split('T')[0]);
+  ALL_COMPLETIONS = completions || [];
+  TODAY_COMPLETIONS = new Set(
+    ALL_COMPLETIONS.filter(c => c.completed_date === todayStr()).map(c => c.habit_id)
+  );
+
+  // Load pomodoro stats
+  const { data: pomos } = await _sb.from('pomodoro_sessions')
+    .select('*').eq('user_id', session.user.id)
+    .gte('created_at', new Date().toISOString().split('T')[0]);
+  pomosToday = (pomos || []).length;
+  pomosTotal = parseInt(localStorage.getItem('ttl_pomos_total') || '0');
+
+  renderDashboard();
+  updateSidebarStreak();
+  document.getElementById('today-date').textContent = formatDate(new Date());
+}
+
+// ── STREAK CALCULATION ────────────────────────────────────────
+function calcStreak() {
+  if (!HABITS.length) return 0;
+  let streak = 0;
+  const today = new Date();
+  for (let i = 0; i < 365; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const ds = d.toISOString().split('T')[0];
+    const completedToday = HABITS.every(h =>
+      ALL_COMPLETIONS.some(c => c.habit_id === h.id && c.completed_date === ds)
+    );
+    if (completedToday) streak++;
+    else if (i > 0) break;
+  }
+  return streak;
+}
+
+function calcWeekRate() {
+  if (!HABITS.length) return null;
+  const days = getWeekDays(0);
+  let total = 0, done = 0;
+  days.forEach(d => {
+    if (d > todayStr()) return;
+    HABITS.forEach(h => {
+      total++;
+      if (ALL_COMPLETIONS.some(c => c.habit_id === h.id && c.completed_date === d)) done++;
+    });
+  });
+  return total > 0 ? Math.round((done / total) * 100) : null;
+}
+
+// ── DASHBOARD ────────────────────────────────────────────────
+function renderDashboard() {
+  const doneCount = TODAY_COMPLETIONS.size;
+  const totalCount = HABITS.length;
+  const streak = calcStreak();
+  const rate = calcWeekRate();
+
+  document.getElementById('m-today').textContent = `${doneCount}/${totalCount}`;
+  document.getElementById('m-today-sub').textContent = doneCount === totalCount && totalCount > 0
+    ? '🎉 Alles erledigt!' : doneCount > 0 ? `${totalCount - doneCount} noch offen` : 'Noch nichts abgehakt';
+  document.getElementById('m-streak').textContent = streak;
+  document.getElementById('m-rate').textContent = rate !== null ? rate + '%' : '–';
+  document.getElementById('m-pomos').textContent = pomosToday;
+  document.getElementById('dash-progress').textContent = `${doneCount}/${totalCount} erledigt`;
+
+  const grid = document.getElementById('dash-habits');
+  if (!HABITS.length) {
+    grid.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text3);font-size:.78rem">Noch keine Habits — klicke auf „+ Habit"</div>';
+    return;
+  }
+  grid.innerHTML = HABITS.map(h => renderHabitCard(h, true)).join('');
+}
+
+function updateSidebarStreak() {
+  document.getElementById('sidebar-streak').textContent = calcStreak();
+}
+
+function renderHabitCard(h, clickable = true) {
+  const done = TODAY_COMPLETIONS.has(h.id);
+  const hStreak = calcHabitStreak(h.id);
+  return `<div class="habit-card ${done ? 'done' : ''}" onclick="${clickable ? `toggleHabit('${h.id}')` : ''}">
+    <div class="habit-check" onclick="event.stopPropagation();toggleHabit('${h.id}')">${done ? '✓' : ''}</div>
+    <div class="habit-info">
+      <div class="habit-name">${h.emoji || '⭐'} ${h.name}</div>
+      <div class="habit-meta">${h.goal ? h.goal + ' · ' : ''}${hStreak > 0 ? `🔥 ${hStreak} Tage` : 'Noch kein Streak'}</div>
+    </div>
+    <div class="habit-actions">
+      <button class="icon-btn" onclick="event.stopPropagation();openEditHabit('${h.id}')" title="Bearbeiten">✏</button>
+      <button class="icon-btn" onclick="event.stopPropagation();deleteHabit('${h.id}')" title="Löschen" style="color:var(--red)">✕</button>
+    </div>
+  </div>`;
+}
+
+function calcHabitStreak(habitId) {
+  let streak = 0;
+  const today = new Date();
+  for (let i = 0; i < 365; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const ds = d.toISOString().split('T')[0];
+    if (ALL_COMPLETIONS.some(c => c.habit_id === habitId && c.completed_date === ds)) streak++;
+    else if (i > 0) break;
+  }
+  return streak;
+}
+
+// ── TOGGLE HABIT ─────────────────────────────────────────────
+async function toggleHabit(habitId) {
+  const { data: { session } } = await _sb.auth.getSession();
+  if (!session) return;
+  const done = TODAY_COMPLETIONS.has(habitId);
+  if (done) {
+    await _sb.from('habit_completions').delete()
+      .eq('habit_id', habitId).eq('user_id', session.user.id).eq('completed_date', todayStr());
+    TODAY_COMPLETIONS.delete(habitId);
+    ALL_COMPLETIONS = ALL_COMPLETIONS.filter(c => !(c.habit_id === habitId && c.completed_date === todayStr()));
+  } else {
+    const { data } = await _sb.from('habit_completions').insert({
+      habit_id: habitId, user_id: session.user.id, completed_date: todayStr()
+    }).select().single();
+    TODAY_COMPLETIONS.add(habitId);
+    if (data) ALL_COMPLETIONS.push(data);
+    // Alle erledigt?
+    if (TODAY_COMPLETIONS.size === HABITS.length) showToast('🎉 Alle Habits für heute erledigt!');
+  }
+  renderDashboard();
+  updateSidebarStreak();
+  if (document.getElementById('panel-habits').classList.contains('active')) renderAllHabits();
+}
+
+function renderAllHabits() {
+  const grid = document.getElementById('all-habits');
+  const empty = document.getElementById('no-habits');
+  document.getElementById('habit-count').textContent = HABITS.length;
+  if (!HABITS.length) { grid.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  grid.innerHTML = HABITS.map(h => renderHabitCard(h, true)).join('');
+}
+
+// ── HABIT MODAL ───────────────────────────────────────────────
+let selectedEmoji = '⭐';
+function openAddHabit() {
+  document.getElementById('modal-title').textContent = 'Neues Habit';
+  document.getElementById('edit-habit-id').value = '';
+  document.getElementById('habit-name').value = '';
+  document.getElementById('habit-goal').value = '';
+  selectedEmoji = '⭐';
+  document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('habit-modal').classList.add('open');
+}
+function openEditHabit(id) {
+  const h = HABITS.find(h => h.id === id);
+  if (!h) return;
+  document.getElementById('modal-title').textContent = 'Habit bearbeiten';
+  document.getElementById('edit-habit-id').value = id;
+  document.getElementById('habit-name').value = h.name;
+  document.getElementById('habit-goal').value = h.goal || '';
+  selectedEmoji = h.emoji || '⭐';
+  document.querySelectorAll('.emoji-btn').forEach(b => {
+    b.classList.toggle('selected', b.textContent === selectedEmoji);
+  });
+  document.getElementById('habit-modal').classList.add('open');
+}
+function closeHabitModal() { document.getElementById('habit-modal').classList.remove('open'); }
+function selectEmoji(btn, emoji) {
+  selectedEmoji = emoji;
+  document.getElementById('habit-emoji').value = emoji;
+  document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+async function saveHabit() {
+  const { data: { session } } = await _sb.auth.getSession();
+  if (!session) return;
+  const name = document.getElementById('habit-name').value.trim();
+  const goal = document.getElementById('habit-goal').value.trim();
+  const editId = document.getElementById('edit-habit-id').value;
+  if (!name) { showToast('⚠ Bitte einen Namen eingeben'); return; }
+  if (editId) {
+    await _sb.from('habits').update({ name, emoji: selectedEmoji, goal }).eq('id', editId);
+    const h = HABITS.find(h => h.id === editId);
+    if (h) { h.name = name; h.emoji = selectedEmoji; h.goal = goal; }
+    showToast('✓ Habit aktualisiert');
+  } else {
+    const { data } = await _sb.from('habits').insert({
+      user_id: session.user.id, name, emoji: selectedEmoji, goal
+    }).select().single();
+    if (data) HABITS.push(data);
+    showToast('✓ Habit erstellt');
+  }
+  closeHabitModal();
+  renderDashboard();
+  renderAllHabits();
+}
+async function deleteHabit(id) {
+  if (!confirm('Habit wirklich löschen? Alle bisherigen Daten gehen verloren.')) return;
+  await _sb.from('habits').delete().eq('id', id);
+  HABITS = HABITS.filter(h => h.id !== id);
+  TODAY_COMPLETIONS.delete(id);
+  ALL_COMPLETIONS = ALL_COMPLETIONS.filter(c => c.habit_id !== id);
+  showToast('✓ Habit gelöscht');
+  renderDashboard();
+  renderAllHabits();
+}
+
+// ── WEEK VIEW ─────────────────────────────────────────────────
+function changeWeek(dir) {
+  if (dir === 0) currentWeekOffset = 0;
+  else currentWeekOffset += dir;
+  renderWeekView();
+}
+function renderWeekView() {
+  const days = getWeekDays(currentWeekOffset);
+  const dayNames = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+  const today = todayStr();
+  let html = `<div class="week-grid">
+    <div></div>
+    ${days.map((d,i) => `<div class="week-day ${d === today ? 'today' : ''}">${dayNames[i]}<br><span style="font-size:.55rem">${d.slice(8)}</span></div>`).join('')}
+  </div>`;
+  HABITS.forEach(h => {
+    html += `<div class="week-grid" style="margin-bottom:.35rem">
+      <div class="week-habit-name">${h.emoji || '⭐'} ${h.name}</div>
+      ${days.map(d => {
+        const done = ALL_COMPLETIONS.some(c => c.habit_id === h.id && c.completed_date === d);
+        const isFuture = d > today;
+        const cls = done ? 'done' : isFuture ? '' : 'missed';
+        return `<div class="week-dot ${cls} ${d === today ? 'today-dot' : ''}" title="${d}"></div>`;
+      }).join('')}
+    </div>`;
+  });
+  if (!HABITS.length) html += '<div style="text-align:center;padding:2rem;color:var(--text3);font-size:.78rem">Noch keine Habits</div>';
+  document.getElementById('week-view').innerHTML = html;
+}
+
+// ── POMODORO ──────────────────────────────────────────────────
+function setMode(mode) {
+  timerMode = mode;
+  timerSeconds = MODES[mode];
+  timerRunning = false;
+  clearInterval(timerInterval);
+  document.getElementById('timer-btn').textContent = '▶ Start';
+  document.getElementById('timer-circle').classList.remove('running');
+  document.getElementById('timer-label').textContent = mode === 'focus' ? 'FOKUS' : mode === 'short' ? 'PAUSE' : 'LANGE PAUSE';
+  updateTimerDisplay();
+}
+function updateTimerDisplay() {
+  const m = Math.floor(timerSeconds / 60).toString().padStart(2,'0');
+  const s = (timerSeconds % 60).toString().padStart(2,'0');
+  document.getElementById('timer-display').textContent = `${m}:${s}`;
+}
+function toggleTimer() {
+  if (timerRunning) {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    document.getElementById('timer-btn').textContent = '▶ Start';
+    document.getElementById('timer-circle').classList.remove('running');
+  } else {
+    timerRunning = true;
+    document.getElementById('timer-btn').textContent = '⏸ Pause';
+    document.getElementById('timer-circle').classList.add('running');
+    timerInterval = setInterval(async () => {
+      timerSeconds--;
+      updateTimerDisplay();
+      if (timerSeconds <= 0) {
+        clearInterval(timerInterval);
+        timerRunning = false;
+        document.getElementById('timer-btn').textContent = '▶ Start';
+        document.getElementById('timer-circle').classList.remove('running');
+        if (timerMode === 'focus') {
+          pomosToday++;
+          pomosTotal++;
+          localStorage.setItem('ttl_pomos_total', pomosTotal);
+          document.getElementById('m-pomos').textContent = pomosToday;
+          document.getElementById('pomo-count').textContent = pomosToday;
+          document.getElementById('pomo-minutes').textContent = pomosToday * 25;
+          document.getElementById('pomo-total').textContent = pomosTotal;
+          const { data: { session } } = await _sb.auth.getSession();
+          if (session) await _sb.from('pomodoro_sessions').insert({ user_id: session.user.id });
+          showToast('🎯 Pomodoro abgeschlossen! Mach eine Pause.');
+        } else {
+          showToast('☕ Pause vorbei — weiter geht\'s!');
+        }
+      }
+    }, 1000);
+  }
+}
+function resetTimer() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  timerSeconds = MODES[timerMode];
+  document.getElementById('timer-btn').textContent = '▶ Start';
+  document.getElementById('timer-circle').classList.remove('running');
+  updateTimerDisplay();
+}
+
+// ── JOURNAL ───────────────────────────────────────────────────
+async function loadJournal() {
+  const { data: { session } } = await _sb.auth.getSession();
+  if (!session) return;
+  const { data: entries } = await _sb.from('journal_entries')
+    .select('*').eq('user_id', session.user.id)
+    .order('entry_date', { ascending: false }).limit(10);
+  const todayEntry = (entries || []).find(e => e.entry_date === todayStr());
+  document.getElementById('journal-today').value = todayEntry?.content || '';
+  const older = (entries || []).filter(e => e.entry_date !== todayStr());
+  document.getElementById('journal-entries').innerHTML = older.map(e => `
+    <div class="journal-entry">
+      <div class="journal-date">${formatDate(e.entry_date)}</div>
+      <div class="journal-text">${e.content}</div>
+    </div>
+  `).join('') || '<div style="color:var(--text3);font-size:.75rem">Noch keine früheren Einträge</div>';
+}
+async function saveJournal() {
+  const { data: { session } } = await _sb.auth.getSession();
+  if (!session) return;
+  const content = document.getElementById('journal-today').value.trim();
+  if (!content) { showToast('⚠ Nichts zu speichern'); return; }
+  await _sb.from('journal_entries').upsert({
+    user_id: session.user.id, entry_date: todayStr(), content
+  }, { onConflict: 'user_id,entry_date' });
+  showToast('✓ Tagebuch gespeichert');
+  loadJournal();
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+updateTimerDisplay();
+document.getElementById('pomo-total').textContent = pomosTotal;
+
+(async () => {
+  await loadAll();
+  const loader = document.getElementById('app-loader');
+  loader.style.opacity = '0';
+  loader.style.transition = 'opacity .3s';
+  setTimeout(() => loader.remove(), 300);
+  document.getElementById('app').style.display = 'grid';
+})();
+</script>
+</body>
+</html>
