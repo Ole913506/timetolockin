@@ -181,6 +181,7 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
       <div class="nav-item active" onclick="goto('dashboard',this)">📊 Dashboard</div>
       <div class="nav-item" onclick="goto('habits',this)">✅ Habits</div>
       <div class="nav-item" onclick="goto('week',this)">📅 Wochenübersicht</div>
+      <div class="nav-item" onclick="goto('stats',this)">📈 Statistiken</div>
       <div class="nav-section">Tools</div>
       <div class="nav-item" onclick="goto('pomodoro',this)">⏱ Pomodoro</div>
       <div class="nav-item" onclick="goto('journal',this)">📓 Tagebuch</div>
@@ -252,7 +253,44 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
       </div>
     </div>
 
-    <!-- WEEK VIEW -->
+    <!-- STATS -->
+    <div class="panel" id="panel-stats">
+      <div class="section-header" style="margin-bottom:1.5rem">
+        <div class="section-label">Statistiken & Fortschritt</div>
+      </div>
+
+      <!-- Gesamt-Stats -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1.5rem">
+        <div style="background:var(--bg2);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:1.1rem;text-align:center;background:linear-gradient(135deg,rgba(201,168,76,0.06),var(--bg2))">
+          <div style="font-size:2rem;font-family:'Syne',sans-serif;font-weight:800;color:var(--gold)" id="stat-streak-days">0</div>
+          <div style="font-size:.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-top:.25rem">Tage Streak</div>
+          <div style="font-size:.65rem;color:var(--text3);margin-top:.15rem" id="stat-streak-start">–</div>
+        </div>
+        <div style="background:var(--bg2);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:1.1rem;text-align:center;background:linear-gradient(135deg,rgba(76,175,125,0.06),var(--bg2))">
+          <div style="font-size:2rem;font-family:'Syne',sans-serif;font-weight:800;color:var(--green)" id="stat-streak-weeks">0</div>
+          <div style="font-size:.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-top:.25rem">Wochen Streak</div>
+          <div style="font-size:.65rem;color:var(--text3);margin-top:.15rem">Vollständige Wochen</div>
+        </div>
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.1rem;text-align:center">
+          <div style="font-size:2rem;font-family:'Syne',sans-serif;font-weight:800;color:var(--blue)" id="stat-total-sessions">0</div>
+          <div style="font-size:.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-top:.25rem">Pomodoro Sessions</div>
+          <div style="font-size:.65rem;color:var(--text3);margin-top:.15rem" id="stat-pomo-hours">0 Stunden Fokus</div>
+        </div>
+      </div>
+
+      <!-- Per-Habit Stats -->
+      <div style="font-size:.62rem;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.75rem">Habits im Detail</div>
+      <div id="habit-stats-list" style="display:flex;flex-direction:column;gap:.65rem"></div>
+
+      <!-- 30-Tage Heatmap -->
+      <div style="font-size:.62rem;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin:1.5rem 0 .75rem">30-Tage Übersicht</div>
+      <div id="heatmap" style="display:flex;flex-wrap:wrap;gap:4px"></div>
+      <div style="display:flex;align-items:center;gap:.75rem;margin-top:.75rem;font-size:.62rem;color:var(--text3)">
+        <span style="display:flex;align-items:center;gap:.3rem"><span style="width:10px;height:10px;border-radius:2px;background:var(--green);display:inline-block"></span>Alle erledigt</span>
+        <span style="display:flex;align-items:center;gap:.3rem"><span style="width:10px;height:10px;border-radius:2px;background:rgba(201,168,76,0.4);display:inline-block"></span>Teilweise</span>
+        <span style="display:flex;align-items:center;gap:.3rem"><span style="width:10px;height:10px;border-radius:2px;background:rgba(224,92,92,0.2);display:inline-block"></span>Nichts</span>
+      </div>
+    </div>
     <div class="panel" id="panel-week">
       <div class="section-header" style="margin-bottom:1rem">
         <div class="section-label">Wochenübersicht</div>
@@ -355,7 +393,7 @@ const TODAY = new Date().toISOString().split('T')[0];
 // ── NAVIGATION ──────────────────────────────────────────────
 const PAGE_TITLES = {
   dashboard:'Dashboard', habits:'Habits', week:'Wochenübersicht',
-  pomodoro:'Pomodoro Timer', journal:'Tagebuch'
+  stats:'Statistiken', pomodoro:'Pomodoro Timer', journal:'Tagebuch'
 };
 function goto(id, el) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
@@ -366,6 +404,93 @@ function goto(id, el) {
   if (id === 'week') renderWeekView();
   if (id === 'journal') loadJournal();
   if (id === 'habits') renderAllHabits();
+  if (id === 'stats') renderStats();
+}
+
+// ── STATS ─────────────────────────────────────────────────────
+function calcWeekStreak() {
+  if (!HABITS.length) return 0;
+  let streak = 0;
+  for (let w = 0; w < 52; w++) {
+    const days = getWeekDays(-w);
+    const pastDays = days.filter(d => d <= todayStr());
+    if (!pastDays.length) continue;
+    const allComplete = pastDays.every(d =>
+      HABITS.every(h => ALL_COMPLETIONS.some(c => c.habit_id === h.id && c.completed_date === d))
+    );
+    if (allComplete) streak++;
+    else if (w > 0) break;
+  }
+  return streak;
+}
+
+function calcHabitRate(habitId) {
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    days.push(d.toISOString().split('T')[0]);
+  }
+  const done = days.filter(d => ALL_COMPLETIONS.some(c => c.habit_id === habitId && c.completed_date === d)).length;
+  return Math.round((done / 7) * 100);
+}
+
+function renderStats() {
+  const dayStreak = calcStreak();
+  const weekStreak = calcWeekStreak();
+  const totalPomos = parseInt(localStorage.getItem('ttl_pomos_total') || '0');
+
+  document.getElementById('stat-streak-days').textContent = dayStreak;
+  document.getElementById('stat-streak-weeks').textContent = weekStreak;
+  document.getElementById('stat-total-sessions').textContent = totalPomos;
+  document.getElementById('stat-pomo-hours').textContent = Math.round(totalPomos * 25 / 60 * 10) / 10 + ' Stunden Fokus';
+
+  if (dayStreak > 0) {
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - dayStreak + 1);
+    document.getElementById('stat-streak-start').textContent = 'Seit ' + startDate.toLocaleDateString('de-DE', {day:'2-digit', month:'long'});
+  }
+
+  const list = document.getElementById('habit-stats-list');
+  list.innerHTML = HABITS.map(h => {
+    const hStreak = calcHabitStreak(h.id);
+    const total = ALL_COMPLETIONS.filter(c => c.habit_id === h.id).length;
+    const rate = calcHabitRate(h.id);
+    const barWidth = Math.min(100, rate);
+    const color = rate >= 80 ? 'var(--green)' : rate >= 50 ? 'var(--gold)' : 'var(--red)';
+    return `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem">
+        <div style="font-size:.78rem;color:var(--text)">${h.emoji || '⭐'} ${h.name}</div>
+        <div style="display:flex;gap:.75rem;font-size:.68rem;color:var(--text3)">
+          <span>🔥 ${hStreak}d</span>
+          <span>✓ ${total}x</span>
+          <span style="color:${color}">${rate}%</span>
+        </div>
+      </div>
+      <div style="height:4px;background:var(--bg3);border-radius:2px;overflow:hidden">
+        <div style="height:100%;width:${barWidth}%;background:${color};border-radius:2px;transition:width .4s ease"></div>
+      </div>
+    </div>`;
+  }).join('') || '<div style="color:var(--text3);font-size:.75rem">Noch keine Habits</div>';
+
+  // 30-Tage Heatmap
+  const heatmap = document.getElementById('heatmap');
+  const days30 = [];
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    days30.push(d.toISOString().split('T')[0]);
+  }
+  heatmap.innerHTML = days30.map(d => {
+    const total = HABITS.length;
+    if (!total) return `<div style="width:24px;height:24px;border-radius:4px;background:var(--bg3)"></div>`;
+    const done = HABITS.filter(h => ALL_COMPLETIONS.some(c => c.habit_id === h.id && c.completed_date === d)).length;
+    const ratio = done / total;
+    const isFuture = d > todayStr();
+    const bg = isFuture ? 'var(--bg3)' : ratio === 1 ? 'var(--green)' : ratio > 0 ? 'rgba(201,168,76,0.5)' : 'rgba(224,92,92,0.15)';
+    const label = d.slice(8) + '.' + d.slice(5,7);
+    return `<div title="${label}: ${done}/${total}" style="width:24px;height:24px;border-radius:4px;background:${bg}"></div>`;
+  }).join('');
 }
 
 // ── TOAST ────────────────────────────────────────────────────
