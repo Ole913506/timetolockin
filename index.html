@@ -148,9 +148,26 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 </head>
 <body>
 
-<div id="app-loader">
-  <div></div>
-  <div style="font-size:.72rem;color:var(--text3)">Wird geladen...</div>
+<!-- LOGIN SCREEN -->
+<div id="login-screen" style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--bg)">
+  <div style="width:90%;max-width:380px">
+    <div style="text-align:center;margin-bottom:2rem">
+      <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--text);margin-bottom:.4rem">time<span style="color:var(--gold)">tolockin</span></div>
+      <div style="font-size:.72rem;color:var(--text3)">Dein persönliches Fokus-System</div>
+    </div>
+    <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:1.75rem">
+      <div style="margin-bottom:.85rem">
+        <div style="font-size:.62rem;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.35rem">E-Mail</div>
+        <input id="login-email" type="email" placeholder="deine@email.de" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:.65rem .85rem;color:var(--text);font-family:'DM Mono',monospace;font-size:.82rem">
+      </div>
+      <div style="margin-bottom:1.25rem">
+        <div style="font-size:.62rem;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.35rem">Passwort</div>
+        <input id="login-password" type="password" placeholder="••••••••" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:.65rem .85rem;color:var(--text);font-family:'DM Mono',monospace;font-size:.82rem" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <button onclick="doLogin()" style="width:100%;padding:.7rem;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--bg);border:none;border-radius:8px;font-family:'DM Mono',monospace;font-size:.82rem;font-weight:700;cursor:pointer">Einloggen →</button>
+      <div id="login-error" style="display:none;margin-top:.75rem;font-size:.72rem;color:var(--red);text-align:center"></div>
+    </div>
+  </div>
 </div>
 
 <div class="app" id="app" style="display:none">
@@ -726,16 +743,31 @@ async function saveJournal() {
   loadJournal();
 }
 
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const errEl = document.getElementById('login-error');
+  errEl.style.display = 'none';
+  if (!email || !password) { errEl.textContent = 'Bitte E-Mail und Passwort eingeben'; errEl.style.display = 'block'; return; }
+  const { error } = await _sb.auth.signInWithPassword({ email, password });
+  if (error) { errEl.textContent = 'Falsche E-Mail oder Passwort'; errEl.style.display = 'block'; return; }
+  document.getElementById('login-screen').style.display = 'none';
+  await loadAll();
+  document.getElementById('app').style.display = 'grid';
+}
+
 // ── INIT ──────────────────────────────────────────────────────
 updateTimerDisplay();
 document.getElementById('pomo-total').textContent = pomosTotal;
 
 (async () => {
+  const { data: { session } } = await _sb.auth.getSession();
+  if (!session) {
+    document.getElementById('login-screen').style.display = 'flex';
+    return;
+  }
+  document.getElementById('login-screen').style.display = 'none';
   await loadAll();
-  const loader = document.getElementById('app-loader');
-  loader.style.opacity = '0';
-  loader.style.transition = 'opacity .3s';
-  setTimeout(() => loader.remove(), 300);
   document.getElementById('app').style.display = 'grid';
 })();
 </script>
