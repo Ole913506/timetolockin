@@ -60,7 +60,7 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 .btn-primary:hover{opacity:.9;color:var(--bg)}
 
 /* ── METRICS ── */
-.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.5rem}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1.5rem}
 .metric-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem}
 .metric-card.gold{border-color:rgba(201,168,76,0.2);background:linear-gradient(135deg,rgba(201,168,76,0.06),var(--bg2))}
 .metric-card.green{border-color:rgba(76,175,125,0.2);background:linear-gradient(135deg,rgba(76,175,125,0.06),var(--bg2))}
@@ -221,11 +221,6 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
           <div class="m-label">Längste Streak</div>
           <div class="m-val" id="m-streak">0</div>
           <div class="m-sub">Tage in Folge</div>
-        </div>
-        <div class="metric-card">
-          <div class="m-label">Erfolgsquote</div>
-          <div class="m-val" id="m-rate">–</div>
-          <div class="m-sub">Letzte 7 Tage</div>
         </div>
         <div class="metric-card">
           <div class="m-label">Pomodoros heute</div>
@@ -603,7 +598,7 @@ function renderDashboard() {
   document.getElementById('m-today-sub').textContent = doneCount === totalCount && totalCount > 0
     ? '🎉 Alles erledigt!' : doneCount > 0 ? `${totalCount - doneCount} noch offen` : 'Noch nichts abgehakt';
   document.getElementById('m-streak').textContent = streak;
-  document.getElementById('m-rate').textContent = rate !== null ? rate + '%' : '–';
+  
   document.getElementById('m-pomos').textContent = pomosToday;
   document.getElementById('dash-progress').textContent = `${doneCount}/${totalCount} erledigt`;
 
