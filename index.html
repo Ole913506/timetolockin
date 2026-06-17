@@ -126,6 +126,9 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 .emoji-grid{display:flex;flex-wrap:wrap;gap:.4rem}
 .emoji-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .emoji-btn.selected{border-color:var(--gold);background:var(--gold-dim)}
+.freq-btn.selected{border-color:var(--gold);background:var(--gold-dim);color:var(--gold)}
+.weekday-btn{padding:.4rem .3rem;font-size:.65rem}
+.weekday-btn.selected{border-color:var(--gold);background:var(--gold-dim);color:var(--gold)}
 .modal-actions{display:flex;gap:.5rem;margin-top:1.25rem;justify-content:flex-end}
 .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
 .section-label{font-size:.65rem;color:var(--text3);letter-spacing:.08em;text-transform:uppercase}
@@ -351,6 +354,21 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
       <label class="form-label">Icon</label>
       <div class="emoji-grid" id="emoji-grid"></div>
       <input type="hidden" id="habit-emoji" value="⭐">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Häufigkeit</label>
+      <div style="display:flex;gap:.4rem;margin-bottom:.6rem">
+        <button class="btn freq-btn" onclick="selectFrequency('daily')" id="freq-daily" style="flex:1">Täglich</button>
+        <button class="btn freq-btn" onclick="selectFrequency('weekly')" id="freq-weekly" style="flex:1">Wöchentlich</button>
+        <button class="btn freq-btn" onclick="selectFrequency('weekday')" id="freq-weekday" style="flex:1">Wochentag</button>
+      </div>
+      <div id="weekday-picker" style="display:none;flex-wrap:wrap;gap:.4rem">
+        ${['Mo','Di','Mi','Do','Fr','Sa','So'].map((d,i) =>
+          `<button class="btn weekday-btn" onclick="toggleWeekday(${i+1})" data-day="${i+1}" style="flex:1;min-width:42px">${d}</button>`
+        ).join('')}
+      </div>
+      <input type="hidden" id="habit-frequency" value="daily">
+      <input type="hidden" id="habit-weekdays" value="">
     </div>
     <div class="form-group">
       <label class="form-label">Ziel (optional)</label>
@@ -587,27 +605,46 @@ function calcWeekRate() {
   return total > 0 ? Math.round((done / total) * 100) : null;
 }
 
+// ── FREQUENCY CHECK ──────────────────────────────────────────
+function isHabitDueToday(h, dateStr) {
+  const ds = dateStr || todayStr();
+  if (!h.frequency || h.frequency === 'daily') return true;
+  if (h.frequency === 'weekly') {
+    // Fällig am selben Wochentag wie erstellt
+    const createdDay = new Date(h.created_at || ds).getDay() || 7;
+    const checkDay = new Date(ds).getDay() || 7;
+    return createdDay === checkDay;
+  }
+  if (h.frequency === 'weekday') {
+    const days = (h.weekdays || '').split(',').filter(Boolean).map(Number);
+    const checkDay = new Date(ds).getDay() || 7;
+    return days.includes(checkDay);
+  }
+  return true;
+}
+
 // ── DASHBOARD ────────────────────────────────────────────────
 function renderDashboard() {
-  const doneCount = TODAY_COMPLETIONS.size;
-  const totalCount = HABITS.length;
+  const dueToday = HABITS.filter(h => isHabitDueToday(h));
+  const doneCount = dueToday.filter(h => TODAY_COMPLETIONS.has(h.id)).length;
+  const totalCount = dueToday.length;
   const streak = calcStreak();
-  const rate = calcWeekRate();
 
   document.getElementById('m-today').textContent = `${doneCount}/${totalCount}`;
   document.getElementById('m-today-sub').textContent = doneCount === totalCount && totalCount > 0
-    ? '🎉 Alles erledigt!' : doneCount > 0 ? `${totalCount - doneCount} noch offen` : 'Noch nichts abgehakt';
+    ? '🎉 Alles erledigt!' : doneCount > 0 ? `${totalCount - doneCount} noch offen` : totalCount === 0 ? 'Heute nichts fällig' : 'Noch nichts abgehakt';
   document.getElementById('m-streak').textContent = streak;
-  
   document.getElementById('m-pomos').textContent = pomosToday;
   document.getElementById('dash-progress').textContent = `${doneCount}/${totalCount} erledigt`;
 
   const grid = document.getElementById('dash-habits');
-  if (!HABITS.length) {
-    grid.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text3);font-size:.78rem">Noch keine Habits — klicke auf „+ Habit"</div>';
+  if (!dueToday.length) {
+    grid.innerHTML = HABITS.length
+      ? '<div style="text-align:center;padding:2rem;color:var(--text3);font-size:.78rem">Heute ist kein Habit fällig 🎉</div>'
+      : '<div style="text-align:center;padding:2rem;color:var(--text3);font-size:.78rem">Noch keine Habits — klicke auf „+ Habit"</div>';
     return;
   }
-  grid.innerHTML = HABITS.map(h => renderHabitCard(h, true)).join('');
+  grid.innerHTML = dueToday.map(h => renderHabitCard(h, true)).join('');
 }
 
 function updateSidebarStreak() {
@@ -617,11 +654,14 @@ function updateSidebarStreak() {
 function renderHabitCard(h, clickable = true) {
   const done = TODAY_COMPLETIONS.has(h.id);
   const hStreak = calcHabitStreak(h.id);
+  const freqLabel = h.frequency === 'weekly' ? 'Wöchentlich'
+    : h.frequency === 'weekday' ? ['Mo','Di','Mi','Do','Fr','Sa','So'].filter((_,i) => (h.weekdays||'').split(',').includes(String(i+1))).join('/')
+    : '';
   return `<div class="habit-card ${done ? 'done' : ''}" onclick="${clickable ? `toggleHabit('${h.id}')` : ''}">
     <div class="habit-check" onclick="event.stopPropagation();toggleHabit('${h.id}')">${done ? '✓' : ''}</div>
     <div class="habit-info">
       <div class="habit-name">${h.emoji || '⭐'} ${h.name}</div>
-      <div class="habit-meta">${h.goal ? h.goal + ' · ' : ''}${hStreak > 0 ? `🔥 ${hStreak} Tage` : 'Noch kein Streak'}</div>
+      <div class="habit-meta">${h.goal ? h.goal + ' · ' : ''}${freqLabel ? freqLabel + ' · ' : ''}${hStreak > 0 ? `🔥 ${hStreak} Tage` : 'Noch kein Streak'}</div>
     </div>
     <div class="habit-actions">
       <button class="icon-btn" onclick="event.stopPropagation();openEditHabit('${h.id}')" title="Bearbeiten">✏</button>
@@ -684,8 +724,11 @@ function openAddHabit() {
   document.getElementById('habit-name').value = '';
   document.getElementById('habit-goal').value = '';
   selectedEmoji = '⭐';
+  selectedWeekdays = new Set();
   document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
   document.getElementById('habit-modal').classList.add('open');
+  selectFrequency('daily');
+  document.querySelectorAll('.weekday-btn').forEach(b => b.classList.remove('selected'));
 }
 function openEditHabit(id) {
   const h = HABITS.find(h => h.id === id);
@@ -698,6 +741,12 @@ function openEditHabit(id) {
   document.querySelectorAll('.emoji-btn').forEach(b => {
     b.classList.toggle('selected', b.textContent === selectedEmoji);
   });
+  selectFrequency(h.frequency || 'daily');
+  selectedWeekdays = new Set((h.weekdays || '').split(',').filter(Boolean).map(Number));
+  document.querySelectorAll('.weekday-btn').forEach(b => {
+    b.classList.toggle('selected', selectedWeekdays.has(parseInt(b.dataset.day)));
+  });
+  document.getElementById('habit-weekdays').value = Array.from(selectedWeekdays).join(',');
   document.getElementById('habit-modal').classList.add('open');
 }
 function closeHabitModal() { document.getElementById('habit-modal').classList.remove('open'); }
@@ -713,16 +762,19 @@ async function saveHabit() {
   const name = document.getElementById('habit-name').value.trim();
   const goal = document.getElementById('habit-goal').value.trim();
   const editId = document.getElementById('edit-habit-id').value;
+  const frequency = document.getElementById('habit-frequency').value;
+  const weekdays = document.getElementById('habit-weekdays').value;
   if (!name) { showToast('⚠ Bitte einen Namen eingeben'); return; }
+  if (frequency === 'weekday' && !weekdays) { showToast('⚠ Bitte mindestens einen Wochentag wählen'); return; }
   if (editId) {
-    const { error } = await _sb.from('habits').update({ name, emoji: selectedEmoji, goal }).eq('id', editId);
+    const { error } = await _sb.from('habits').update({ name, emoji: selectedEmoji, goal, frequency, weekdays: weekdays || null }).eq('id', editId);
     if (error) { showToast('✗ ' + error.message); return; }
     const h = HABITS.find(h => h.id === editId);
-    if (h) { h.name = name; h.emoji = selectedEmoji; h.goal = goal; }
+    if (h) { h.name = name; h.emoji = selectedEmoji; h.goal = goal; h.frequency = frequency; h.weekdays = weekdays; }
     showToast('✓ Habit aktualisiert');
   } else {
     const { data, error } = await _sb.from('habits').insert({
-      user_id: session.user.id, name, emoji: selectedEmoji, goal: goal || null
+      user_id: session.user.id, name, emoji: selectedEmoji, goal: goal || null, frequency, weekdays: weekdays || null
     }).select().single();
     if (error) { showToast('✗ ' + error.message); return; }
     if (data) HABITS.push(data);
@@ -875,6 +927,23 @@ async function doLogin() {
   document.getElementById('login-screen').style.display = 'none';
   await loadAll();
   document.getElementById('app').style.display = 'grid';
+}
+
+// ── FREQUENCY SELECTION ──────────────────────────────────────
+let selectedWeekdays = new Set();
+function selectFrequency(freq) {
+  document.getElementById('habit-frequency').value = freq;
+  document.querySelectorAll('.freq-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('freq-' + freq).classList.add('selected');
+  document.getElementById('weekday-picker').style.display = freq === 'weekday' ? 'flex' : 'none';
+}
+function toggleWeekday(day) {
+  if (selectedWeekdays.has(day)) selectedWeekdays.delete(day);
+  else selectedWeekdays.add(day);
+  document.querySelectorAll('.weekday-btn').forEach(b => {
+    b.classList.toggle('selected', selectedWeekdays.has(parseInt(b.dataset.day)));
+  });
+  document.getElementById('habit-weekdays').value = Array.from(selectedWeekdays).join(',');
 }
 
 // ── EMOJI GRID ────────────────────────────────────────────────
