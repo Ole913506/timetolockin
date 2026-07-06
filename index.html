@@ -49,10 +49,11 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 .streak-badge{display:flex;align-items:center;gap:.5rem;padding:.5rem .65rem;background:var(--gold-dim);border:1px solid rgba(201,168,76,0.2);border-radius:8px;margin-bottom:.4rem}
 .streak-info .streak-num{font-size:.85rem;font-weight:700;color:var(--gold)}
 .streak-info .streak-label{font-size:.6rem;color:var(--text3)}
-.xp-bar-wrap{padding:.35rem .65rem;margin-bottom:.35rem}
+.xp-bar-wrap{padding:.5rem .65rem .6rem;margin-top:.3rem}
 .xp-bar-label{display:flex;justify-content:space-between;font-size:.58rem;color:var(--text3);margin-bottom:.3rem}
-.xp-bar{height:4px;background:var(--bg3);border-radius:2px;overflow:hidden}
-.xp-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:2px;transition:width .6s ease}
+.xp-bar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.xp-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:3px;transition:width .7s ease}
+.xp-level-block{background:linear-gradient(135deg,rgba(201,168,76,0.1),rgba(201,168,76,0.04));border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:.65rem .75rem;margin:.5rem .5rem .4rem}
 
 /* ── TOPBAR ── */
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.5rem;border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0}
@@ -291,12 +292,18 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
           <div class="streak-label">Tage Streak</div>
         </div>
       </div>
-      <div class="xp-bar-wrap">
-        <div class="xp-bar-label">
-          <span id="sidebar-level">Level 1</span>
-          <span id="sidebar-xp">0 XP</span>
+      <div class="xp-level-block">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.35rem">
+          <div style="font-size:.72rem;font-weight:700;color:var(--gold)" id="sidebar-level">Anfänger</div>
+          <div style="font-size:.6rem;color:var(--text3);background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.1rem .4rem" id="sidebar-lvl-num">Lvl 1</div>
         </div>
-        <div class="xp-bar"><div class="xp-bar-fill" id="xp-bar-fill" style="width:0%"></div></div>
+        <div class="xp-bar" style="margin-bottom:.35rem">
+          <div class="xp-bar-fill" id="xp-bar-fill" style="width:0%"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:.58rem;color:var(--text3)">
+          <span id="sidebar-xp-current">0 XP</span>
+          <span id="sidebar-xp-needed">bis Level 2</span>
+        </div>
       </div>
     </div>
   </aside>
@@ -790,11 +797,15 @@ function showLevelUpBanner(level) {
 function updateXPBar() {
   const xp = parseInt(localStorage.getItem('ttl_xp') || '0');
   const { lvl, pct, current, needed } = getLevelProgress(xp);
-  const el = document.getElementById('sidebar-level');
-  const xpEl = document.getElementById('sidebar-xp');
+  const nameEl = document.getElementById('sidebar-level');
+  const numEl = document.getElementById('sidebar-lvl-num');
+  const curEl = document.getElementById('sidebar-xp-current');
+  const nedEl = document.getElementById('sidebar-xp-needed');
   const fill = document.getElementById('xp-bar-fill');
-  if (el) el.textContent = `${LEVEL_NAMES[lvl-1]} (${lvl})`;
-  if (xpEl) xpEl.textContent = `${current}/${needed} XP`;
+  if (nameEl) nameEl.textContent = LEVEL_NAMES[lvl - 1];
+  if (numEl) numEl.textContent = 'Lvl ' + lvl;
+  if (curEl) curEl.textContent = current + ' XP';
+  if (nedEl) nedEl.textContent = 'bis Level ' + (lvl + 1);
   if (fill) fill.style.width = pct + '%';
 }
 
@@ -1264,6 +1275,21 @@ async function toggleHabit(habitId) {
       .eq('habit_id', habitId).eq('user_id', session.user.id).eq('completed_date', todayStr());
     TODAY_COMPLETIONS.delete(habitId);
     ALL_COMPLETIONS = ALL_COMPLETIONS.filter(c => !(c.habit_id === habitId && c.completed_date === todayStr()));
+    // XP abziehen — aber nie unter 0
+    const currentXP = parseInt(localStorage.getItem('ttl_xp') || '0');
+    const newXP = Math.max(0, currentXP - XP_PER_HABIT);
+    localStorage.setItem('ttl_xp', newXP);
+    const fill = document.getElementById('xp-bar-fill');
+    if (fill) {
+      fill.style.transition = 'none';
+      fill.style.width = getLevelProgress(currentXP).pct + '%';
+      requestAnimationFrame(() => {
+        fill.style.transition = 'width .7s ease';
+        fill.style.width = getLevelProgress(newXP).pct + '%';
+      });
+    }
+    updateXPBar();
+    showToast(`−${XP_PER_HABIT} XP · Habit rückgängig gemacht`);
   } else {
     const { data } = await _sb.from('habit_completions').insert({
       habit_id: habitId, user_id: session.user.id, completed_date: todayStr()
