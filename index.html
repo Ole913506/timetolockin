@@ -183,7 +183,28 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 #app-loader{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1rem}
 #app-loader div:first-child{width:32px;height:32px;background:linear-gradient(135deg,var(--gold),var(--gold2));clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);animation:spin 1s linear infinite}
 
-/* ── ZEITPLANER ── */
+/* ── LEVEL-UP BANNER ── */
+@keyframes levelUpPop{0%{transform:translateX(-50%) scale(.7);opacity:0}60%{transform:translateX(-50%) scale(1.05)}100%{transform:translateX(-50%) scale(1);opacity:1}}
+#levelup-banner{position:fixed;top:2rem;left:50%;transform:translateX(-50%);z-index:1001;display:none;text-align:center}
+#levelup-banner.show{display:block;animation:levelUpPop .5s cubic-bezier(.175,.885,.32,1.275) forwards}
+.levelup-inner{background:linear-gradient(135deg,#1a1200,#2d2200);border:2px solid var(--gold2);border-radius:16px;padding:1.25rem 2rem;min-width:240px;box-shadow:0 0 40px rgba(201,168,76,0.3),0 12px 40px rgba(0,0,0,.6)}
+.levelup-stars{font-size:1.4rem;letter-spacing:.3rem;margin-bottom:.4rem}
+.levelup-label{font-size:.6rem;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.2rem}
+.levelup-num{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--gold2)}
+.levelup-name{font-size:.82rem;color:var(--text2);margin-top:.2rem}
+
+/* ── VORLAGEN-TEMPLATE ── */
+.tpl-list{display:flex;flex-direction:column;gap:.6rem}
+.tpl-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:.9rem 1rem;display:flex;align-items:center;gap:.75rem;cursor:pointer;transition:all .15s}
+.tpl-card:hover{border-color:var(--border2)}
+.tpl-emoji{font-size:1.3rem;flex-shrink:0}
+.tpl-name{font-size:.8rem;font-weight:600;color:var(--text);flex:1}
+.tpl-count{font-size:.65rem;color:var(--text3)}
+.tpl-block-row{display:grid;grid-template-columns:1fr 70px 70px 26px 28px;gap:.4rem;align-items:center;margin-bottom:.4rem}
+.tpl-block-row input{background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:.35rem .5rem;color:var(--text);font-size:.72rem}
+.tpl-block-row input:focus{outline:none;border-color:var(--gold)}
+.apply-tpl-btn{font-size:.58rem;padding:.2rem .5rem;border-radius:4px;border:1px solid rgba(91,141,238,.3);background:rgba(91,141,238,.08);color:var(--blue);cursor:pointer;white-space:nowrap;margin-top:.2rem}
+.apply-tpl-btn:hover{background:rgba(91,141,238,.15)}
 .planner-tabs{display:flex;gap:.4rem;margin-bottom:1.25rem}
 .planner-tab{padding:.4rem .85rem;border-radius:2rem;font-size:.72rem;border:1px solid var(--border);background:var(--bg2);color:var(--text3);cursor:pointer;transition:all .15s}
 .planner-tab.active{border-color:var(--blue);background:rgba(91,141,238,0.1);color:var(--blue)}
@@ -440,6 +461,7 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
       <div class="planner-tabs">
         <button class="planner-tab active" id="ptab-week" onclick="switchPlannerTab('week')">📅 Wochenplan</button>
         <button class="planner-tab" id="ptab-tasks" onclick="switchPlannerTab('tasks')">✅ Aufgaben</button>
+        <button class="planner-tab" id="ptab-templates" onclick="switchPlannerTab('templates')">🗂 Vorlagen</button>
       </div>
 
       <!-- Wochenplan -->
@@ -463,6 +485,21 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
         <div class="task-list" id="task-list"></div>
         <div id="no-tasks" style="display:none;text-align:center;padding:3rem;color:var(--text3);font-size:.75rem">
           Noch keine Aufgaben — klicke auf „+ Aufgabe"
+        </div>
+      </div>
+
+      <!-- Vorlagen -->
+      <div id="planner-templates" style="display:none">
+        <div class="section-header" style="margin-bottom:1rem">
+          <div class="section-label">Tagesablauf-Vorlagen (<span id="tpl-count">0</span>)</div>
+          <button class="btn btn-primary" onclick="openTemplateModal()">+ Vorlage</button>
+        </div>
+        <p style="font-size:.72rem;color:var(--text3);margin-bottom:1.25rem;line-height:1.6">
+          Erstelle Vorlagen für typische Tage (z.B. "Schultag", "Wochenende"). Im Wochenplan kannst du eine Vorlage auf jeden Tag anwenden — alle Zeitblöcke werden automatisch übernommen.
+        </p>
+        <div class="tpl-list" id="tpl-list"></div>
+        <div id="no-tpls" style="display:none;text-align:center;padding:3rem;color:var(--text3);font-size:.75rem">
+          Noch keine Vorlagen — klicke auf „+ Vorlage"
         </div>
       </div>
     </div>
@@ -524,6 +561,46 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
     <div class="modal-actions">
       <button class="btn" onclick="closeIntentionModal()">Abbrechen</button>
       <button class="btn btn-primary" onclick="saveIntention()">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<!-- VORLAGE MODAL -->
+<div class="modal-overlay" id="template-modal">
+  <div class="modal" style="max-width:520px">
+    <h3 id="tpl-modal-title">Neue Vorlage</h3>
+    <input type="hidden" id="edit-tpl-id">
+    <div style="display:grid;grid-template-columns:1fr 80px;gap:.6rem;margin-bottom:.85rem">
+      <div class="form-group" style="margin:0">
+        <label class="form-label">Name</label>
+        <input class="form-input" id="tpl-name" placeholder="z.B. Schultag, Wochenende, Ferien...">
+      </div>
+      <div class="form-group" style="margin:0">
+        <label class="form-label">Emoji</label>
+        <input class="form-input" id="tpl-emoji" placeholder="📅" maxlength="2" style="text-align:center;font-size:1.1rem">
+      </div>
+    </div>
+
+    <div style="font-size:.62rem;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.6rem">Zeitblöcke dieser Vorlage</div>
+    <div id="tpl-blocks-list" style="display:flex;flex-direction:column;gap:.35rem;margin-bottom:.6rem;max-height:260px;overflow-y:auto"></div>
+    <button onclick="addTplBlockRow()" class="btn" style="width:100%;font-size:.72rem;margin-bottom:.85rem">+ Block hinzufügen</button>
+
+    <div class="modal-actions">
+      <button class="btn" id="tpl-delete-btn" onclick="deleteTemplate()" style="display:none;color:var(--red);border-color:rgba(224,92,92,0.3)">Löschen</button>
+      <button class="btn" onclick="closeTemplateModal()">Abbrechen</button>
+      <button class="btn btn-primary" onclick="saveTemplate()">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<!-- VORLAGE ANWENDEN MODAL -->
+<div class="modal-overlay" id="apply-tpl-modal">
+  <div class="modal" style="max-width:380px">
+    <h3>Vorlage anwenden</h3>
+    <p style="font-size:.73rem;color:var(--text2);margin-bottom:1rem" id="apply-tpl-date-label"></p>
+    <div id="apply-tpl-list" style="display:flex;flex-direction:column;gap:.5rem;margin-bottom:1rem"></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="document.getElementById('apply-tpl-modal').classList.remove('open')">Abbrechen</button>
     </div>
   </div>
 </div>
@@ -599,6 +676,16 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
   </div>
 </div>
 
+<!-- LEVEL-UP BANNER -->
+<div id="levelup-banner">
+  <div class="levelup-inner">
+    <div class="levelup-stars">⭐ ⭐ ⭐</div>
+    <div class="levelup-label">Level Up!</div>
+    <div class="levelup-num" id="levelup-num">Level 2</div>
+    <div class="levelup-name" id="levelup-name">Einsteiger</div>
+  </div>
+</div>
+
 <!-- ACHIEVEMENT BANNER -->
 <div id="achieve-banner">
   <div style="background:linear-gradient(135deg,#1a1200,#2a1f00);border:2px solid var(--gold);border-radius:14px;padding:1rem 1.5rem;text-align:center;min-width:260px;box-shadow:0 8px 32px rgba(0,0,0,0.5)">
@@ -648,11 +735,37 @@ function addXP(amount, label) {
   const newXP = xp + amount;
   localStorage.setItem('ttl_xp', newXP);
   const newLevel = getLevel(newXP);
-  updateXPBar();
-  if (newLevel > oldLevel) {
-    showToast(`🎉 Level Up! Du bist jetzt ${LEVEL_NAMES[newLevel - 1]}`);
+
+  // Animate XP bar: first set to old value (no transition), then to new (with transition)
+  const fill = document.getElementById('xp-bar-fill');
+  if (fill) {
+    fill.style.transition = 'none';
+    const { pct: oldPct } = getLevelProgress(xp);
+    fill.style.width = oldPct + '%';
+    requestAnimationFrame(() => {
+      fill.style.transition = 'width .8s ease';
+      const { pct: newPct } = getLevelProgress(newXP);
+      fill.style.width = newPct + '%';
+      // Pulse glow effect
+      fill.style.boxShadow = '0 0 8px var(--gold)';
+      setTimeout(() => fill.style.boxShadow = 'none', 1200);
+    });
   }
-  // Float XP text
+
+  updateXPBar();
+
+  if (newLevel > oldLevel) {
+    // Level-Up: eigenes Banner statt Toast
+    showLevelUpBanner(newLevel);
+  } else {
+    // Normaler XP-Gain: informativer Toast mit Fortschritt
+    const { current, needed } = getLevelProgress(newXP);
+    const toNext = needed - current;
+    const pct = Math.round(current / needed * 100);
+    showToast(`+${amount} XP · ${label} — Level ${newLevel} · ${pct}% (noch ${toNext} XP bis Level ${newLevel + 1})`);
+  }
+
+  // Schwebende XP-Zahl
   const el = document.createElement('div');
   el.className = 'xp-float';
   el.textContent = '+' + amount + ' XP';
@@ -660,6 +773,20 @@ function addXP(amount, label) {
   document.body.appendChild(el);
   setTimeout(() => el.remove(), 1200);
 }
+
+let levelUpTimer;
+function showLevelUpBanner(level) {
+  const banner = document.getElementById('levelup-banner');
+  const nameEl = document.getElementById('levelup-name');
+  const numEl = document.getElementById('levelup-num');
+  if (!banner) return;
+  nameEl.textContent = LEVEL_NAMES[level - 1];
+  numEl.textContent = 'Level ' + level;
+  banner.classList.add('show');
+  clearTimeout(levelUpTimer);
+  levelUpTimer = setTimeout(() => banner.classList.remove('show'), 5000);
+}
+
 function updateXPBar() {
   const xp = parseInt(localStorage.getItem('ttl_xp') || '0');
   const { lvl, pct, current, needed } = getLevelProgress(xp);
@@ -981,6 +1108,17 @@ async function loadAll() {
   const { data: taskData } = await _sb.from('tasks')
     .select('*').eq('user_id', session.user.id).order('created_at');
   TASKS = taskData || [];
+
+  // Load day templates + their blocks
+  const { data: tplData } = await _sb.from('day_templates')
+    .select('*').eq('user_id', session.user.id).order('created_at');
+  DAY_TEMPLATES = tplData || [];
+  const tplIds = DAY_TEMPLATES.map(t => t.id);
+  if (tplIds.length) {
+    const { data: tplBlocks } = await _sb.from('template_blocks')
+      .select('*').eq('user_id', session.user.id);
+    TEMPLATE_BLOCKS = tplBlocks || [];
+  }
 
   renderDashboard();
   updateXPBar();
@@ -1367,8 +1505,9 @@ async function doLogin() {
 }
 
 // ── ZEITPLANER ────────────────────────────────────────────────
-let TIME_BLOCKS = [], TASKS = [], plannerWeekOffset = 0, activePlannerTab = 'week';
-let selectedBlockColor = '#c9a84c';
+let TIME_BLOCKS = [], TASKS = [], DAY_TEMPLATES = [], TEMPLATE_BLOCKS = [];
+let plannerWeekOffset = 0, activePlannerTab = 'week';
+let selectedBlockColor = '#c9a84c', applyTplTargetDate = null;
 
 // Stunden die im Kalender angezeigt werden (06:00 bis 22:00)
 const CAL_START_HOUR = 6, CAL_END_HOUR = 22;
@@ -1378,10 +1517,13 @@ function switchPlannerTab(tab) {
   activePlannerTab = tab;
   document.getElementById('ptab-week').classList.toggle('active', tab === 'week');
   document.getElementById('ptab-tasks').classList.toggle('active', tab === 'tasks');
+  document.getElementById('ptab-templates').classList.toggle('active', tab === 'templates');
   document.getElementById('planner-week').style.display = tab === 'week' ? 'block' : 'none';
   document.getElementById('planner-tasks').style.display = tab === 'tasks' ? 'block' : 'none';
+  document.getElementById('planner-templates').style.display = tab === 'templates' ? 'block' : 'none';
   if (tab === 'week') renderPlannerWeek();
   if (tab === 'tasks') renderTasks();
+  if (tab === 'templates') renderTemplateList();
 }
 
 function changePlannerWeek(dir) {
@@ -1419,7 +1561,10 @@ function renderPlannerWeek() {
     ${days.map((d,i) => {
       const isToday = d === today;
       const dayNum = new Date(d).getDate();
-      return `<div class="cal-day-head ${isToday ? 'today' : ''}">${dayNames[i]}<br><span style="font-size:.75rem;font-weight:700">${dayNum}</span></div>`;
+      return `<div class="cal-day-head ${isToday ? 'today' : ''}" style="padding-bottom:.4rem">
+        ${dayNames[i]}<br><span style="font-size:.75rem;font-weight:700">${dayNum}</span>
+        <br><button class="apply-tpl-btn" onclick="openApplyTemplateModal('${d}')">⊕ Vorlage</button>
+      </div>`;
     }).join('')}`;
 
   // Time rows
@@ -1561,6 +1706,201 @@ async function deleteBlock() {
   closeBlockModal();
   renderPlannerWeek();
   showToast('✓ Block gelöscht');
+}
+
+// ── TAGESABLAUF-VORLAGEN ─────────────────────────────────────
+function renderTemplateList() {
+  const list = document.getElementById('tpl-list');
+  const empty = document.getElementById('no-tpls');
+  const count = document.getElementById('tpl-count');
+  if (count) count.textContent = DAY_TEMPLATES.length;
+  if (!DAY_TEMPLATES.length) {
+    if (list) list.innerHTML = '';
+    if (empty) empty.style.display = 'block';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+  if (!list) return;
+  list.innerHTML = DAY_TEMPLATES.map(t => {
+    const blocks = TEMPLATE_BLOCKS.filter(b => b.template_id === t.id);
+    const blockSummary = blocks.length
+      ? blocks.sort((a,b) => a.start_time.localeCompare(b.start_time))
+              .slice(0, 3).map(b => `${b.start_time.slice(0,5)} ${b.title}`).join(' · ')
+              + (blocks.length > 3 ? ` +${blocks.length - 3}` : '')
+      : 'Noch keine Blöcke';
+    return `<div class="tpl-card" onclick="openTemplateModal('${t.id}')">
+      <div class="tpl-emoji">${t.emoji || '📅'}</div>
+      <div style="flex:1;min-width:0">
+        <div class="tpl-name">${t.name}</div>
+        <div class="tpl-count" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${blockSummary}</div>
+      </div>
+      <div style="font-size:.68rem;color:var(--blue)">${blocks.length} Block${blocks.length !== 1 ? 'e' : ''}</div>
+    </div>`;
+  }).join('');
+}
+
+// Temporäre Block-Zeilen im Vorlage-Modal (noch nicht in DB)
+let tplBlockRows = [];  // [{title, start_time, end_time, color}]
+
+function openTemplateModal(id) {
+  tplBlockRows = [];
+  if (!id) {
+    document.getElementById('tpl-modal-title').textContent = 'Neue Vorlage';
+    document.getElementById('edit-tpl-id').value = '';
+    document.getElementById('tpl-name').value = '';
+    document.getElementById('tpl-emoji').value = '📅';
+    document.getElementById('tpl-delete-btn').style.display = 'none';
+  } else {
+    const t = DAY_TEMPLATES.find(x => x.id === id);
+    if (!t) return;
+    document.getElementById('tpl-modal-title').textContent = 'Vorlage bearbeiten';
+    document.getElementById('edit-tpl-id').value = t.id;
+    document.getElementById('tpl-name').value = t.name;
+    document.getElementById('tpl-emoji').value = t.emoji || '📅';
+    document.getElementById('tpl-delete-btn').style.display = 'block';
+    // Load existing blocks into tplBlockRows
+    tplBlockRows = TEMPLATE_BLOCKS.filter(b => b.template_id === t.id)
+      .sort((a,b) => a.start_time.localeCompare(b.start_time))
+      .map(b => ({ _id: b.id, title: b.title, start_time: b.start_time.slice(0,5), end_time: b.end_time.slice(0,5), color: b.color || '#c9a84c' }));
+  }
+  renderTplBlockRows();
+  document.getElementById('template-modal').classList.add('open');
+}
+
+function closeTemplateModal() {
+  document.getElementById('template-modal').classList.remove('open');
+  tplBlockRows = [];
+}
+
+const TPL_COLORS = ['#c9a84c','#5b8dee','#4caf7d','#e05c5c','#9b59b6'];
+
+function renderTplBlockRows() {
+  const container = document.getElementById('tpl-blocks-list');
+  if (!container) return;
+  if (!tplBlockRows.length) {
+    container.innerHTML = '<div style="font-size:.72rem;color:var(--text3);text-align:center;padding:.5rem">Noch keine Blöcke — klicke auf „+ Block hinzufügen"</div>';
+    return;
+  }
+  container.innerHTML = tplBlockRows.map((row, i) => `
+    <div class="tpl-block-row">
+      <input value="${row.title}" placeholder="Titel" onchange="tplBlockRows[${i}].title=this.value">
+      <input type="time" value="${row.start_time}" onchange="tplBlockRows[${i}].start_time=this.value">
+      <input type="time" value="${row.end_time}" onchange="tplBlockRows[${i}].end_time=this.value">
+      <div style="display:flex;gap:3px;flex-wrap:wrap">
+        ${TPL_COLORS.map(c => `<div onclick="tplBlockRows[${i}].color='${c}';renderTplBlockRows()" style="width:12px;height:12px;border-radius:3px;background:${c};cursor:pointer;border:1.5px solid ${row.color===c?'var(--text)':'transparent'}"></div>`).join('')}
+      </div>
+      <button onclick="tplBlockRows.splice(${i},1);renderTplBlockRows()" style="background:transparent;border:none;color:var(--red);cursor:pointer;font-size:.9rem">✕</button>
+    </div>
+  `).join('');
+}
+
+function addTplBlockRow() {
+  tplBlockRows.push({ title: '', start_time: '08:00', end_time: '09:00', color: '#c9a84c' });
+  renderTplBlockRows();
+}
+
+async function saveTemplate() {
+  const { data: { session } } = await _sb.auth.getSession();
+  if (!session) return;
+  const name = document.getElementById('tpl-name').value.trim();
+  const emoji = document.getElementById('tpl-emoji').value.trim() || '📅';
+  const editId = document.getElementById('edit-tpl-id').value;
+  if (!name) { showToast('⚠ Bitte einen Namen eingeben'); return; }
+  // Validate blocks
+  for (const b of tplBlockRows) {
+    if (!b.title.trim()) { showToast('⚠ Bitte alle Blocktitel ausfüllen'); return; }
+    if (b.start_time >= b.end_time) { showToast('⚠ Endzeit muss nach Startzeit liegen'); return; }
+  }
+
+  let tplId = editId;
+  if (editId) {
+    await _sb.from('day_templates').update({ name, emoji }).eq('id', editId);
+    const t = DAY_TEMPLATES.find(x => x.id === editId);
+    if (t) Object.assign(t, { name, emoji });
+    // Delete all old blocks, re-insert
+    await _sb.from('template_blocks').delete().eq('template_id', editId);
+    TEMPLATE_BLOCKS = TEMPLATE_BLOCKS.filter(b => b.template_id !== editId);
+  } else {
+    const { data, error } = await _sb.from('day_templates').insert({
+      user_id: session.user.id, name, emoji
+    }).select().single();
+    if (error) { showToast('✗ ' + error.message); return; }
+    DAY_TEMPLATES.push(data);
+    tplId = data.id;
+  }
+
+  // Insert blocks
+  if (tplBlockRows.length) {
+    const inserts = tplBlockRows.map(b => ({
+      template_id: tplId, user_id: session.user.id,
+      title: b.title.trim(), start_time: b.start_time, end_time: b.end_time, color: b.color
+    }));
+    const { data: newBlocks } = await _sb.from('template_blocks').insert(inserts).select();
+    if (newBlocks) TEMPLATE_BLOCKS.push(...newBlocks);
+  }
+
+  showToast(`✓ Vorlage "${name}" gespeichert`);
+  closeTemplateModal();
+  renderTemplateList();
+}
+
+async function deleteTemplate() {
+  const id = document.getElementById('edit-tpl-id').value;
+  if (!id || !confirm('Vorlage wirklich löschen? Alle Blöcke dieser Vorlage werden entfernt.')) return;
+  await _sb.from('template_blocks').delete().eq('template_id', id);
+  await _sb.from('day_templates').delete().eq('id', id);
+  DAY_TEMPLATES = DAY_TEMPLATES.filter(t => t.id !== id);
+  TEMPLATE_BLOCKS = TEMPLATE_BLOCKS.filter(b => b.template_id !== id);
+  closeTemplateModal();
+  renderTemplateList();
+  showToast('✓ Vorlage gelöscht');
+}
+
+// Vorlage auf einen Tag anwenden
+function openApplyTemplateModal(date) {
+  applyTplTargetDate = date;
+  const label = document.getElementById('apply-tpl-date-label');
+  if (label) {
+    const dateObj = new Date(date);
+    label.textContent = `Wähle eine Vorlage für ${dateObj.toLocaleDateString('de-DE', {weekday:'long', day:'2-digit', month:'long'})}:`;
+  }
+  const list = document.getElementById('apply-tpl-list');
+  if (!list) return;
+  if (!DAY_TEMPLATES.length) {
+    list.innerHTML = '<div style="font-size:.75rem;color:var(--text3);text-align:center;padding:1rem">Noch keine Vorlagen — erst unter „🗂 Vorlagen" eine Vorlage erstellen.</div>';
+  } else {
+    list.innerHTML = DAY_TEMPLATES.map(t => {
+      const blocks = TEMPLATE_BLOCKS.filter(b => b.template_id === t.id);
+      return `<div class="tpl-card" onclick="applyTemplate('${t.id}')">
+        <div class="tpl-emoji">${t.emoji || '📅'}</div>
+        <div style="flex:1">
+          <div class="tpl-name">${t.name}</div>
+          <div class="tpl-count">${blocks.length} Block${blocks.length !== 1 ? 'e' : ''}</div>
+        </div>
+        <div style="font-size:.75rem;color:var(--blue)">Anwenden →</div>
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('apply-tpl-modal').classList.add('open');
+}
+
+async function applyTemplate(tplId) {
+  const { data: { session } } = await _sb.auth.getSession();
+  if (!session || !applyTplTargetDate) return;
+  const blocks = TEMPLATE_BLOCKS.filter(b => b.template_id === tplId);
+  if (!blocks.length) { showToast('Diese Vorlage hat keine Blöcke'); return; }
+  const inserts = blocks.map(b => ({
+    user_id: session.user.id,
+    date: applyTplTargetDate,
+    title: b.title, start_time: b.start_time, end_time: b.end_time, color: b.color
+  }));
+  const { data: newBlocks, error } = await _sb.from('time_blocks').insert(inserts).select();
+  if (error) { showToast('✗ ' + error.message); return; }
+  if (newBlocks) TIME_BLOCKS.push(...newBlocks);
+  document.getElementById('apply-tpl-modal').classList.remove('open');
+  renderPlannerWeek();
+  const tpl = DAY_TEMPLATES.find(t => t.id === tplId);
+  showToast(`✓ Vorlage "${tpl?.name}" auf diesen Tag angewendet`);
 }
 
 // ── AUFGABEN ─────────────────────────────────────────────────
