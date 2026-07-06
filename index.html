@@ -14,7 +14,7 @@
   --text:#f0efe8;--text2:#a8a79e;--text3:#5a5a6a;
   --gold:#c9a84c;--gold2:#e8c97a;--gold-dim:rgba(201,168,76,0.12);
   --green:#4caf7d;--green-dim:rgba(76,175,125,0.1);
-  --red:#e05c5c;--blue:#5b8dee;
+  --red:#e05c5c;--blue:#5b8dee;--purple:#9b59b6;
   --sidebar:220px;
 }
 html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Mono',monospace;font-size:13px;color:var(--text)}
@@ -24,6 +24,8 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes checkPop{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+@keyframes achieveSlide{from{transform:translateY(-80px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes xpFloat{from{transform:translateY(0);opacity:1}to{transform:translateY(-30px);opacity:0}}
 
 /* ── LAYOUT ── */
 .app{display:grid;grid-template-columns:var(--sidebar) 1fr;height:100vh;overflow:hidden}
@@ -44,10 +46,13 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 .nav-item:hover{background:var(--bg3);color:var(--text)}
 .nav-item.active{background:var(--gold-dim);color:var(--gold);border-color:rgba(201,168,76,0.2)}
 .sidebar-footer{padding:.75rem .5rem;border-top:1px solid var(--border)}
-.streak-badge{display:flex;align-items:center;gap:.5rem;padding:.5rem .65rem;background:var(--gold-dim);border:1px solid rgba(201,168,76,0.2);border-radius:8px;margin-bottom:.5rem}
-.streak-fire{font-size:1rem}
+.streak-badge{display:flex;align-items:center;gap:.5rem;padding:.5rem .65rem;background:var(--gold-dim);border:1px solid rgba(201,168,76,0.2);border-radius:8px;margin-bottom:.4rem}
 .streak-info .streak-num{font-size:.85rem;font-weight:700;color:var(--gold)}
 .streak-info .streak-label{font-size:.6rem;color:var(--text3)}
+.xp-bar-wrap{padding:.35rem .65rem;margin-bottom:.35rem}
+.xp-bar-label{display:flex;justify-content:space-between;font-size:.58rem;color:var(--text3);margin-bottom:.3rem}
+.xp-bar{height:4px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.xp-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:2px;transition:width .6s ease}
 
 /* ── TOPBAR ── */
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.5rem;border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0}
@@ -58,6 +63,11 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 .btn:hover{border-color:var(--gold);color:var(--gold)}
 .btn-primary{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--bg);border:none;font-weight:700}
 .btn-primary:hover{opacity:.9;color:var(--bg)}
+
+/* ── TAGES-INTENTION BANNER ── */
+.intention-banner{background:linear-gradient(135deg,rgba(91,141,238,0.08),var(--bg2));border:1px solid rgba(91,141,238,0.2);border-radius:10px;padding:.75rem 1rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:.75rem}
+.intention-text{font-size:.78rem;color:var(--text);flex:1;font-style:italic}
+.intention-edit{font-size:.65rem;color:var(--text3);cursor:pointer;text-decoration:underline;flex-shrink:0}
 
 /* ── METRICS ── */
 .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1.5rem}
@@ -73,13 +83,13 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 .habit-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem;display:flex;align-items:center;gap:.85rem;transition:all .2s;cursor:pointer}
 .habit-card:hover{border-color:var(--border2)}
 .habit-card.done{border-color:rgba(76,175,125,0.3);background:rgba(76,175,125,0.05)}
+.habit-card.frozen{border-color:rgba(91,141,238,0.3);background:rgba(91,141,238,0.04)}
 .habit-check{width:28px;height:28px;border-radius:50%;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;transition:all .2s;cursor:pointer}
 .habit-card.done .habit-check{background:var(--green);border-color:var(--green);animation:checkPop .3s ease}
 .habit-info{flex:1;min-width:0}
 .habit-name{font-size:.82rem;color:var(--text);font-weight:500}
 .habit-card.done .habit-name{color:var(--text2);text-decoration:line-through}
 .habit-meta{font-size:.65rem;color:var(--text3);margin-top:.15rem}
-.habit-streak{display:flex;align-items:center;gap:.3rem;font-size:.7rem;color:var(--gold)}
 .habit-actions{display:flex;gap:.4rem;opacity:0;transition:opacity .15s}
 .habit-card:hover .habit-actions{opacity:1}
 .icon-btn{width:26px;height:26px;border-radius:6px;border:1px solid var(--border);background:var(--bg3);color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.75rem}
@@ -93,6 +103,7 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 .week-dot.done{background:var(--green);border-color:var(--green)}
 .week-dot.today-dot{border-color:var(--gold)}
 .week-dot.missed{background:rgba(224,92,92,0.15);border-color:rgba(224,92,92,0.3)}
+.week-dot.frozen{background:rgba(91,141,238,0.2);border-color:rgba(91,141,238,0.4)}
 .week-habit-name{font-size:.72rem;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* ── POMODORO ── */
@@ -114,10 +125,34 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 .journal-input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:.75rem 1rem;color:var(--text);font-family:'DM Mono',monospace;font-size:.8rem;resize:vertical;min-height:120px;line-height:1.7}
 .journal-input:focus{outline:none;border-color:var(--gold)}
 
+/* ── ACHIEVEMENTS ── */
+.achieve-banner{position:fixed;top:1rem;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#1a1200,#2a1f00);border:1px solid var(--gold);border-radius:12px;padding:1rem 1.5rem;z-index:1000;display:none;min-width:280px;text-align:center;animation:achieveSlide .4s ease}
+.achieve-banner.show{display:block}
+.achieve-title{font-family:'Syne',sans-serif;font-size:.9rem;font-weight:800;color:var(--gold);margin-bottom:.25rem}
+.achieve-sub{font-size:.72rem;color:var(--text2)}
+.achieve-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.65rem}
+.achieve-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:.85rem;display:flex;align-items:center;gap:.75rem;transition:all .2s}
+.achieve-card.unlocked{border-color:rgba(201,168,76,0.3);background:linear-gradient(135deg,rgba(201,168,76,0.06),var(--bg2))}
+.achieve-card.locked{opacity:.45;filter:grayscale(.8)}
+.achieve-icon{font-size:1.4rem;flex-shrink:0}
+.achieve-name{font-size:.72rem;font-weight:600;color:var(--text)}
+.achieve-desc{font-size:.62rem;color:var(--text3);margin-top:.1rem}
+
+/* ── WOCHENRÜCKBLICK ── */
+.wochenbewertung{background:linear-gradient(135deg,rgba(201,168,76,0.07),var(--bg2));border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:1.25rem;margin-bottom:1.5rem}
+.woche-grade{font-family:'Syne',sans-serif;font-size:2.5rem;font-weight:800;text-align:center;margin-bottom:.5rem}
+.woche-text{font-size:.78rem;color:var(--text2);text-align:center;line-height:1.6}
+
+/* ── MOOD ── */
+.mood-row{display:flex;gap:.5rem;margin-bottom:1rem}
+.mood-btn{flex:1;padding:.5rem;border-radius:8px;border:1px solid var(--border);background:var(--bg3);font-size:1.1rem;cursor:pointer;transition:all .15s;text-align:center}
+.mood-btn:hover{border-color:var(--border2);transform:scale(1.05)}
+.mood-btn.selected{border-color:var(--gold);background:var(--gold-dim)}
+
 /* ── MODAL ── */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:500;align-items:center;justify-content:center}
 .modal-overlay.open{display:flex}
-.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:1.75rem;width:90%;max-width:420px}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:1.75rem;width:90%;max-width:420px;max-height:90vh;overflow-y:auto}
 .modal h3{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;margin-bottom:1.25rem}
 .form-group{margin-bottom:.85rem}
 .form-label{font-size:.62rem;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.35rem;display:block}
@@ -137,6 +172,13 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 #toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:.6rem 1rem;border-radius:8px;font-size:.75rem;opacity:0;transition:opacity .2s;z-index:999;pointer-events:none}
 #toast.show{opacity:1}
 
+/* ── XP FLOAT ── */
+.xp-float{position:fixed;font-size:.8rem;font-weight:700;color:var(--gold);pointer-events:none;animation:xpFloat 1.2s ease forwards;z-index:998}
+
+/* ── ACHIEVEMENT BANNER ── */
+#achieve-banner{position:fixed;top:1.5rem;left:50%;transform:translateX(-50%);z-index:1000;display:none}
+#achieve-banner.show{display:block;animation:achieveSlide .4s ease}
+
 /* ── LOADER ── */
 #app-loader{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1rem}
 #app-loader div:first-child{width:32px;height:32px;background:linear-gradient(135deg,var(--gold),var(--gold2));clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);animation:spin 1s linear infinite}
@@ -146,6 +188,7 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
   .sidebar{display:none}
   .metrics{grid-template-columns:1fr 1fr}
   .week-grid{grid-template-columns:1fr repeat(7,32px)}
+  .achieve-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -161,13 +204,13 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
     <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:1.75rem">
       <div style="margin-bottom:.85rem">
         <div style="font-size:.62rem;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.35rem">E-Mail</div>
-        <input id="login-email" type="email" placeholder="deine@email.de" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:.65rem .85rem;color:var(--text);font-family:'DM Mono',monospace;font-size:.82rem">
+        <input id="login-email" type="email" placeholder="deine@email.de" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:.65rem .85rem;color:var(--text);font-size:.82rem">
       </div>
       <div style="margin-bottom:1.25rem">
         <div style="font-size:.62rem;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.35rem">Passwort</div>
-        <input id="login-password" type="password" placeholder="••••••••" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:.65rem .85rem;color:var(--text);font-family:'DM Mono',monospace;font-size:.82rem" onkeydown="if(event.key==='Enter')doLogin()">
+        <input id="login-password" type="password" placeholder="••••••••" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:.65rem .85rem;color:var(--text);font-size:.82rem" onkeydown="if(event.key==='Enter')doLogin()">
       </div>
-      <button onclick="doLogin()" style="width:100%;padding:.7rem;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--bg);border:none;border-radius:8px;font-family:'DM Mono',monospace;font-size:.82rem;font-weight:700;cursor:pointer">Einloggen →</button>
+      <button onclick="doLogin()" style="width:100%;padding:.7rem;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--bg);border:none;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer">Einloggen →</button>
       <div id="login-error" style="display:none;margin-top:.75rem;font-size:.72rem;color:var(--red);text-align:center"></div>
     </div>
   </div>
@@ -185,6 +228,7 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
       <div class="nav-item" onclick="goto('habits',this)">✅ Habits</div>
       <div class="nav-item" onclick="goto('week',this)">📅 Wochenübersicht</div>
       <div class="nav-item" onclick="goto('stats',this)">📈 Statistiken</div>
+      <div class="nav-item" onclick="goto('achievements',this)">🏆 Achievements</div>
       <div class="nav-section">Tools</div>
       <div class="nav-item" onclick="goto('pomodoro',this)">⏱ Pomodoro</div>
       <div class="nav-item" onclick="goto('journal',this)">📓 Tagebuch</div>
@@ -193,11 +237,18 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
     </nav>
     <div class="sidebar-footer">
       <div class="streak-badge">
-        <div class="streak-fire">🔥</div>
+        <div style="font-size:1rem">🔥</div>
         <div class="streak-info">
           <div class="streak-num" id="sidebar-streak">0</div>
           <div class="streak-label">Tage Streak</div>
         </div>
+      </div>
+      <div class="xp-bar-wrap">
+        <div class="xp-bar-label">
+          <span id="sidebar-level">Level 1</span>
+          <span id="sidebar-xp">0 XP</span>
+        </div>
+        <div class="xp-bar"><div class="xp-bar-fill" id="xp-bar-fill" style="width:0%"></div></div>
       </div>
     </div>
   </aside>
@@ -214,6 +265,13 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 
     <!-- DASHBOARD -->
     <div class="panel active" id="panel-dashboard">
+      <!-- Tages-Intention -->
+      <div class="intention-banner" id="intention-banner">
+        <span style="font-size:1rem">🎯</span>
+        <span class="intention-text" id="intention-text">Noch keine Intention für heute gesetzt.</span>
+        <span class="intention-edit" onclick="openIntentionModal()">✏ Setzen</span>
+      </div>
+
       <div class="metrics">
         <div class="metric-card gold">
           <div class="m-label">Heute erledigt</div>
@@ -231,6 +289,9 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
           <div class="m-sub">à 25 Minuten</div>
         </div>
       </div>
+
+      <!-- Wochenrückblick (nur Sonntags) -->
+      <div id="wochenrueckblick" style="display:none"></div>
 
       <div class="section-header">
         <div class="section-label">Heute – <span id="dash-progress"></span></div>
@@ -256,15 +317,13 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
       <div class="section-header" style="margin-bottom:1.5rem">
         <div class="section-label">Statistiken & Fortschritt</div>
       </div>
-
-      <!-- Gesamt-Stats -->
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1.5rem">
         <div style="background:var(--bg2);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:1.1rem;text-align:center;background:linear-gradient(135deg,rgba(201,168,76,0.06),var(--bg2))">
           <div style="font-size:2rem;font-family:'Syne',sans-serif;font-weight:800;color:var(--gold)" id="stat-streak-days">0</div>
           <div style="font-size:.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-top:.25rem">Tage Streak</div>
           <div style="font-size:.65rem;color:var(--text3);margin-top:.15rem" id="stat-streak-start">–</div>
         </div>
-        <div style="background:var(--bg2);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:1.1rem;text-align:center;background:linear-gradient(135deg,rgba(76,175,125,0.06),var(--bg2))">
+        <div style="background:var(--bg2);border:1px solid rgba(76,175,125,0.2);border-radius:12px;padding:1.1rem;text-align:center;background:linear-gradient(135deg,rgba(76,175,125,0.06),var(--bg2))">
           <div style="font-size:2rem;font-family:'Syne',sans-serif;font-weight:800;color:var(--green)" id="stat-streak-weeks">0</div>
           <div style="font-size:.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-top:.25rem">Wochen Streak</div>
           <div style="font-size:.65rem;color:var(--text3);margin-top:.15rem">Vollständige Wochen</div>
@@ -275,20 +334,19 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
           <div style="font-size:.65rem;color:var(--text3);margin-top:.15rem" id="stat-pomo-hours">0 Stunden Fokus</div>
         </div>
       </div>
-
-      <!-- Per-Habit Stats -->
       <div style="font-size:.62rem;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.75rem">Habits im Detail</div>
       <div id="habit-stats-list" style="display:flex;flex-direction:column;gap:.65rem"></div>
-
-      <!-- 30-Tage Heatmap -->
       <div style="font-size:.62rem;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin:1.5rem 0 .75rem">30-Tage Übersicht</div>
       <div id="heatmap" style="display:flex;flex-wrap:wrap;gap:4px"></div>
       <div style="display:flex;align-items:center;gap:.75rem;margin-top:.75rem;font-size:.62rem;color:var(--text3)">
         <span style="display:flex;align-items:center;gap:.3rem"><span style="width:10px;height:10px;border-radius:2px;background:var(--green);display:inline-block"></span>Alle erledigt</span>
         <span style="display:flex;align-items:center;gap:.3rem"><span style="width:10px;height:10px;border-radius:2px;background:rgba(201,168,76,0.4);display:inline-block"></span>Teilweise</span>
         <span style="display:flex;align-items:center;gap:.3rem"><span style="width:10px;height:10px;border-radius:2px;background:rgba(224,92,92,0.2);display:inline-block"></span>Nichts</span>
+        <span style="display:flex;align-items:center;gap:.3rem"><span style="width:10px;height:10px;border-radius:2px;background:rgba(91,141,238,0.3);display:inline-block"></span>Streak-Schutz</span>
       </div>
     </div>
+
+    <!-- WEEK VIEW -->
     <div class="panel" id="panel-week">
       <div class="section-header" style="margin-bottom:1rem">
         <div class="section-label">Wochenübersicht</div>
@@ -299,6 +357,15 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
         </div>
       </div>
       <div id="week-view"></div>
+    </div>
+
+    <!-- ACHIEVEMENTS -->
+    <div class="panel" id="panel-achievements">
+      <div class="section-header" style="margin-bottom:1.25rem">
+        <div class="section-label">Achievements</div>
+        <div id="achieve-count" style="font-size:.68rem;color:var(--gold)">0 / 8 freigeschaltet</div>
+      </div>
+      <div class="achieve-grid" id="achieve-grid"></div>
     </div>
 
     <!-- POMODORO -->
@@ -327,12 +394,15 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 
     <!-- JOURNAL -->
     <div class="panel" id="panel-journal">
+      <div id="journal-intention-reminder" style="display:none;background:rgba(91,141,238,0.08);border:1px solid rgba(91,141,238,0.2);border-radius:10px;padding:.75rem 1rem;margin-bottom:1rem;font-size:.75rem;color:var(--text2)">
+        💡 Vergiss nicht, heute Abend deine Intention für morgen zu setzen →
+        <span onclick="openIntentionModal()" style="color:var(--blue);cursor:pointer;text-decoration:underline">Jetzt setzen</span>
+      </div>
       <div class="section-header">
         <div class="section-label">Heutiger Eintrag</div>
         <button class="btn btn-primary" onclick="saveJournal()">Speichern</button>
       </div>
       <textarea class="journal-input" id="journal-today" placeholder="Was hast du heute gemacht? Was war gut? Was möchtest du morgen besser machen?"></textarea>
-
       <div style="margin-top:1.5rem">
         <div class="section-label" style="margin-bottom:.75rem">Frühere Einträge</div>
         <div id="journal-entries"></div>
@@ -341,7 +411,7 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
   </main>
 </div>
 
-<!-- ADD HABIT MODAL -->
+<!-- HABIT MODAL -->
 <div class="modal-overlay" id="habit-modal">
   <div class="modal">
     <h3 id="modal-title">Neues Habit</h3>
@@ -363,9 +433,13 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
         <button class="btn freq-btn" onclick="selectFrequency('weekday')" id="freq-weekday" style="flex:1">Wochentag</button>
       </div>
       <div id="weekday-picker" style="display:none;flex-wrap:wrap;gap:.4rem">
-        ${['Mo','Di','Mi','Do','Fr','Sa','So'].map((d,i) =>
-          `<button class="btn weekday-btn" onclick="toggleWeekday(${i+1})" data-day="${i+1}" style="flex:1;min-width:42px">${d}</button>`
-        ).join('')}
+        <button class="btn weekday-btn" onclick="toggleWeekday(1)" data-day="1">Mo</button>
+        <button class="btn weekday-btn" onclick="toggleWeekday(2)" data-day="2">Di</button>
+        <button class="btn weekday-btn" onclick="toggleWeekday(3)" data-day="3">Mi</button>
+        <button class="btn weekday-btn" onclick="toggleWeekday(4)" data-day="4">Do</button>
+        <button class="btn weekday-btn" onclick="toggleWeekday(5)" data-day="5">Fr</button>
+        <button class="btn weekday-btn" onclick="toggleWeekday(6)" data-day="6">Sa</button>
+        <button class="btn weekday-btn" onclick="toggleWeekday(7)" data-day="7">So</button>
       </div>
       <input type="hidden" id="habit-frequency" value="daily">
       <input type="hidden" id="habit-weekdays" value="">
@@ -381,6 +455,30 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
   </div>
 </div>
 
+<!-- INTENTION MODAL -->
+<div class="modal-overlay" id="intention-modal">
+  <div class="modal">
+    <h3>🎯 Intention für morgen</h3>
+    <p style="font-size:.75rem;color:var(--text2);margin-bottom:1rem;line-height:1.6">Was ist dein wichtigstes Vorhaben oder dein Fokus für morgen? Setze das heute Abend, damit du morgen früh sofort weißt worum es geht.</p>
+    <div class="form-group">
+      <textarea class="form-input" id="intention-input" rows="3" placeholder="z.B. Heute konzentriere ich mich auf..." style="resize:none"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeIntentionModal()">Abbrechen</button>
+      <button class="btn btn-primary" onclick="saveIntention()">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<!-- ACHIEVEMENT BANNER -->
+<div id="achieve-banner">
+  <div style="background:linear-gradient(135deg,#1a1200,#2a1f00);border:2px solid var(--gold);border-radius:14px;padding:1rem 1.5rem;text-align:center;min-width:260px;box-shadow:0 8px 32px rgba(0,0,0,0.5)">
+    <div style="font-size:2rem;margin-bottom:.4rem" id="achieve-banner-icon">🏆</div>
+    <div class="achieve-title" id="achieve-banner-title">Achievement freigeschaltet!</div>
+    <div class="achieve-sub" id="achieve-banner-desc"></div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
@@ -388,25 +486,290 @@ const SUPA_URL = 'https://ikvwvyjipcrmskblmpyt.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlrdnd2eWppcGNybXNrYmxtcHl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5NzQ3ODUsImV4cCI6MjA5NDU1MDc4NX0.co8zmRcPjXzCZylSvoSVZqroFYvy6HTxW3PkvCtt4s8';
 const _sb = window.supabase.createClient(SUPA_URL, SUPA_KEY);
 
-let HABITS = [];
-let TODAY_COMPLETIONS = new Set();
-let ALL_COMPLETIONS = [];
-let currentWeekOffset = 0;
-let timerInterval = null;
-let timerSeconds = 25 * 60;
-let timerRunning = false;
-let timerMode = 'focus';
-let pomosToday = 0;
-let pomosTotal = 0;
-let toastTimer;
+let HABITS = [], TODAY_COMPLETIONS = new Set(), ALL_COMPLETIONS = [];
+let currentWeekOffset = 0, timerInterval = null;
+let timerSeconds = 25*60, timerRunning = false, timerMode = 'focus';
+let pomosToday = 0, pomosTotal = 0, toastTimer, achieveTimer;
+const MODES = { focus:25*60, short:5*60, long:15*60 };
 
-const MODES = { focus: 25*60, short: 5*60, long: 15*60 };
-const TODAY = new Date().toISOString().split('T')[0];
+// ── XP / LEVEL SYSTEM ────────────────────────────────────────
+const XP_PER_HABIT = 10;
+const XP_PER_POMO = 25;
+const XP_PER_FULL_DAY = 30;    // alle Habits eines Tages erledigt
+const XP_PER_JOURNAL = 15;
+const LEVEL_NAMES = ['Anfänger','Einsteiger','Lernender','Durchhalter','Fokussierter',
+  'Disziplinierter','Fortgeschrittener','Profi','Meister','Fokus-Meister',
+  'Grandmaster','Legende'];
+
+function xpForLevel(lvl) { return lvl * lvl * 50; }  // Level 1→50 XP, Level 2→200 XP, ...
+function getLevel(xp) {
+  let lvl = 1;
+  while (xpForLevel(lvl + 1) <= xp && lvl < 11) lvl++;
+  return lvl;
+}
+function getLevelProgress(xp) {
+  const lvl = getLevel(xp);
+  const start = xpForLevel(lvl);
+  const end = xpForLevel(lvl + 1);
+  return { lvl, pct: Math.round((xp - start) / (end - start) * 100), current: xp - start, needed: end - start };
+}
+function addXP(amount, label) {
+  const xp = parseInt(localStorage.getItem('ttl_xp') || '0');
+  const oldLevel = getLevel(xp);
+  const newXP = xp + amount;
+  localStorage.setItem('ttl_xp', newXP);
+  const newLevel = getLevel(newXP);
+  updateXPBar();
+  if (newLevel > oldLevel) {
+    showToast(`🎉 Level Up! Du bist jetzt ${LEVEL_NAMES[newLevel - 1]}`);
+  }
+  // Float XP text
+  const el = document.createElement('div');
+  el.className = 'xp-float';
+  el.textContent = '+' + amount + ' XP';
+  el.style.cssText = `left:${Math.random() * 200 + 100}px;top:${Math.random() * 100 + 100}px`;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1200);
+}
+function updateXPBar() {
+  const xp = parseInt(localStorage.getItem('ttl_xp') || '0');
+  const { lvl, pct, current, needed } = getLevelProgress(xp);
+  const el = document.getElementById('sidebar-level');
+  const xpEl = document.getElementById('sidebar-xp');
+  const fill = document.getElementById('xp-bar-fill');
+  if (el) el.textContent = `${LEVEL_NAMES[lvl-1]} (${lvl})`;
+  if (xpEl) xpEl.textContent = `${current}/${needed} XP`;
+  if (fill) fill.style.width = pct + '%';
+}
+
+// ── ACHIEVEMENTS ──────────────────────────────────────────────
+const ACHIEVEMENTS = [
+  { id:'first_habit', icon:'✅', name:'Erster Schritt', desc:'Ersten Habit erstellt', xp:50 },
+  { id:'week1', icon:'🔥', name:'Erste Woche', desc:'7 Tage Streak erreicht', xp:100 },
+  { id:'month1', icon:'💎', name:'Unaufhaltbar', desc:'30 Tage Streak erreicht', xp:300 },
+  { id:'all_done', icon:'⭐', name:'Perfektion', desc:'Alle Habits an einem Tag erledigt', xp:75 },
+  { id:'pomo5', icon:'⚡', name:'Fokus-Block', desc:'5 Pomodoros an einem Tag', xp:80 },
+  { id:'pomo_total', icon:'🎯', name:'Marathonläufer', desc:'50 Pomodoros insgesamt', xp:150 },
+  { id:'journal10', icon:'📓', name:'Selbstreflexion', desc:'10 Tagebucheinträge geschrieben', xp:100 },
+  { id:'fortnight', icon:'🏆', name:'14 Tage', desc:'14 Tage alle Habits erledigt', xp:200 },
+];
+
+function getUnlocked() {
+  try { return JSON.parse(localStorage.getItem('ttl_achievements') || '[]'); } catch { return []; }
+}
+function unlockAchievement(id) {
+  const unlocked = getUnlocked();
+  if (unlocked.includes(id)) return;
+  unlocked.push(id);
+  localStorage.setItem('ttl_achievements', JSON.stringify(unlocked));
+  const a = ACHIEVEMENTS.find(x => x.id === id);
+  if (!a) return;
+  addXP(a.xp, a.name);
+  // Show banner
+  document.getElementById('achieve-banner-icon').textContent = a.icon;
+  document.getElementById('achieve-banner-title').textContent = a.name;
+  document.getElementById('achieve-banner-desc').textContent = a.desc + ' • +' + a.xp + ' XP';
+  const banner = document.getElementById('achieve-banner');
+  banner.classList.add('show');
+  clearTimeout(achieveTimer);
+  achieveTimer = setTimeout(() => banner.classList.remove('show'), 4000);
+}
+function checkAchievements() {
+  const streak = calcStreak();
+  const unlocked = getUnlocked();
+  if (HABITS.length > 0 && !unlocked.includes('first_habit')) unlockAchievement('first_habit');
+  if (streak >= 7) unlockAchievement('week1');
+  if (streak >= 14) unlockAchievement('fortnight');
+  if (streak >= 30) unlockAchievement('month1');
+  if (pomosToday >= 5) unlockAchievement('pomo5');
+  if (pomosTotal >= 50) unlockAchievement('pomo_total');
+  const journalCount = parseInt(localStorage.getItem('ttl_journal_count') || '0');
+  if (journalCount >= 10) unlockAchievement('journal10');
+  const dueToday = HABITS.filter(h => isHabitDueToday(h));
+  if (dueToday.length > 0 && dueToday.every(h => TODAY_COMPLETIONS.has(h.id))) unlockAchievement('all_done');
+}
+function renderAchievements() {
+  const unlocked = getUnlocked();
+  const grid = document.getElementById('achieve-grid');
+  if (!grid) return;
+  grid.innerHTML = ACHIEVEMENTS.map(a => {
+    const isUnlocked = unlocked.includes(a.id);
+    return `<div class="achieve-card ${isUnlocked ? 'unlocked' : 'locked'}">
+      <div class="achieve-icon">${a.icon}</div>
+      <div>
+        <div class="achieve-name">${a.name}</div>
+        <div class="achieve-desc">${a.desc}</div>
+        ${isUnlocked ? `<div style="font-size:.6rem;color:var(--gold);margin-top:.2rem">+${a.xp} XP ✓</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+  const count = unlocked.length;
+  const el = document.getElementById('achieve-count');
+  if (el) el.textContent = `${count} / ${ACHIEVEMENTS.length} freigeschaltet`;
+}
+
+// ── INTENTION ─────────────────────────────────────────────────
+function loadIntention() {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 0);
+  const key = 'ttl_intention_' + todayStr();
+  const val = localStorage.getItem(key) || '';
+  const textEl = document.getElementById('intention-text');
+  const editEl = document.querySelector('.intention-edit');
+  if (textEl) textEl.textContent = val || 'Noch keine Intention für heute gesetzt.';
+  if (editEl) editEl.textContent = val ? '✏ Ändern' : '✏ Setzen';
+  // Show reminder in journal
+  const hour = new Date().getHours();
+  const reminder = document.getElementById('journal-intention-reminder');
+  if (reminder) reminder.style.display = hour >= 17 ? 'block' : 'none';
+}
+function openIntentionModal() {
+  const key = 'ttl_intention_' + todayStr();
+  const val = localStorage.getItem(key) || '';
+  document.getElementById('intention-input').value = val;
+  document.getElementById('intention-modal').classList.add('open');
+}
+function closeIntentionModal() {
+  document.getElementById('intention-modal').classList.remove('open');
+}
+function saveIntention() {
+  const val = document.getElementById('intention-input').value.trim();
+  if (!val) { showToast('⚠ Bitte eine Intention eingeben'); return; }
+  // Store for TOMORROW (set in the evening, shown next day)
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const key = 'ttl_intention_' + tomorrow.toISOString().split('T')[0];
+  localStorage.setItem(key, val);
+  // Also update for today display if it's empty
+  const todayKey = 'ttl_intention_' + todayStr();
+  if (!localStorage.getItem(todayKey)) localStorage.setItem(todayKey, val);
+  closeIntentionModal();
+  loadIntention();
+  showToast('✓ Intention für morgen gesetzt');
+}
+
+// ── STREAK-SCHUTZ ─────────────────────────────────────────────
+// Regel: 1 fehlender Tag ist okay, wenn der folgende Tag erledigt wurde.
+// 2 aufeinanderfolgende fehlende Tage brechen den Streak.
+function calcStreak() {
+  if (!HABITS.length) return 0;
+  let streak = 0;
+  const today = new Date();
+  let missedInRow = 0;
+  for (let i = 0; i < 365; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const ds = d.toISOString().split('T')[0];
+    const dueHabits = HABITS.filter(h => isHabitDueToday(h, ds));
+    if (!dueHabits.length) continue;
+    const allDone = dueHabits.every(h =>
+      ALL_COMPLETIONS.some(c => c.habit_id === h.id && c.completed_date === ds)
+    );
+    if (allDone) {
+      streak++;
+      missedInRow = 0;
+    } else if (i === 0) {
+      // Heute noch nicht erledigt — Streak läuft noch
+      missedInRow = 0;
+    } else {
+      missedInRow++;
+      if (missedInRow >= 2) break; // 2 Tage in Folge verpasst → Streak bricht
+      // 1 Tag verpasst → zählt als Streak-Schutz (kein break)
+    }
+  }
+  return streak;
+}
+
+// Prüft ob ein Tag durch Streak-Schutz gerettet wurde (für visuelle Darstellung)
+function isStreakFrozen(dateStr) {
+  const d = new Date(dateStr);
+  const prev = new Date(d); prev.setDate(d.getDate() - 1);
+  const next = new Date(d); next.setDate(d.getDate() + 1);
+  const prevStr = prev.toISOString().split('T')[0];
+  const nextStr = next.toISOString().split('T')[0];
+  const today = todayStr();
+  if (dateStr >= today) return false;
+  const doneOnDay = HABITS.filter(h => isHabitDueToday(h, dateStr)).every(h =>
+    ALL_COMPLETIONS.some(c => c.habit_id === h.id && c.completed_date === dateStr)
+  );
+  if (doneOnDay) return false;
+  // Vortag und Folgetag müssen erledigt sein
+  const prevDone = HABITS.filter(h => isHabitDueToday(h, prevStr)).every(h =>
+    ALL_COMPLETIONS.some(c => c.habit_id === h.id && c.completed_date === prevStr)
+  );
+  const nextDone = nextStr > today ? false : HABITS.filter(h => isHabitDueToday(h, nextStr)).every(h =>
+    ALL_COMPLETIONS.some(c => c.habit_id === h.id && c.completed_date === nextStr)
+  );
+  return prevDone && nextDone;
+}
+
+function calcHabitStreak(habitId) {
+  let streak = 0, missed = 0;
+  const today = new Date();
+  for (let i = 0; i < 365; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const ds = d.toISOString().split('T')[0];
+    const done = ALL_COMPLETIONS.some(c => c.habit_id === habitId && c.completed_date === ds);
+    if (done) { streak++; missed = 0; }
+    else if (i === 0) missed = 0;
+    else { missed++; if (missed >= 2) break; }
+  }
+  return streak;
+}
+
+// ── WOCHENRÜCKBLICK (Sonntags) ────────────────────────────────
+function renderWochenrueckblick() {
+  const el = document.getElementById('wochenrueckblick');
+  if (!el) return;
+  const isSunday = new Date().getDay() === 0;
+  if (!isSunday) { el.style.display = 'none'; return; }
+  const days = getWeekDays(0);
+  const today = todayStr();
+  const pastDays = days.filter(d => d <= today);
+  let totalPossible = 0, totalDone = 0;
+  pastDays.forEach(d => {
+    const due = HABITS.filter(h => isHabitDueToday(h, d));
+    totalPossible += due.length;
+    totalDone += due.filter(h => ALL_COMPLETIONS.some(c => c.habit_id === h.id && c.completed_date === d)).length;
+  });
+  const pct = totalPossible > 0 ? Math.round(totalDone / totalPossible * 100) : 0;
+  const pomos = pomosToday + (parseInt(localStorage.getItem('ttl_pomos_total') || '0') - pomosTotal);
+  let grade, gradeColor, msg;
+  if (pct >= 90) { grade = '🥇'; gradeColor = 'var(--gold)'; msg = 'Außergewöhnliche Woche! Du hast fast alles geschafft.'; }
+  else if (pct >= 70) { grade = '🥈'; gradeColor = 'var(--text2)'; msg = 'Sehr gute Woche. Noch ein kleiner Schritt zur Perfektion.'; }
+  else if (pct >= 50) { grade = '🥉'; gradeColor = '#cd7f32'; msg = 'Solide Woche. Nächste Woche legst du noch eine Schippe drauf.'; }
+  else { grade = '💪'; gradeColor = 'var(--red)'; msg = 'Schwierige Woche. Morgen ist ein neuer Start — du schaffst das.'; }
+  el.style.display = 'block';
+  el.innerHTML = `<div class="wochenbewertung">
+    <div style="font-size:.62rem;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.75rem;text-align:center">📅 Wochenrückblick</div>
+    <div class="woche-grade" style="color:${gradeColor}">${grade}</div>
+    <div class="woche-text">${msg}</div>
+    <div style="display:flex;justify-content:center;gap:2rem;margin-top:1rem;font-size:.72rem;color:var(--text3)">
+      <span>✅ ${totalDone}/${totalPossible} Habits</span>
+      <span style="color:${pct >= 70 ? 'var(--gold)' : 'var(--text3)'}">📊 ${pct}%</span>
+    </div>
+    <textarea class="journal-input" id="woche-reflection" placeholder="Was lief gut? Was möchtest du nächste Woche verbessern?" style="margin-top:1rem;min-height:80px"></textarea>
+    <button onclick="saveWochenreflexion()" class="btn btn-primary" style="width:100%;margin-top:.5rem">Reflexion speichern</button>
+  </div>`;
+}
+async function saveWochenreflexion() {
+  const { data: { session } } = await _sb.auth.getSession();
+  if (!session) return;
+  const content = document.getElementById('woche-reflection')?.value?.trim();
+  if (!content) return;
+  await _sb.from('journal_entries').upsert({
+    user_id: session.user.id,
+    entry_date: todayStr(),
+    content: '[Wochenrückblick] ' + content
+  }, { onConflict: 'user_id,entry_date' });
+  showToast('✓ Wochenreflexion gespeichert');
+}
 
 // ── NAVIGATION ──────────────────────────────────────────────
 const PAGE_TITLES = {
   dashboard:'Dashboard', habits:'Habits', week:'Wochenübersicht',
-  stats:'Statistiken', pomodoro:'Pomodoro Timer', journal:'Tagebuch'
+  stats:'Statistiken', achievements:'Achievements', pomodoro:'Pomodoro Timer', journal:'Tagebuch'
 };
 function goto(id, el) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
@@ -415,96 +778,10 @@ function goto(id, el) {
   if (el) el.classList.add('active');
   document.getElementById('page-title').textContent = PAGE_TITLES[id] || id;
   if (id === 'week') renderWeekView();
-  if (id === 'journal') loadJournal();
+  if (id === 'journal') { loadJournal(); loadIntention(); }
   if (id === 'habits') renderAllHabits();
   if (id === 'stats') renderStats();
-}
-
-// ── STATS ─────────────────────────────────────────────────────
-function calcWeekStreak() {
-  if (!HABITS.length) return 0;
-  let streak = 0;
-  for (let w = 0; w < 52; w++) {
-    const days = getWeekDays(-w);
-    const pastDays = days.filter(d => d <= todayStr());
-    if (!pastDays.length) continue;
-    const allComplete = pastDays.every(d =>
-      HABITS.every(h => ALL_COMPLETIONS.some(c => c.habit_id === h.id && c.completed_date === d))
-    );
-    if (allComplete) streak++;
-    else if (w > 0) break;
-  }
-  return streak;
-}
-
-function calcHabitRate(habitId) {
-  const days = [];
-  for (let i = 6; i >= 0; i--) {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
-    days.push(d.toISOString().split('T')[0]);
-  }
-  const done = days.filter(d => ALL_COMPLETIONS.some(c => c.habit_id === habitId && c.completed_date === d)).length;
-  return Math.round((done / 7) * 100);
-}
-
-function renderStats() {
-  const dayStreak = calcStreak();
-  const weekStreak = calcWeekStreak();
-  const totalPomos = parseInt(localStorage.getItem('ttl_pomos_total') || '0');
-
-  document.getElementById('stat-streak-days').textContent = dayStreak;
-  document.getElementById('stat-streak-weeks').textContent = weekStreak;
-  document.getElementById('stat-total-sessions').textContent = totalPomos;
-  document.getElementById('stat-pomo-hours').textContent = Math.round(totalPomos * 25 / 60 * 10) / 10 + ' Stunden Fokus';
-
-  if (dayStreak > 0) {
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - dayStreak + 1);
-    document.getElementById('stat-streak-start').textContent = 'Seit ' + startDate.toLocaleDateString('de-DE', {day:'2-digit', month:'long'});
-  }
-
-  const list = document.getElementById('habit-stats-list');
-  list.innerHTML = HABITS.map(h => {
-    const hStreak = calcHabitStreak(h.id);
-    const total = ALL_COMPLETIONS.filter(c => c.habit_id === h.id).length;
-    const rate = calcHabitRate(h.id);
-    const barWidth = Math.min(100, rate);
-    const color = rate >= 80 ? 'var(--green)' : rate >= 50 ? 'var(--gold)' : 'var(--red)';
-    return `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem">
-        <div style="font-size:.78rem;color:var(--text)">${h.emoji || '⭐'} ${h.name}</div>
-        <div style="display:flex;gap:.75rem;font-size:.68rem;color:var(--text3)">
-          <span>🔥 ${hStreak}d</span>
-          <span>✓ ${total}x</span>
-          <span style="color:${color}">${rate}%</span>
-        </div>
-      </div>
-      <div style="height:4px;background:var(--bg3);border-radius:2px;overflow:hidden">
-        <div style="height:100%;width:${barWidth}%;background:${color};border-radius:2px;transition:width .4s ease"></div>
-      </div>
-    </div>`;
-  }).join('') || '<div style="color:var(--text3);font-size:.75rem">Noch keine Habits</div>';
-
-  // 30-Tage Heatmap
-  const heatmap = document.getElementById('heatmap');
-  const days30 = [];
-  for (let i = 29; i >= 0; i--) {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
-    days30.push(d.toISOString().split('T')[0]);
-  }
-  heatmap.innerHTML = days30.map(d => {
-    const activeHabits = HABITS.filter(h => (h.created_at || todayStr()).split('T')[0] <= d);
-    const total = activeHabits.length;
-    if (!total) return `<div style="width:24px;height:24px;border-radius:4px;background:var(--bg3)"></div>`;
-    const done = activeHabits.filter(h => ALL_COMPLETIONS.some(c => c.habit_id === h.id && c.completed_date === d)).length;
-    const ratio = done / total;
-    const isFuture = d > todayStr();
-    const bg = isFuture ? 'var(--bg3)' : ratio === 1 ? 'var(--green)' : ratio > 0 ? 'rgba(201,168,76,0.5)' : 'rgba(224,92,92,0.15)';
-    const label = d.slice(8) + '.' + d.slice(5,7);
-    return `<div title="${label}: ${done}/${total}" style="width:24px;height:24px;border-radius:4px;background:${bg}"></div>`;
-  }).join('');
+  if (id === 'achievements') renderAchievements();
 }
 
 // ── TOAST ────────────────────────────────────────────────────
@@ -522,9 +799,7 @@ function formatDate(d) {
 }
 function todayStr() { return new Date().toISOString().split('T')[0]; }
 function getWeekDays(offset = 0) {
-  const days = [];
-  const now = new Date();
-  const day = now.getDay() || 7;
+  const days = [], now = new Date(), day = now.getDay() || 7;
   const monday = new Date(now);
   monday.setDate(now.getDate() - day + 1 + offset * 7);
   for (let i = 0; i < 7; i++) {
@@ -536,23 +811,16 @@ function getWeekDays(offset = 0) {
 }
 
 // ── AUTH ─────────────────────────────────────────────────────
-function logout() {
-  _sb.auth.signOut().then(() => window.location.href = '/login.html');
-}
+function logout() { _sb.auth.signOut().then(() => { window.location.reload(); }); }
 
 // ── DATA LOADING ─────────────────────────────────────────────
 async function loadAll() {
   const { data: { session } } = await _sb.auth.getSession();
-  if (!session) { window.location.href = '/login.html'; return; }
-
-  // Load habits
+  if (!session) return;
   const { data: habits } = await _sb.from('habits')
     .select('*').eq('user_id', session.user.id).order('created_at');
   HABITS = habits || [];
-
-  // Load completions (last 30 days)
-  const since = new Date();
-  since.setDate(since.getDate() - 30);
+  const since = new Date(); since.setDate(since.getDate() - 60);
   const { data: completions } = await _sb.from('habit_completions')
     .select('*').eq('user_id', session.user.id)
     .gte('completed_date', since.toISOString().split('T')[0]);
@@ -560,49 +828,86 @@ async function loadAll() {
   TODAY_COMPLETIONS = new Set(
     ALL_COMPLETIONS.filter(c => c.completed_date === todayStr()).map(c => c.habit_id)
   );
-
-  // Load pomodoro stats
   const { data: pomos } = await _sb.from('pomodoro_sessions')
     .select('*').eq('user_id', session.user.id)
-    .gte('created_at', new Date().toISOString().split('T')[0]);
+    .gte('created_at', todayStr());
   pomosToday = (pomos || []).length;
   pomosTotal = parseInt(localStorage.getItem('ttl_pomos_total') || '0');
-
   renderDashboard();
-  updateSidebarStreak();
+  updateXPBar();
+  loadIntention();
+  checkAchievements();
   document.getElementById('today-date').textContent = formatDate(new Date());
+  document.getElementById('sidebar-streak').textContent = calcStreak();
 }
 
-// ── STREAK CALCULATION ────────────────────────────────────────
-function calcStreak() {
+// ── STATS ─────────────────────────────────────────────────────
+function calcWeekStreak() {
   if (!HABITS.length) return 0;
   let streak = 0;
-  const today = new Date();
-  for (let i = 0; i < 365; i++) {
-    const d = new Date(today);
-    d.setDate(today.getDate() - i);
-    const ds = d.toISOString().split('T')[0];
-    const completedToday = HABITS.every(h =>
-      ALL_COMPLETIONS.some(c => c.habit_id === h.id && c.completed_date === ds)
+  for (let w = 0; w < 52; w++) {
+    const days = getWeekDays(-w);
+    const pastDays = days.filter(d => d <= todayStr());
+    if (!pastDays.length) continue;
+    const allComplete = pastDays.every(d =>
+      HABITS.filter(h => isHabitDueToday(h,d)).every(h =>
+        ALL_COMPLETIONS.some(c => c.habit_id === h.id && c.completed_date === d)
+      )
     );
-    if (completedToday) streak++;
-    else if (i > 0) break;
+    if (allComplete) streak++;
+    else if (w > 0) break;
   }
   return streak;
 }
-
-function calcWeekRate() {
-  if (!HABITS.length) return null;
-  const days = getWeekDays(0);
-  let total = 0, done = 0;
-  days.forEach(d => {
-    if (d > todayStr()) return;
-    HABITS.forEach(h => {
-      total++;
-      if (ALL_COMPLETIONS.some(c => c.habit_id === h.id && c.completed_date === d)) done++;
-    });
-  });
-  return total > 0 ? Math.round((done / total) * 100) : null;
+function calcHabitRate(habitId) {
+  const days = [];
+  for (let i = 6; i >= 0; i--) { const d = new Date(); d.setDate(d.getDate() - i); days.push(d.toISOString().split('T')[0]); }
+  const done = days.filter(d => ALL_COMPLETIONS.some(c => c.habit_id === habitId && c.completed_date === d)).length;
+  return Math.round((done / 7) * 100);
+}
+function renderStats() {
+  const dayStreak = calcStreak(), weekStreak = calcWeekStreak();
+  const totalPomos = parseInt(localStorage.getItem('ttl_pomos_total') || '0');
+  document.getElementById('stat-streak-days').textContent = dayStreak;
+  document.getElementById('stat-streak-weeks').textContent = weekStreak;
+  document.getElementById('stat-total-sessions').textContent = totalPomos;
+  document.getElementById('stat-pomo-hours').textContent = Math.round(totalPomos * 25 / 60 * 10) / 10 + ' Stunden Fokus';
+  if (dayStreak > 0) {
+    const startDate = new Date(); startDate.setDate(startDate.getDate() - dayStreak + 1);
+    document.getElementById('stat-streak-start').textContent = 'Seit ' + startDate.toLocaleDateString('de-DE', {day:'2-digit', month:'long'});
+  }
+  const list = document.getElementById('habit-stats-list');
+  list.innerHTML = HABITS.map(h => {
+    const hStreak = calcHabitStreak(h.id);
+    const total = ALL_COMPLETIONS.filter(c => c.habit_id === h.id).length;
+    const rate = calcHabitRate(h.id);
+    const color = rate >= 80 ? 'var(--green)' : rate >= 50 ? 'var(--gold)' : 'var(--red)';
+    return `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem">
+        <div style="font-size:.78rem;color:var(--text)">${h.emoji || '⭐'} ${h.name}</div>
+        <div style="display:flex;gap:.75rem;font-size:.68rem;color:var(--text3)">
+          <span>🔥 ${hStreak}d</span><span>✓ ${total}x</span>
+          <span style="color:${color}">${rate}%</span>
+        </div>
+      </div>
+      <div style="height:4px;background:var(--bg3);border-radius:2px;overflow:hidden">
+        <div style="height:100%;width:${Math.min(100,rate)}%;background:${color};border-radius:2px;transition:width .4s ease"></div>
+      </div>
+    </div>`;
+  }).join('') || '<div style="color:var(--text3);font-size:.75rem">Noch keine Habits</div>';
+  // Heatmap
+  const heatmap = document.getElementById('heatmap');
+  const days30 = [];
+  for (let i = 29; i >= 0; i--) { const d = new Date(); d.setDate(d.getDate() - i); days30.push(d.toISOString().split('T')[0]); }
+  heatmap.innerHTML = days30.map(d => {
+    const activeHabits = HABITS.filter(h => (h.created_at||todayStr()).split('T')[0] <= d && isHabitDueToday(h, d));
+    const total = activeHabits.length;
+    if (!total) return `<div style="width:24px;height:24px;border-radius:4px;background:var(--bg3)" title="${d}"></div>`;
+    const done = activeHabits.filter(h => ALL_COMPLETIONS.some(c => c.habit_id === h.id && c.completed_date === d)).length;
+    const ratio = done / total, isFuture = d > todayStr(), frozen = isStreakFrozen(d);
+    const bg = isFuture ? 'var(--bg3)' : frozen ? 'rgba(91,141,238,0.3)' : ratio === 1 ? 'var(--green)' : ratio > 0 ? 'rgba(201,168,76,0.5)' : 'rgba(224,92,92,0.15)';
+    return `<div title="${d.slice(8)}.${d.slice(5,7)}: ${done}/${total}${frozen?' (Streak-Schutz)':''}" style="width:24px;height:24px;border-radius:4px;background:${bg}"></div>`;
+  }).join('');
 }
 
 // ── FREQUENCY CHECK ──────────────────────────────────────────
@@ -610,15 +915,12 @@ function isHabitDueToday(h, dateStr) {
   const ds = dateStr || todayStr();
   if (!h.frequency || h.frequency === 'daily') return true;
   if (h.frequency === 'weekly') {
-    // Fällig am selben Wochentag wie erstellt
     const createdDay = new Date(h.created_at || ds).getDay() || 7;
-    const checkDay = new Date(ds).getDay() || 7;
-    return createdDay === checkDay;
+    return (new Date(ds).getDay() || 7) === createdDay;
   }
   if (h.frequency === 'weekday') {
     const days = (h.weekdays || '').split(',').filter(Boolean).map(Number);
-    const checkDay = new Date(ds).getDay() || 7;
-    return days.includes(checkDay);
+    return days.includes(new Date(ds).getDay() || 7);
   }
   return true;
 }
@@ -629,58 +931,40 @@ function renderDashboard() {
   const doneCount = dueToday.filter(h => TODAY_COMPLETIONS.has(h.id)).length;
   const totalCount = dueToday.length;
   const streak = calcStreak();
-
   document.getElementById('m-today').textContent = `${doneCount}/${totalCount}`;
-  document.getElementById('m-today-sub').textContent = doneCount === totalCount && totalCount > 0
-    ? '🎉 Alles erledigt!' : doneCount > 0 ? `${totalCount - doneCount} noch offen` : totalCount === 0 ? 'Heute nichts fällig' : 'Noch nichts abgehakt';
+  document.getElementById('m-today-sub').textContent = doneCount === totalCount && totalCount > 0 ? '🎉 Alles erledigt!'
+    : doneCount > 0 ? `${totalCount - doneCount} noch offen` : totalCount === 0 ? 'Heute nichts fällig' : 'Noch nichts abgehakt';
   document.getElementById('m-streak').textContent = streak;
   document.getElementById('m-pomos').textContent = pomosToday;
   document.getElementById('dash-progress').textContent = `${doneCount}/${totalCount} erledigt`;
-
+  document.getElementById('sidebar-streak').textContent = streak;
+  renderWochenrueckblick();
   const grid = document.getElementById('dash-habits');
   if (!dueToday.length) {
-    grid.innerHTML = HABITS.length
-      ? '<div style="text-align:center;padding:2rem;color:var(--text3);font-size:.78rem">Heute ist kein Habit fällig 🎉</div>'
+    grid.innerHTML = HABITS.length ? '<div style="text-align:center;padding:2rem;color:var(--text3);font-size:.78rem">Heute ist kein Habit fällig 🎉</div>'
       : '<div style="text-align:center;padding:2rem;color:var(--text3);font-size:.78rem">Noch keine Habits — klicke auf „+ Habit"</div>';
     return;
   }
-  grid.innerHTML = dueToday.map(h => renderHabitCard(h, true)).join('');
+  grid.innerHTML = dueToday.map(h => renderHabitCard(h)).join('');
 }
 
-function updateSidebarStreak() {
-  document.getElementById('sidebar-streak').textContent = calcStreak();
-}
-
-function renderHabitCard(h, clickable = true) {
+function renderHabitCard(h) {
   const done = TODAY_COMPLETIONS.has(h.id);
   const hStreak = calcHabitStreak(h.id);
   const freqLabel = h.frequency === 'weekly' ? 'Wöchentlich'
     : h.frequency === 'weekday' ? ['Mo','Di','Mi','Do','Fr','Sa','So'].filter((_,i) => (h.weekdays||'').split(',').includes(String(i+1))).join('/')
     : '';
-  return `<div class="habit-card ${done ? 'done' : ''}" onclick="${clickable ? `toggleHabit('${h.id}')` : ''}">
+  return `<div class="habit-card ${done ? 'done' : ''}" onclick="toggleHabit('${h.id}')">
     <div class="habit-check" onclick="event.stopPropagation();toggleHabit('${h.id}')">${done ? '✓' : ''}</div>
     <div class="habit-info">
       <div class="habit-name">${h.emoji || '⭐'} ${h.name}</div>
       <div class="habit-meta">${h.goal ? h.goal + ' · ' : ''}${freqLabel ? freqLabel + ' · ' : ''}${hStreak > 0 ? `🔥 ${hStreak} Tage` : 'Noch kein Streak'}</div>
     </div>
     <div class="habit-actions">
-      <button class="icon-btn" onclick="event.stopPropagation();openEditHabit('${h.id}')" title="Bearbeiten">✏</button>
-      <button class="icon-btn" onclick="event.stopPropagation();deleteHabit('${h.id}')" title="Löschen" style="color:var(--red)">✕</button>
+      <button class="icon-btn" onclick="event.stopPropagation();openEditHabit('${h.id}')">✏</button>
+      <button class="icon-btn" onclick="event.stopPropagation();deleteHabit('${h.id}')" style="color:var(--red)">✕</button>
     </div>
   </div>`;
-}
-
-function calcHabitStreak(habitId) {
-  let streak = 0;
-  const today = new Date();
-  for (let i = 0; i < 365; i++) {
-    const d = new Date(today);
-    d.setDate(today.getDate() - i);
-    const ds = d.toISOString().split('T')[0];
-    if (ALL_COMPLETIONS.some(c => c.habit_id === habitId && c.completed_date === ds)) streak++;
-    else if (i > 0) break;
-  }
-  return streak;
 }
 
 // ── TOGGLE HABIT ─────────────────────────────────────────────
@@ -699,11 +983,16 @@ async function toggleHabit(habitId) {
     }).select().single();
     TODAY_COMPLETIONS.add(habitId);
     if (data) ALL_COMPLETIONS.push(data);
-    // Alle erledigt?
-    if (TODAY_COMPLETIONS.size === HABITS.length) showToast('🎉 Alle Habits für heute erledigt!');
+    addXP(XP_PER_HABIT, 'Habit');
+    // Alle fälligen heute erledigt?
+    const dueToday = HABITS.filter(h => isHabitDueToday(h));
+    if (dueToday.every(h => TODAY_COMPLETIONS.has(h.id))) {
+      addXP(XP_PER_FULL_DAY, 'Alle Habits');
+      showToast('🎉 Alle Habits für heute erledigt! +' + XP_PER_FULL_DAY + ' Bonus XP');
+    }
   }
   renderDashboard();
-  updateSidebarStreak();
+  checkAchievements();
   if (document.getElementById('panel-habits').classList.contains('active')) renderAllHabits();
 }
 
@@ -713,18 +1002,17 @@ function renderAllHabits() {
   document.getElementById('habit-count').textContent = HABITS.length;
   if (!HABITS.length) { grid.innerHTML = ''; empty.style.display = 'block'; return; }
   empty.style.display = 'none';
-  grid.innerHTML = HABITS.map(h => renderHabitCard(h, true)).join('');
+  grid.innerHTML = HABITS.map(h => renderHabitCard(h)).join('');
 }
 
 // ── HABIT MODAL ───────────────────────────────────────────────
-let selectedEmoji = '⭐';
+let selectedEmoji = '⭐', selectedWeekdays = new Set();
 function openAddHabit() {
   document.getElementById('modal-title').textContent = 'Neues Habit';
   document.getElementById('edit-habit-id').value = '';
   document.getElementById('habit-name').value = '';
   document.getElementById('habit-goal').value = '';
-  selectedEmoji = '⭐';
-  selectedWeekdays = new Set();
+  selectedEmoji = '⭐'; selectedWeekdays = new Set();
   document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
   document.getElementById('habit-modal').classList.add('open');
   selectFrequency('daily');
@@ -738,21 +1026,16 @@ function openEditHabit(id) {
   document.getElementById('habit-name').value = h.name;
   document.getElementById('habit-goal').value = h.goal || '';
   selectedEmoji = h.emoji || '⭐';
-  document.querySelectorAll('.emoji-btn').forEach(b => {
-    b.classList.toggle('selected', b.textContent === selectedEmoji);
-  });
+  document.querySelectorAll('.emoji-btn').forEach(b => b.classList.toggle('selected', b.textContent === selectedEmoji));
   selectFrequency(h.frequency || 'daily');
   selectedWeekdays = new Set((h.weekdays || '').split(',').filter(Boolean).map(Number));
-  document.querySelectorAll('.weekday-btn').forEach(b => {
-    b.classList.toggle('selected', selectedWeekdays.has(parseInt(b.dataset.day)));
-  });
+  document.querySelectorAll('.weekday-btn').forEach(b => b.classList.toggle('selected', selectedWeekdays.has(parseInt(b.dataset.day))));
   document.getElementById('habit-weekdays').value = Array.from(selectedWeekdays).join(',');
   document.getElementById('habit-modal').classList.add('open');
 }
 function closeHabitModal() { document.getElementById('habit-modal').classList.remove('open'); }
 function selectEmoji(btn, emoji) {
   selectedEmoji = emoji;
-  document.getElementById('habit-emoji').value = emoji;
   document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
 }
@@ -770,7 +1053,7 @@ async function saveHabit() {
     const { error } = await _sb.from('habits').update({ name, emoji: selectedEmoji, goal, frequency, weekdays: weekdays || null }).eq('id', editId);
     if (error) { showToast('✗ ' + error.message); return; }
     const h = HABITS.find(h => h.id === editId);
-    if (h) { h.name = name; h.emoji = selectedEmoji; h.goal = goal; h.frequency = frequency; h.weekdays = weekdays; }
+    if (h) Object.assign(h, { name, emoji: selectedEmoji, goal, frequency, weekdays });
     showToast('✓ Habit aktualisiert');
   } else {
     const { data, error } = await _sb.from('habits').insert({
@@ -779,10 +1062,9 @@ async function saveHabit() {
     if (error) { showToast('✗ ' + error.message); return; }
     if (data) HABITS.push(data);
     showToast('✓ Habit erstellt');
+    checkAchievements();
   }
-  closeHabitModal();
-  renderDashboard();
-  renderAllHabits();
+  closeHabitModal(); renderDashboard(); renderAllHabits();
 }
 async function deleteHabit(id) {
   if (!confirm('Habit wirklich löschen? Alle bisherigen Daten gehen verloren.')) return;
@@ -790,35 +1072,28 @@ async function deleteHabit(id) {
   HABITS = HABITS.filter(h => h.id !== id);
   TODAY_COMPLETIONS.delete(id);
   ALL_COMPLETIONS = ALL_COMPLETIONS.filter(c => c.habit_id !== id);
-  showToast('✓ Habit gelöscht');
-  renderDashboard();
-  renderAllHabits();
+  showToast('✓ Habit gelöscht'); renderDashboard(); renderAllHabits();
 }
 
 // ── WEEK VIEW ─────────────────────────────────────────────────
 function changeWeek(dir) {
-  if (dir === 0) currentWeekOffset = 0;
-  else currentWeekOffset += dir;
+  if (dir === 0) currentWeekOffset = 0; else currentWeekOffset += dir;
   renderWeekView();
 }
 function renderWeekView() {
-  const days = getWeekDays(currentWeekOffset);
-  const dayNames = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
-  const today = todayStr();
-  let html = `<div class="week-grid">
-    <div></div>
-    ${days.map((d,i) => `<div class="week-day ${d === today ? 'today' : ''}">${dayNames[i]}<br><span style="font-size:.55rem">${d.slice(8)}</span></div>`).join('')}
-  </div>`;
+  const days = getWeekDays(currentWeekOffset), dayNames = ['Mo','Di','Mi','Do','Fr','Sa','So'], today = todayStr();
+  let html = `<div class="week-grid"><div></div>${days.map((d,i) =>
+    `<div class="week-day ${d===today?'today':''}">${dayNames[i]}<br><span style="font-size:.55rem">${d.slice(8)}</span></div>`).join('')}</div>`;
   HABITS.forEach(h => {
     const habitCreated = h.created_at ? h.created_at.split('T')[0] : today;
     html += `<div class="week-grid" style="margin-bottom:.35rem">
-      <div class="week-habit-name">${h.emoji || '⭐'} ${h.name}</div>
+      <div class="week-habit-name">${h.emoji||'⭐'} ${h.name}</div>
       ${days.map(d => {
         const done = ALL_COMPLETIONS.some(c => c.habit_id === h.id && c.completed_date === d);
-        const isFuture = d > today;
-        const beforeCreation = d < habitCreated;
-        const cls = done ? 'done' : (isFuture || beforeCreation) ? '' : 'missed';
-        return `<div class="week-dot ${cls} ${d === today ? 'today-dot' : ''}" title="${d}"></div>`;
+        const isFuture = d > today, before = d < habitCreated, frozen = isStreakFrozen(d);
+        const due = isHabitDueToday(h, d);
+        const cls = done ? 'done' : frozen ? 'frozen' : (isFuture || before || !due) ? '' : 'missed';
+        return `<div class="week-dot ${cls} ${d===today?'today-dot':''}" title="${d}${frozen?' (Streak-Schutz)':''}"></div>`;
       }).join('')}
     </div>`;
   });
@@ -828,24 +1103,21 @@ function renderWeekView() {
 
 // ── POMODORO ──────────────────────────────────────────────────
 function setMode(mode) {
-  timerMode = mode;
-  timerSeconds = MODES[mode];
-  timerRunning = false;
+  timerMode = mode; timerSeconds = MODES[mode]; timerRunning = false;
   clearInterval(timerInterval);
   document.getElementById('timer-btn').textContent = '▶ Start';
   document.getElementById('timer-circle').classList.remove('running');
-  document.getElementById('timer-label').textContent = mode === 'focus' ? 'FOKUS' : mode === 'short' ? 'PAUSE' : 'LANGE PAUSE';
+  document.getElementById('timer-label').textContent = mode==='focus'?'FOKUS':mode==='short'?'PAUSE':'LANGE PAUSE';
   updateTimerDisplay();
 }
 function updateTimerDisplay() {
-  const m = Math.floor(timerSeconds / 60).toString().padStart(2,'0');
-  const s = (timerSeconds % 60).toString().padStart(2,'0');
+  const m = Math.floor(timerSeconds/60).toString().padStart(2,'0');
+  const s = (timerSeconds%60).toString().padStart(2,'0');
   document.getElementById('timer-display').textContent = `${m}:${s}`;
 }
 function toggleTimer() {
   if (timerRunning) {
-    clearInterval(timerInterval);
-    timerRunning = false;
+    clearInterval(timerInterval); timerRunning = false;
     document.getElementById('timer-btn').textContent = '▶ Start';
     document.getElementById('timer-circle').classList.remove('running');
   } else {
@@ -856,13 +1128,11 @@ function toggleTimer() {
       timerSeconds--;
       updateTimerDisplay();
       if (timerSeconds <= 0) {
-        clearInterval(timerInterval);
-        timerRunning = false;
+        clearInterval(timerInterval); timerRunning = false;
         document.getElementById('timer-btn').textContent = '▶ Start';
         document.getElementById('timer-circle').classList.remove('running');
         if (timerMode === 'focus') {
-          pomosToday++;
-          pomosTotal++;
+          pomosToday++; pomosTotal++;
           localStorage.setItem('ttl_pomos_total', pomosTotal);
           document.getElementById('m-pomos').textContent = pomosToday;
           document.getElementById('pomo-count').textContent = pomosToday;
@@ -870,7 +1140,9 @@ function toggleTimer() {
           document.getElementById('pomo-total').textContent = pomosTotal;
           const { data: { session } } = await _sb.auth.getSession();
           if (session) await _sb.from('pomodoro_sessions').insert({ user_id: session.user.id });
-          showToast('🎯 Pomodoro abgeschlossen! Mach eine Pause.');
+          addXP(XP_PER_POMO, 'Pomodoro');
+          checkAchievements();
+          showToast('🎯 Pomodoro fertig! +' + XP_PER_POMO + ' XP');
         } else {
           showToast('☕ Pause vorbei — weiter geht\'s!');
         }
@@ -879,9 +1151,7 @@ function toggleTimer() {
   }
 }
 function resetTimer() {
-  clearInterval(timerInterval);
-  timerRunning = false;
-  timerSeconds = MODES[timerMode];
+  clearInterval(timerInterval); timerRunning = false; timerSeconds = MODES[timerMode];
   document.getElementById('timer-btn').textContent = '▶ Start';
   document.getElementById('timer-circle').classList.remove('running');
   updateTimerDisplay();
@@ -894,15 +1164,12 @@ async function loadJournal() {
   const { data: entries } = await _sb.from('journal_entries')
     .select('*').eq('user_id', session.user.id)
     .order('entry_date', { ascending: false }).limit(10);
-  const todayEntry = (entries || []).find(e => e.entry_date === todayStr());
+  const todayEntry = (entries||[]).find(e => e.entry_date === todayStr());
   document.getElementById('journal-today').value = todayEntry?.content || '';
-  const older = (entries || []).filter(e => e.entry_date !== todayStr());
-  document.getElementById('journal-entries').innerHTML = older.map(e => `
-    <div class="journal-entry">
-      <div class="journal-date">${formatDate(e.entry_date)}</div>
-      <div class="journal-text">${e.content}</div>
-    </div>
-  `).join('') || '<div style="color:var(--text3);font-size:.75rem">Noch keine früheren Einträge</div>';
+  const older = (entries||[]).filter(e => e.entry_date !== todayStr());
+  document.getElementById('journal-entries').innerHTML = older.map(e =>
+    `<div class="journal-entry"><div class="journal-date">${formatDate(e.entry_date)}</div><div class="journal-text">${e.content}</div></div>`
+  ).join('') || '<div style="color:var(--text3);font-size:.75rem">Noch keine früheren Einträge</div>';
 }
 async function saveJournal() {
   const { data: { session } } = await _sb.auth.getSession();
@@ -912,10 +1179,31 @@ async function saveJournal() {
   await _sb.from('journal_entries').upsert({
     user_id: session.user.id, entry_date: todayStr(), content
   }, { onConflict: 'user_id,entry_date' });
-  showToast('✓ Tagebuch gespeichert');
+  const count = parseInt(localStorage.getItem('ttl_journal_count') || '0') + 1;
+  localStorage.setItem('ttl_journal_count', count);
+  addXP(XP_PER_JOURNAL, 'Journal');
+  checkAchievements();
+  showToast('✓ Tagebuch gespeichert +' + XP_PER_JOURNAL + ' XP');
   loadJournal();
 }
 
+// ── FREQUENCY SELECTION ──────────────────────────────────────
+function selectFrequency(freq) {
+  document.getElementById('habit-frequency').value = freq;
+  document.querySelectorAll('.freq-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('freq-' + freq).classList.add('selected');
+  document.getElementById('weekday-picker').style.display = freq === 'weekday' ? 'flex' : 'none';
+}
+function toggleWeekday(day) {
+  if (selectedWeekdays.has(day)) selectedWeekdays.delete(day);
+  else selectedWeekdays.add(day);
+  document.querySelectorAll('.weekday-btn').forEach(b =>
+    b.classList.toggle('selected', selectedWeekdays.has(parseInt(b.dataset.day)))
+  );
+  document.getElementById('habit-weekdays').value = Array.from(selectedWeekdays).join(',');
+}
+
+// ── LOGIN ─────────────────────────────────────────────────────
 async function doLogin() {
   const email = document.getElementById('login-email').value.trim();
   const password = document.getElementById('login-password').value;
@@ -929,23 +1217,6 @@ async function doLogin() {
   document.getElementById('app').style.display = 'grid';
 }
 
-// ── FREQUENCY SELECTION ──────────────────────────────────────
-let selectedWeekdays = new Set();
-function selectFrequency(freq) {
-  document.getElementById('habit-frequency').value = freq;
-  document.querySelectorAll('.freq-btn').forEach(b => b.classList.remove('selected'));
-  document.getElementById('freq-' + freq).classList.add('selected');
-  document.getElementById('weekday-picker').style.display = freq === 'weekday' ? 'flex' : 'none';
-}
-function toggleWeekday(day) {
-  if (selectedWeekdays.has(day)) selectedWeekdays.delete(day);
-  else selectedWeekdays.add(day);
-  document.querySelectorAll('.weekday-btn').forEach(b => {
-    b.classList.toggle('selected', selectedWeekdays.has(parseInt(b.dataset.day)));
-  });
-  document.getElementById('habit-weekdays').value = Array.from(selectedWeekdays).join(',');
-}
-
 // ── EMOJI GRID ────────────────────────────────────────────────
 const EMOJIS = ['💪','📚','🧘','💧','🏃','🎯','✍️','🌅','🥗','😴','💻','🎵','🚶','🧹','📱','🫀','🌿','⚡','🔥','⭐','🎨','🏋️','🤸','🧠','💊','🛁','☀️','🌙','🥤','📝'];
 document.getElementById('emoji-grid').innerHTML = EMOJIS.map(e =>
@@ -955,13 +1226,11 @@ document.getElementById('emoji-grid').innerHTML = EMOJIS.map(e =>
 // ── INIT ──────────────────────────────────────────────────────
 updateTimerDisplay();
 document.getElementById('pomo-total').textContent = pomosTotal;
+updateXPBar();
 
 (async () => {
   const { data: { session } } = await _sb.auth.getSession();
-  if (!session) {
-    document.getElementById('login-screen').style.display = 'flex';
-    return;
-  }
+  if (!session) { document.getElementById('login-screen').style.display = 'flex'; return; }
   document.getElementById('login-screen').style.display = 'none';
   await loadAll();
   document.getElementById('app').style.display = 'grid';
