@@ -183,12 +183,38 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 #app-loader{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1rem}
 #app-loader div:first-child{width:32px;height:32px;background:linear-gradient(135deg,var(--gold),var(--gold2));clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);animation:spin 1s linear infinite}
 
+/* ── ZEITPLANER ── */
+.planner-tabs{display:flex;gap:.4rem;margin-bottom:1.25rem}
+.planner-tab{padding:.4rem .85rem;border-radius:2rem;font-size:.72rem;border:1px solid var(--border);background:var(--bg2);color:var(--text3);cursor:pointer;transition:all .15s}
+.planner-tab.active{border-color:var(--blue);background:rgba(91,141,238,0.1);color:var(--blue)}
+.week-nav{display:flex;align-items:center;gap:.5rem;margin-bottom:1rem}
+.week-nav-title{font-size:.75rem;color:var(--text);flex:1;text-align:center}
+.cal-wrap{display:grid;grid-template-columns:44px repeat(7,1fr);gap:2px;overflow-x:auto}
+.cal-day-head{font-size:.62rem;color:var(--text3);text-align:center;padding:.3rem .2rem;border-radius:6px}
+.cal-day-head.today{color:var(--gold);background:var(--gold-dim)}
+.cal-time-label{font-size:.58rem;color:var(--text3);text-align:right;padding-right:.4rem;line-height:1;height:40px;display:flex;align-items:flex-start;padding-top:2px}
+.cal-cell{height:40px;border-top:1px solid var(--border);position:relative;cursor:pointer;transition:background .1s}
+.cal-cell:hover{background:rgba(255,255,255,0.02)}
+.cal-cell.today-col{background:rgba(201,168,76,0.02)}
+.time-block{position:absolute;left:1px;right:1px;border-radius:4px;padding:2px 4px;font-size:.58rem;overflow:hidden;cursor:pointer;z-index:2;line-height:1.3}
+.time-block:hover{filter:brightness(1.15)}
+/* tasks */
+.task-list{display:flex;flex-direction:column;gap:.45rem}
+.task-item{background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:.75rem 1rem;display:flex;align-items:center;gap:.75rem;transition:all .15s}
+.task-item.done-task{opacity:.5}
+.task-item.done-task .task-title{text-decoration:line-through;color:var(--text3)}
+.task-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--border2);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.7rem;transition:all .15s}
+.task-item.done-task .task-check{background:var(--green);border-color:var(--green)}
+.task-title{font-size:.78rem;color:var(--text);flex:1}
+.task-meta{font-size:.6rem;color:var(--text3)}
+
 @media(max-width:768px){
   .app{grid-template-columns:1fr}
   .sidebar{display:none}
   .metrics{grid-template-columns:1fr 1fr}
   .week-grid{grid-template-columns:1fr repeat(7,32px)}
   .achieve-grid{grid-template-columns:1fr}
+  .cal-wrap{grid-template-columns:36px repeat(7,minmax(60px,1fr))}
 }
 </style>
 </head>
@@ -232,6 +258,7 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
       <div class="nav-section">Tools</div>
       <div class="nav-item" onclick="goto('pomodoro',this)">⏱ Pomodoro</div>
       <div class="nav-item" onclick="goto('journal',this)">📓 Tagebuch</div>
+      <div class="nav-item" onclick="goto('planner',this)">🗓 Zeitplaner</div>
       <div class="nav-section">Konto</div>
       <div class="nav-item" onclick="logout()">↪ Abmelden</div>
     </nav>
@@ -408,6 +435,37 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
         <div id="journal-entries"></div>
       </div>
     </div>
+    <!-- ZEITPLANER -->
+    <div class="panel" id="panel-planner">
+      <div class="planner-tabs">
+        <button class="planner-tab active" id="ptab-week" onclick="switchPlannerTab('week')">📅 Wochenplan</button>
+        <button class="planner-tab" id="ptab-tasks" onclick="switchPlannerTab('tasks')">✅ Aufgaben</button>
+      </div>
+
+      <!-- Wochenplan -->
+      <div id="planner-week">
+        <div class="week-nav">
+          <button class="btn" onclick="changePlannerWeek(-1)">←</button>
+          <div class="week-nav-title" id="planner-week-title"></div>
+          <button class="btn" onclick="changePlannerWeek(0)">Heute</button>
+          <button class="btn" onclick="changePlannerWeek(1)">→</button>
+          <button class="btn btn-primary" onclick="openBlockModal()">+ Block</button>
+        </div>
+        <div id="cal-container"></div>
+      </div>
+
+      <!-- Aufgaben -->
+      <div id="planner-tasks" style="display:none">
+        <div class="section-header" style="margin-bottom:1rem">
+          <div class="section-label">Aufgaben (<span id="task-count">0</span>)</div>
+          <button class="btn btn-primary" onclick="openTaskModal()">+ Aufgabe</button>
+        </div>
+        <div class="task-list" id="task-list"></div>
+        <div id="no-tasks" style="display:none;text-align:center;padding:3rem;color:var(--text3);font-size:.75rem">
+          Noch keine Aufgaben — klicke auf „+ Aufgabe"
+        </div>
+      </div>
+    </div>
   </main>
 </div>
 
@@ -466,6 +524,77 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
     <div class="modal-actions">
       <button class="btn" onclick="closeIntentionModal()">Abbrechen</button>
       <button class="btn btn-primary" onclick="saveIntention()">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<!-- ZEITBLOCK MODAL -->
+<div class="modal-overlay" id="block-modal">
+  <div class="modal">
+    <h3 id="block-modal-title">Neuer Zeitblock</h3>
+    <input type="hidden" id="edit-block-id">
+    <div class="form-group">
+      <label class="form-label">Titel</label>
+      <input class="form-input" id="block-title" placeholder="z.B. Sport, Lernen, Meeting...">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem">
+      <div class="form-group">
+        <label class="form-label">Datum</label>
+        <input class="form-input" id="block-date" type="date">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Farbe</label>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap" id="block-color-picker">
+          <div onclick="selectBlockColor(this,'#c9a84c')" style="width:26px;height:26px;border-radius:6px;background:#c9a84c;cursor:pointer;border:2px solid transparent"></div>
+          <div onclick="selectBlockColor(this,'#5b8dee')" style="width:26px;height:26px;border-radius:6px;background:#5b8dee;cursor:pointer;border:2px solid transparent"></div>
+          <div onclick="selectBlockColor(this,'#4caf7d')" style="width:26px;height:26px;border-radius:6px;background:#4caf7d;cursor:pointer;border:2px solid transparent"></div>
+          <div onclick="selectBlockColor(this,'#e05c5c')" style="width:26px;height:26px;border-radius:6px;background:#e05c5c;cursor:pointer;border:2px solid transparent"></div>
+          <div onclick="selectBlockColor(this,'#9b59b6')" style="width:26px;height:26px;border-radius:6px;background:#9b59b6;cursor:pointer;border:2px solid transparent"></div>
+        </div>
+        <input type="hidden" id="block-color" value="#c9a84c">
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem">
+      <div class="form-group">
+        <label class="form-label">Startzeit</label>
+        <input class="form-input" id="block-start" type="time" value="08:00">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Endzeit</label>
+        <input class="form-input" id="block-end" type="time" value="09:00">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" id="block-delete-btn" onclick="deleteBlock()" style="display:none;color:var(--red);border-color:rgba(224,92,92,0.3)">Löschen</button>
+      <button class="btn" onclick="closeBlockModal()">Abbrechen</button>
+      <button class="btn btn-primary" onclick="saveBlock()">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<!-- AUFGABE MODAL -->
+<div class="modal-overlay" id="task-modal">
+  <div class="modal">
+    <h3 id="task-modal-title">Neue Aufgabe</h3>
+    <input type="hidden" id="edit-task-id">
+    <div class="form-group">
+      <label class="form-label">Titel</label>
+      <input class="form-input" id="task-title" placeholder="z.B. Hausaufgaben, Projekt fertigstellen...">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem">
+      <div class="form-group">
+        <label class="form-label">Fällig am (optional)</label>
+        <input class="form-input" id="task-due" type="date">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Dauer in Minuten (optional)</label>
+        <input class="form-input" id="task-duration" type="number" placeholder="z.B. 45" min="1">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" id="task-delete-btn" onclick="deleteTask()" style="display:none;color:var(--red);border-color:rgba(224,92,92,0.3)">Löschen</button>
+      <button class="btn" onclick="closeTaskModal()">Abbrechen</button>
+      <button class="btn btn-primary" onclick="saveTask()">Speichern</button>
     </div>
   </div>
 </div>
@@ -769,7 +898,8 @@ async function saveWochenreflexion() {
 // ── NAVIGATION ──────────────────────────────────────────────
 const PAGE_TITLES = {
   dashboard:'Dashboard', habits:'Habits', week:'Wochenübersicht',
-  stats:'Statistiken', achievements:'Achievements', pomodoro:'Pomodoro Timer', journal:'Tagebuch'
+  stats:'Statistiken', achievements:'Achievements', pomodoro:'Pomodoro Timer',
+  journal:'Tagebuch', planner:'Zeitplaner'
 };
 function goto(id, el) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
@@ -782,6 +912,10 @@ function goto(id, el) {
   if (id === 'habits') renderAllHabits();
   if (id === 'stats') renderStats();
   if (id === 'achievements') renderAchievements();
+  if (id === 'planner') {
+    switchPlannerTab(activePlannerTab);
+    renderPlannerWeek();
+  }
 }
 
 // ── TOAST ────────────────────────────────────────────────────
@@ -833,6 +967,21 @@ async function loadAll() {
     .gte('created_at', todayStr());
   pomosToday = (pomos || []).length;
   pomosTotal = parseInt(localStorage.getItem('ttl_pomos_total') || '0');
+
+  // Load time blocks (current week ± 4 weeks)
+  const wb = new Date(); wb.setDate(wb.getDate() - 28);
+  const we = new Date(); we.setDate(we.getDate() + 28);
+  const { data: blocks } = await _sb.from('time_blocks')
+    .select('*').eq('user_id', session.user.id)
+    .gte('date', wb.toISOString().split('T')[0])
+    .lte('date', we.toISOString().split('T')[0]);
+  TIME_BLOCKS = blocks || [];
+
+  // Load tasks
+  const { data: taskData } = await _sb.from('tasks')
+    .select('*').eq('user_id', session.user.id).order('created_at');
+  TASKS = taskData || [];
+
   renderDashboard();
   updateXPBar();
   loadIntention();
@@ -1215,6 +1364,301 @@ async function doLogin() {
   document.getElementById('login-screen').style.display = 'none';
   await loadAll();
   document.getElementById('app').style.display = 'grid';
+}
+
+// ── ZEITPLANER ────────────────────────────────────────────────
+let TIME_BLOCKS = [], TASKS = [], plannerWeekOffset = 0, activePlannerTab = 'week';
+let selectedBlockColor = '#c9a84c';
+
+// Stunden die im Kalender angezeigt werden (06:00 bis 22:00)
+const CAL_START_HOUR = 6, CAL_END_HOUR = 22;
+const CELL_HEIGHT = 40; // px pro Stunde
+
+function switchPlannerTab(tab) {
+  activePlannerTab = tab;
+  document.getElementById('ptab-week').classList.toggle('active', tab === 'week');
+  document.getElementById('ptab-tasks').classList.toggle('active', tab === 'tasks');
+  document.getElementById('planner-week').style.display = tab === 'week' ? 'block' : 'none';
+  document.getElementById('planner-tasks').style.display = tab === 'tasks' ? 'block' : 'none';
+  if (tab === 'week') renderPlannerWeek();
+  if (tab === 'tasks') renderTasks();
+}
+
+function changePlannerWeek(dir) {
+  if (dir === 0) plannerWeekOffset = 0; else plannerWeekOffset += dir;
+  renderPlannerWeek();
+}
+
+function getPlannerWeekDays() {
+  const days = [], now = new Date(), dow = now.getDay() || 7;
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - dow + 1 + plannerWeekOffset * 7);
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    days.push(d.toISOString().split('T')[0]);
+  }
+  return days;
+}
+
+function renderPlannerWeek() {
+  const days = getPlannerWeekDays();
+  const today = todayStr();
+  const dayNames = ['Mo','Di','Mi','Do','Fr','Sa','So'];
+  const startD = new Date(days[0]).toLocaleDateString('de-DE', {day:'2-digit', month:'short'});
+  const endD = new Date(days[6]).toLocaleDateString('de-DE', {day:'2-digit', month:'short', year:'numeric'});
+  document.getElementById('planner-week-title').textContent = `${startD} – ${endD}`;
+
+  const hours = [];
+  for (let h = CAL_START_HOUR; h <= CAL_END_HOUR; h++) hours.push(h);
+  const totalHours = CAL_END_HOUR - CAL_START_HOUR + 1;
+
+  // Header row
+  let html = `<div class="cal-wrap" id="cal-grid">
+    <div></div>
+    ${days.map((d,i) => {
+      const isToday = d === today;
+      const dayNum = new Date(d).getDate();
+      return `<div class="cal-day-head ${isToday ? 'today' : ''}">${dayNames[i]}<br><span style="font-size:.75rem;font-weight:700">${dayNum}</span></div>`;
+    }).join('')}`;
+
+  // Time rows
+  hours.forEach(h => {
+    const timeStr = String(h).padStart(2,'0') + ':00';
+    html += `<div class="cal-time-label">${timeStr}</div>`;
+    days.forEach(d => {
+      html += `<div class="cal-cell ${d === today ? 'today-col' : ''}" data-date="${d}" data-hour="${h}" onclick="calCellClick('${d}',${h})"></div>`;
+    });
+  });
+  html += '</div>';
+  document.getElementById('cal-container').innerHTML = html;
+
+  // Render blocks on top
+  TIME_BLOCKS.forEach(b => {
+    if (!days.includes(b.date)) return;
+    const colIdx = days.indexOf(b.date);
+    const [sh, sm] = b.start_time.split(':').map(Number);
+    const [eh, em] = b.end_time.split(':').map(Number);
+    const startFrac = (sh - CAL_START_HOUR) + sm / 60;
+    const endFrac = (eh - CAL_START_HOUR) + em / 60;
+    if (endFrac <= 0 || startFrac >= totalHours) return;
+    const topPx = Math.max(0, startFrac) * CELL_HEIGHT;
+    const heightPx = Math.max(20, (endFrac - startFrac) * CELL_HEIGHT - 2);
+    const grid = document.getElementById('cal-grid');
+    if (!grid) return;
+    // Position block absolutely relative to the grid using a wrapper
+    const block = document.createElement('div');
+    block.className = 'time-block';
+    block.style.cssText = `background:${b.color || '#c9a84c'};color:#000;top:${topPx + CELL_HEIGHT}px;height:${heightPx}px;opacity:.88`;
+    // Offset by column: each day column has equal width
+    block.dataset.id = b.id;
+    block.innerHTML = `<strong>${b.start_time.slice(0,5)}</strong> ${b.title}`;
+    block.onclick = (e) => { e.stopPropagation(); openBlockModal(b.id); };
+    // We'll position via a relative container approach
+    const cells = grid.querySelectorAll(`[data-date="${b.date}"]`);
+    const hourCell = cells[sh - CAL_START_HOUR];
+    if (hourCell) {
+      hourCell.style.position = 'relative';
+      const inner = document.createElement('div');
+      inner.className = 'time-block';
+      inner.style.cssText = `background:${b.color||'#c9a84c'};color:#0a0a0f;top:${(sm/60)*CELL_HEIGHT}px;height:${heightPx}px;font-weight:500;white-space:nowrap;text-overflow:ellipsis`;
+      inner.dataset.blockId = b.id;
+      inner.innerHTML = `<span style="opacity:.8">${b.start_time.slice(0,5)}–${b.end_time.slice(0,5)}</span> ${b.title}`;
+      inner.onclick = (e) => { e.stopPropagation(); openBlockModal(b.id); };
+      hourCell.appendChild(inner);
+    }
+  });
+}
+
+function calCellClick(date, hour) {
+  // Pre-fill modal with clicked date/time
+  document.getElementById('block-date').value = date;
+  const h = String(hour).padStart(2,'0');
+  document.getElementById('block-start').value = `${h}:00`;
+  document.getElementById('block-end').value = `${String(hour+1).padStart(2,'0')}:00`;
+  document.getElementById('edit-block-id').value = '';
+  document.getElementById('block-title').value = '';
+  document.getElementById('block-modal-title').textContent = 'Neuer Zeitblock';
+  document.getElementById('block-delete-btn').style.display = 'none';
+  selectBlockColor(document.querySelector('#block-color-picker div'), '#c9a84c');
+  document.getElementById('block-modal').classList.add('open');
+}
+
+function openBlockModal(id) {
+  if (!id) {
+    // New block — set date to today
+    document.getElementById('block-date').value = todayStr();
+    document.getElementById('block-start').value = '08:00';
+    document.getElementById('block-end').value = '09:00';
+    document.getElementById('block-title').value = '';
+    document.getElementById('edit-block-id').value = '';
+    document.getElementById('block-modal-title').textContent = 'Neuer Zeitblock';
+    document.getElementById('block-delete-btn').style.display = 'none';
+    selectBlockColor(document.querySelector('#block-color-picker div'), '#c9a84c');
+  } else {
+    const b = TIME_BLOCKS.find(x => x.id === id);
+    if (!b) return;
+    document.getElementById('block-title').value = b.title;
+    document.getElementById('block-date').value = b.date;
+    document.getElementById('block-start').value = b.start_time.slice(0,5);
+    document.getElementById('block-end').value = b.end_time.slice(0,5);
+    document.getElementById('edit-block-id').value = b.id;
+    document.getElementById('block-modal-title').textContent = 'Block bearbeiten';
+    document.getElementById('block-delete-btn').style.display = 'block';
+    const colorDiv = document.querySelector(`#block-color-picker div[onclick*="${b.color}"]`);
+    if (colorDiv) selectBlockColor(colorDiv, b.color); else {
+      selectedBlockColor = b.color || '#c9a84c';
+      document.getElementById('block-color').value = selectedBlockColor;
+    }
+  }
+  document.getElementById('block-modal').classList.add('open');
+}
+
+function closeBlockModal() { document.getElementById('block-modal').classList.remove('open'); }
+
+function selectBlockColor(el, color) {
+  selectedBlockColor = color;
+  document.getElementById('block-color').value = color;
+  document.querySelectorAll('#block-color-picker div').forEach(d => d.style.border = '2px solid transparent');
+  el.style.border = '2px solid var(--text)';
+}
+
+async function saveBlock() {
+  const { data: { session } } = await _sb.auth.getSession();
+  if (!session) return;
+  const title = document.getElementById('block-title').value.trim();
+  const date = document.getElementById('block-date').value;
+  const start = document.getElementById('block-start').value;
+  const end = document.getElementById('block-end').value;
+  const color = document.getElementById('block-color').value || '#c9a84c';
+  const editId = document.getElementById('edit-block-id').value;
+  if (!title) { showToast('⚠ Bitte einen Titel eingeben'); return; }
+  if (!date) { showToast('⚠ Bitte ein Datum wählen'); return; }
+  if (start >= end) { showToast('⚠ Endzeit muss nach Startzeit liegen'); return; }
+  if (editId) {
+    const { error } = await _sb.from('time_blocks').update({ title, date, start_time: start, end_time: end, color }).eq('id', editId);
+    if (error) { showToast('✗ ' + error.message); return; }
+    const idx = TIME_BLOCKS.findIndex(b => b.id === editId);
+    if (idx >= 0) TIME_BLOCKS[idx] = { ...TIME_BLOCKS[idx], title, date, start_time: start, end_time: end, color };
+    showToast('✓ Block aktualisiert');
+  } else {
+    const { data, error } = await _sb.from('time_blocks').insert({
+      user_id: session.user.id, title, date, start_time: start, end_time: end, color
+    }).select().single();
+    if (error) { showToast('✗ ' + error.message); return; }
+    if (data) TIME_BLOCKS.push(data);
+    showToast('✓ Block erstellt');
+  }
+  closeBlockModal();
+  renderPlannerWeek();
+}
+
+async function deleteBlock() {
+  const id = document.getElementById('edit-block-id').value;
+  if (!id || !confirm('Block wirklich löschen?')) return;
+  await _sb.from('time_blocks').delete().eq('id', id);
+  TIME_BLOCKS = TIME_BLOCKS.filter(b => b.id !== id);
+  closeBlockModal();
+  renderPlannerWeek();
+  showToast('✓ Block gelöscht');
+}
+
+// ── AUFGABEN ─────────────────────────────────────────────────
+function renderTasks() {
+  const list = document.getElementById('task-list');
+  const empty = document.getElementById('no-tasks');
+  document.getElementById('task-count').textContent = TASKS.filter(t => !t.done).length;
+  if (!TASKS.length) { list.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  // Sort: undone first, then by due_date
+  const sorted = [...TASKS].sort((a,b) => {
+    if (a.done !== b.done) return a.done ? 1 : -1;
+    if (a.due_date && b.due_date) return a.due_date.localeCompare(b.due_date);
+    if (a.due_date) return -1;
+    if (b.due_date) return 1;
+    return 0;
+  });
+  list.innerHTML = sorted.map(t => {
+    const dueLabel = t.due_date ? `📅 ${new Date(t.due_date).toLocaleDateString('de-DE', {day:'2-digit', month:'short'})}` : '';
+    const durLabel = t.duration_minutes ? `⏱ ${t.duration_minutes} Min` : '';
+    const overdue = t.due_date && !t.done && t.due_date < todayStr();
+    return `<div class="task-item ${t.done ? 'done-task' : ''}">
+      <div class="task-check" onclick="toggleTask('${t.id}')">${t.done ? '✓' : ''}</div>
+      <div style="flex:1;min-width:0">
+        <div class="task-title">${t.title}</div>
+        <div class="task-meta" style="${overdue ? 'color:var(--red)' : ''}">${[dueLabel, durLabel].filter(Boolean).join(' · ')}</div>
+      </div>
+      <button class="icon-btn" onclick="openTaskModal('${t.id}')">✏</button>
+    </div>`;
+  }).join('');
+}
+
+function openTaskModal(id) {
+  if (!id) {
+    document.getElementById('task-title').value = '';
+    document.getElementById('task-due').value = '';
+    document.getElementById('task-duration').value = '';
+    document.getElementById('edit-task-id').value = '';
+    document.getElementById('task-modal-title').textContent = 'Neue Aufgabe';
+    document.getElementById('task-delete-btn').style.display = 'none';
+  } else {
+    const t = TASKS.find(x => x.id === id);
+    if (!t) return;
+    document.getElementById('task-title').value = t.title;
+    document.getElementById('task-due').value = t.due_date || '';
+    document.getElementById('task-duration').value = t.duration_minutes || '';
+    document.getElementById('edit-task-id').value = t.id;
+    document.getElementById('task-modal-title').textContent = 'Aufgabe bearbeiten';
+    document.getElementById('task-delete-btn').style.display = 'block';
+  }
+  document.getElementById('task-modal').classList.add('open');
+}
+
+function closeTaskModal() { document.getElementById('task-modal').classList.remove('open'); }
+
+async function saveTask() {
+  const { data: { session } } = await _sb.auth.getSession();
+  if (!session) return;
+  const title = document.getElementById('task-title').value.trim();
+  const due_date = document.getElementById('task-due').value || null;
+  const duration_minutes = parseInt(document.getElementById('task-duration').value) || null;
+  const editId = document.getElementById('edit-task-id').value;
+  if (!title) { showToast('⚠ Bitte einen Titel eingeben'); return; }
+  if (editId) {
+    const { error } = await _sb.from('tasks').update({ title, due_date, duration_minutes }).eq('id', editId);
+    if (error) { showToast('✗ ' + error.message); return; }
+    const t = TASKS.find(x => x.id === editId);
+    if (t) Object.assign(t, { title, due_date, duration_minutes });
+    showToast('✓ Aufgabe aktualisiert');
+  } else {
+    const { data, error } = await _sb.from('tasks').insert({
+      user_id: session.user.id, title, due_date, duration_minutes, done: false
+    }).select().single();
+    if (error) { showToast('✗ ' + error.message); return; }
+    if (data) TASKS.push(data);
+    showToast('✓ Aufgabe erstellt');
+  }
+  closeTaskModal();
+  renderTasks();
+}
+
+async function toggleTask(id) {
+  const t = TASKS.find(x => x.id === id);
+  if (!t) return;
+  const newDone = !t.done;
+  await _sb.from('tasks').update({ done: newDone }).eq('id', id);
+  t.done = newDone;
+  renderTasks();
+}
+
+async function deleteTask() {
+  const id = document.getElementById('edit-task-id').value;
+  if (!id || !confirm('Aufgabe wirklich löschen?')) return;
+  await _sb.from('tasks').delete().eq('id', id);
+  TASKS = TASKS.filter(t => t.id !== id);
+  closeTaskModal();
+  renderTasks();
+  showToast('✓ Aufgabe gelöscht');
 }
 
 // ── EMOJI GRID ────────────────────────────────────────────────
