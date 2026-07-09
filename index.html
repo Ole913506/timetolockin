@@ -56,10 +56,14 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 .xp-level-block{background:linear-gradient(135deg,rgba(201,168,76,0.1),rgba(201,168,76,0.04));border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:.65rem .75rem;margin:.5rem .5rem .4rem}
 
 /* ── TOPBAR ── */
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.5rem;border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0}
-.page-title{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;color:var(--text)}
-.topbar-right{display:flex;align-items:center;gap:.75rem}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.5rem;border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0;gap:.75rem}
+.topbar-left{display:flex;align-items:center;gap:.6rem;min-width:0}
+.page-title{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.topbar-right{display:flex;align-items:center;gap:.75rem;flex-shrink:0}
 .date-badge{font-size:.7rem;color:var(--text3);background:var(--bg3);border:1px solid var(--border);padding:.25rem .65rem;border-radius:6px}
+.sidebar-toggle{display:none;width:34px;height:34px;flex-shrink:0;align-items:center;justify-content:center;border-radius:8px;border:1px solid var(--border2);background:var(--bg3);color:var(--text);font-size:1rem;cursor:pointer}
+.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:149}
+.sidebar-backdrop.open{display:block}
 .btn{padding:.45rem .9rem;border-radius:7px;font-size:.75rem;cursor:pointer;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);transition:all .15s}
 .btn:hover{border-color:var(--gold);color:var(--gold)}
 .btn-primary{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--bg);border:none;font-weight:700}
@@ -232,11 +236,37 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 
 @media(max-width:768px){
   .app{grid-template-columns:1fr}
-  .sidebar{display:none}
+  .sidebar{
+    position:fixed;top:0;left:0;bottom:0;z-index:150;
+    width:min(78vw,270px);
+    transform:translateX(-100%);
+    transition:transform .25s ease;
+    box-shadow:12px 0 30px rgba(0,0,0,.5);
+  }
+  .sidebar.open{transform:translateX(0)}
+  .sidebar-toggle{display:flex}
+  .topbar{padding:.75rem 1rem}
+  .panel{padding:1rem}
   .metrics{grid-template-columns:1fr 1fr}
-  .week-grid{grid-template-columns:1fr repeat(7,32px)}
+  .week-grid{grid-template-columns:1fr repeat(7,32px);gap:.25rem}
   .achieve-grid{grid-template-columns:1fr}
   .cal-wrap{grid-template-columns:36px repeat(7,minmax(60px,1fr))}
+  .timer-circle{width:160px;height:160px;margin-bottom:1.5rem}
+  .timer-display{font-size:2rem}
+  .pomodoro-wrap{padding:1rem}
+  .pomodoro-stats{max-width:100%}
+  .tpl-block-row{grid-template-columns:1fr 56px 56px 24px 24px;gap:.3rem}
+  .planner-tabs{flex-wrap:wrap}
+  .week-nav{flex-wrap:wrap}
+  .week-nav-title{width:100%;order:-1}
+  .modal{padding:1.25rem;width:92%}
+  #levelup-banner{width:92%}
+  #toast{right:.75rem;left:.75rem;bottom:1rem}
+}
+
+@media(max-width:420px){
+  .metrics{grid-template-columns:1fr}
+  .date-badge{display:none}
 }
 </style>
 </head>
@@ -311,10 +341,15 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
     </div>
   </aside>
 
+  <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeSidebar()"></div>
+
   <!-- MAIN -->
   <main class="main">
     <div class="topbar">
-      <div class="page-title" id="page-title">Dashboard</div>
+      <div class="topbar-left">
+        <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Menü">☰</button>
+        <div class="page-title" id="page-title">Dashboard</div>
+      </div>
       <div class="topbar-right">
         <div class="date-badge" id="today-date"></div>
         <button class="btn btn-primary" onclick="openAddHabit()">+ Habit</button>
@@ -1081,7 +1116,16 @@ const PAGE_TITLES = {
   stats:'Statistiken', achievements:'Achievements', pomodoro:'Pomodoro Timer',
   journal:'Tagebuch', planner:'Zeitplaner'
 };
+function toggleSidebar() {
+  document.querySelector('.sidebar').classList.toggle('open');
+  document.getElementById('sidebar-backdrop').classList.toggle('open');
+}
+function closeSidebar() {
+  document.querySelector('.sidebar').classList.remove('open');
+  document.getElementById('sidebar-backdrop').classList.remove('open');
+}
 function goto(id, el) {
+  closeSidebar();
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('panel-' + id).classList.add('active');
