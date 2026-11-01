@@ -25,7 +25,8 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes checkPop{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
 @keyframes achieveSlide{from{transform:translateY(-80px);opacity:0}to{transform:translateY(0);opacity:1}}
-@keyframes xpFloat{from{transform:translateY(0);opacity:1}to{transform:translateY(-30px);opacity:0}}
+@keyframes floatUp{from{transform:translateY(0);opacity:1}to{transform:translateY(-30px);opacity:0}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
 
 /* ── LAYOUT ── */
 .app{display:grid;grid-template-columns:var(--sidebar) 1fr;height:100vh;overflow:hidden}
@@ -49,11 +50,12 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 .streak-badge{display:flex;align-items:center;gap:.5rem;padding:.5rem .65rem;background:var(--gold-dim);border:1px solid rgba(201,168,76,0.2);border-radius:8px;margin-bottom:.4rem}
 .streak-info .streak-num{font-size:.85rem;font-weight:700;color:var(--gold)}
 .streak-info .streak-label{font-size:.6rem;color:var(--text3)}
-.xp-bar-wrap{padding:.5rem .65rem .6rem;margin-top:.3rem}
-.xp-bar-label{display:flex;justify-content:space-between;font-size:.58rem;color:var(--text3);margin-bottom:.3rem}
-.xp-bar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}
-.xp-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:3px;transition:width .7s ease}
-.xp-level-block{background:linear-gradient(135deg,rgba(201,168,76,0.1),rgba(201,168,76,0.04));border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:.65rem .75rem;margin:.5rem .5rem .4rem}
+.side-avatar{display:flex;gap:.65rem;align-items:center;padding:.55rem .6rem;border-radius:10px;cursor:pointer;background:linear-gradient(135deg,rgba(201,168,76,0.1),rgba(201,168,76,0.03));border:1px solid rgba(201,168,76,0.2);transition:border-color .15s}
+.side-avatar:hover{border-color:var(--gold)}
+.side-avatar-img{width:44px;height:60px;flex-shrink:0;border-radius:6px;overflow:hidden;border:1px solid var(--border2)}
+.side-avatar-lvl{font-size:.72rem;font-weight:700;color:var(--gold)}
+.side-avatar-title{font-size:.6rem;color:var(--text2);margin-top:.1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.side-avatar-meta{font-size:.6rem;color:var(--text3);margin-top:.25rem;display:flex;gap:.5rem}
 
 /* ── TOPBAR ── */
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.5rem;border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0;gap:.75rem}
@@ -61,13 +63,17 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 .page-title{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .topbar-right{display:flex;align-items:center;gap:.75rem;flex-shrink:0}
 .date-badge{font-size:.7rem;color:var(--text3);background:var(--bg3);border:1px solid var(--border);padding:.25rem .65rem;border-radius:6px}
+.coin-badge{font-size:.72rem;color:var(--gold);background:var(--gold-dim);border:1px solid rgba(201,168,76,0.25);padding:.25rem .65rem;border-radius:6px;cursor:pointer;white-space:nowrap}
 .sidebar-toggle{display:none;width:34px;height:34px;flex-shrink:0;align-items:center;justify-content:center;border-radius:8px;border:1px solid var(--border2);background:var(--bg3);color:var(--text);font-size:1rem;cursor:pointer}
 .sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:149}
 .sidebar-backdrop.open{display:block}
 .btn{padding:.45rem .9rem;border-radius:7px;font-size:.75rem;cursor:pointer;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);transition:all .15s}
 .btn:hover{border-color:var(--gold);color:var(--gold)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn:disabled:hover{border-color:var(--border2);color:var(--text2)}
 .btn-primary{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--bg);border:none;font-weight:700}
 .btn-primary:hover{opacity:.9;color:var(--bg)}
+.btn.active-mode{border-color:var(--gold);color:var(--gold);background:var(--gold-dim)}
 
 /* ── TAGES-INTENTION BANNER ── */
 .intention-banner{background:linear-gradient(135deg,rgba(91,141,238,0.08),var(--bg2));border:1px solid rgba(91,141,238,0.2);border-radius:10px;padding:.75rem 1rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:.75rem}
@@ -88,7 +94,6 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 .habit-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem;display:flex;align-items:center;gap:.85rem;transition:all .2s;cursor:pointer}
 .habit-card:hover{border-color:var(--border2)}
 .habit-card.done{border-color:rgba(76,175,125,0.3);background:rgba(76,175,125,0.05)}
-.habit-card.frozen{border-color:rgba(91,141,238,0.3);background:rgba(91,141,238,0.04)}
 .habit-check{width:28px;height:28px;border-radius:50%;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;transition:all .2s;cursor:pointer}
 .habit-card.done .habit-check{background:var(--green);border-color:var(--green);animation:checkPop .3s ease}
 .habit-info{flex:1;min-width:0}
@@ -113,11 +118,13 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 
 /* ── POMODORO ── */
 .pomodoro-wrap{display:flex;flex-direction:column;align-items:center;padding:2rem}
+.pomo-skill-box{width:100%;max-width:400px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:.85rem 1rem;margin-bottom:1.5rem}
+.pomo-skill-info{font-size:.65rem;color:var(--text3);margin-top:.45rem;line-height:1.6}
 .timer-circle{width:200px;height:200px;border-radius:50%;border:3px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:2rem;position:relative;background:var(--bg2)}
 .timer-circle.running{border-color:var(--gold)}
 .timer-display{font-family:'Syne',sans-serif;font-size:2.5rem;font-weight:800;color:var(--text)}
 .timer-label{font-size:.65rem;color:var(--text3);margin-top:.25rem;letter-spacing:.06em;text-transform:uppercase}
-.timer-btns{display:flex;gap:.75rem;margin-bottom:1.5rem}
+.timer-btns{display:flex;gap:.75rem;margin-bottom:1.5rem;flex-wrap:wrap;justify-content:center}
 .pomodoro-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;width:100%;max-width:400px}
 .pomo-stat{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:.85rem;text-align:center}
 .pomo-stat-val{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--gold)}
@@ -131,28 +138,21 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 .journal-input:focus{outline:none;border-color:var(--gold)}
 
 /* ── ACHIEVEMENTS ── */
-.achieve-banner{position:fixed;top:1rem;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#1a1200,#2a1f00);border:1px solid var(--gold);border-radius:12px;padding:1rem 1.5rem;z-index:1000;display:none;min-width:280px;text-align:center;animation:achieveSlide .4s ease}
-.achieve-banner.show{display:block}
 .achieve-title{font-family:'Syne',sans-serif;font-size:.9rem;font-weight:800;color:var(--gold);margin-bottom:.25rem}
 .achieve-sub{font-size:.72rem;color:var(--text2)}
 .achieve-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.65rem}
 .achieve-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:.85rem;display:flex;align-items:center;gap:.75rem;transition:all .2s}
 .achieve-card.unlocked{border-color:rgba(201,168,76,0.3);background:linear-gradient(135deg,rgba(201,168,76,0.06),var(--bg2))}
-.achieve-card.locked{opacity:.45;filter:grayscale(.8)}
+.achieve-card.locked{opacity:.5}
 .achieve-icon{font-size:1.4rem;flex-shrink:0}
 .achieve-name{font-size:.72rem;font-weight:600;color:var(--text)}
 .achieve-desc{font-size:.62rem;color:var(--text3);margin-top:.1rem}
+.achieve-reward{font-size:.6rem;color:var(--gold);margin-top:.25rem}
 
 /* ── WOCHENRÜCKBLICK ── */
 .wochenbewertung{background:linear-gradient(135deg,rgba(201,168,76,0.07),var(--bg2));border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:1.25rem;margin-bottom:1.5rem}
 .woche-grade{font-family:'Syne',sans-serif;font-size:2.5rem;font-weight:800;text-align:center;margin-bottom:.5rem}
 .woche-text{font-size:.78rem;color:var(--text2);text-align:center;line-height:1.6}
-
-/* ── MOOD ── */
-.mood-row{display:flex;gap:.5rem;margin-bottom:1rem}
-.mood-btn{flex:1;padding:.5rem;border-radius:8px;border:1px solid var(--border);background:var(--bg3);font-size:1.1rem;cursor:pointer;transition:all .15s;text-align:center}
-.mood-btn:hover{border-color:var(--border2);transform:scale(1.05)}
-.mood-btn.selected{border-color:var(--gold);background:var(--gold-dim)}
 
 /* ── MODAL ── */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:500;align-items:center;justify-content:center}
@@ -170,35 +170,25 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 .weekday-btn{padding:.4rem .3rem;font-size:.65rem}
 .weekday-btn.selected{border-color:var(--gold);background:var(--gold-dim);color:var(--gold)}
 .modal-actions{display:flex;gap:.5rem;margin-top:1.25rem;justify-content:flex-end}
-.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;gap:.5rem}
 .section-label{font-size:.65rem;color:var(--text3);letter-spacing:.08em;text-transform:uppercase}
 
-/* ── TOAST ── */
-#toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:.6rem 1rem;border-radius:8px;font-size:.75rem;opacity:0;transition:opacity .2s;z-index:999;pointer-events:none}
+/* ── TOAST / FLOAT ── */
+#toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:.6rem 1rem;border-radius:8px;font-size:.75rem;opacity:0;transition:opacity .2s;z-index:999;pointer-events:none;max-width:420px}
 #toast.show{opacity:1}
+.float-text{position:fixed;font-size:.85rem;font-weight:700;color:var(--gold);pointer-events:none;animation:floatUp 1.2s ease forwards;z-index:998}
 
-/* ── XP FLOAT ── */
-.xp-float{position:fixed;font-size:.8rem;font-weight:700;color:var(--gold);pointer-events:none;animation:xpFloat 1.2s ease forwards;z-index:998}
-
-/* ── ACHIEVEMENT BANNER ── */
-#achieve-banner{position:fixed;top:1.5rem;left:50%;transform:translateX(-50%);z-index:1000;display:none}
-#achieve-banner.show{display:block;animation:achieveSlide .4s ease}
-
-/* ── LOADER ── */
-#app-loader{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1rem}
-#app-loader div:first-child{width:32px;height:32px;background:linear-gradient(135deg,var(--gold),var(--gold2));clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);animation:spin 1s linear infinite}
-
-/* ── LEVEL-UP BANNER ── */
+/* ── BANNER (Achievement / Level-Up) ── */
 @keyframes levelUpPop{0%{transform:translateX(-50%) scale(.7);opacity:0}60%{transform:translateX(-50%) scale(1.05)}100%{transform:translateX(-50%) scale(1);opacity:1}}
-#levelup-banner{position:fixed;top:2rem;left:50%;transform:translateX(-50%);z-index:1001;display:none;text-align:center}
-#levelup-banner.show{display:block;animation:levelUpPop .5s cubic-bezier(.175,.885,.32,1.275) forwards}
-.levelup-inner{background:linear-gradient(135deg,#1a1200,#2d2200);border:2px solid var(--gold2);border-radius:16px;padding:1.25rem 2rem;min-width:240px;box-shadow:0 0 40px rgba(201,168,76,0.3),0 12px 40px rgba(0,0,0,.6)}
-.levelup-stars{font-size:1.4rem;letter-spacing:.3rem;margin-bottom:.4rem}
-.levelup-label{font-size:.6rem;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.2rem}
-.levelup-num{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--gold2)}
-.levelup-name{font-size:.82rem;color:var(--text2);margin-top:.2rem}
+#big-banner{position:fixed;top:2rem;left:50%;transform:translateX(-50%);z-index:1001;display:none;text-align:center}
+#big-banner.show{display:block;animation:levelUpPop .5s cubic-bezier(.175,.885,.32,1.275) forwards}
+.banner-inner{background:linear-gradient(135deg,#1a1200,#2d2200);border:2px solid var(--gold2);border-radius:16px;padding:1.1rem 1.75rem;min-width:260px;max-width:92vw;box-shadow:0 0 40px rgba(201,168,76,0.3),0 12px 40px rgba(0,0,0,.6)}
+.banner-icon{font-size:1.8rem;margin-bottom:.3rem}
+.banner-label{font-size:.6rem;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.2rem}
+.banner-title{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:var(--gold2)}
+.banner-sub{font-size:.75rem;color:var(--text2);margin-top:.3rem;line-height:1.5}
 
-/* ── VORLAGEN-TEMPLATE ── */
+/* ── ZEITPLANER ── */
 .tpl-list{display:flex;flex-direction:column;gap:.6rem}
 .tpl-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:.9rem 1rem;display:flex;align-items:center;gap:.75rem;cursor:pointer;transition:all .15s}
 .tpl-card:hover{border-color:var(--border2)}
@@ -210,7 +200,7 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 .tpl-block-row input:focus{outline:none;border-color:var(--gold)}
 .apply-tpl-btn{font-size:.58rem;padding:.2rem .5rem;border-radius:4px;border:1px solid rgba(91,141,238,.3);background:rgba(91,141,238,.08);color:var(--blue);cursor:pointer;white-space:nowrap;margin-top:.2rem}
 .apply-tpl-btn:hover{background:rgba(91,141,238,.15)}
-.planner-tabs{display:flex;gap:.4rem;margin-bottom:1.25rem}
+.planner-tabs{display:flex;gap:.4rem;margin-bottom:1.25rem;flex-wrap:wrap}
 .planner-tab{padding:.4rem .85rem;border-radius:2rem;font-size:.72rem;border:1px solid var(--border);background:var(--bg2);color:var(--text3);cursor:pointer;transition:all .15s}
 .planner-tab.active{border-color:var(--blue);background:rgba(91,141,238,0.1);color:var(--blue)}
 .week-nav{display:flex;align-items:center;gap:.5rem;margin-bottom:1rem}
@@ -224,7 +214,6 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 .cal-cell.today-col{background:rgba(201,168,76,0.02)}
 .time-block{position:absolute;left:1px;right:1px;border-radius:4px;padding:2px 4px;font-size:.58rem;overflow:hidden;cursor:pointer;z-index:2;line-height:1.3}
 .time-block:hover{filter:brightness(1.15)}
-/* tasks */
 .task-list{display:flex;flex-direction:column;gap:.45rem}
 .task-item{background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:.75rem 1rem;display:flex;align-items:center;gap:.75rem;transition:all .15s}
 .task-item.done-task{opacity:.5}
@@ -234,15 +223,64 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 .task-title{font-size:.78rem;color:var(--text);flex:1}
 .task-meta{font-size:.6rem;color:var(--text3)}
 
+/* ── AVATAR ── */
+.av-hero{display:grid;grid-template-columns:auto 1fr;gap:1.5rem;align-items:center;background:linear-gradient(135deg,rgba(201,168,76,0.08),var(--bg2));border:1px solid rgba(201,168,76,0.22);border-radius:14px;padding:1.25rem;margin-bottom:1.25rem}
+.av-canvas{width:160px;height:216px;border-radius:12px;overflow:hidden;border:1px solid var(--border2);background:var(--bg3)}
+.av-canvas svg{display:block;width:100%;height:100%}
+.av-figure-bob{animation:bob 2.4s ease-in-out infinite}
+.av-name{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:var(--text)}
+.av-title{font-size:.75rem;color:var(--gold);margin-top:.2rem}
+.av-level-row{display:flex;align-items:baseline;gap:.6rem;margin-top:.85rem}
+.av-level-num{font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;color:var(--gold2);line-height:1}
+.av-level-label{font-size:.65rem;color:var(--text3);text-transform:uppercase;letter-spacing:.08em}
+.av-rank-next{font-size:.65rem;color:var(--text3);margin-top:.35rem}
+.av-pills{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.85rem}
+.av-pill{font-size:.68rem;padding:.3rem .6rem;border-radius:2rem;background:var(--bg3);border:1px solid var(--border2);color:var(--text2)}
+.av-pill.gold{color:var(--gold);border-color:rgba(201,168,76,0.3);background:var(--gold-dim)}
+.av-pill.blue{color:var(--blue);border-color:rgba(91,141,238,0.3);background:rgba(91,141,238,0.08)}
+.av-pill.purple{color:#c08ae0;border-color:rgba(155,89,182,0.35);background:rgba(155,89,182,0.1)}
+.info-box{font-size:.7rem;color:var(--text2);line-height:1.7;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem;margin-bottom:1.25rem}
+.info-box b{color:var(--text)}
+.slot-group{margin-bottom:1.1rem}
+.slot-title{font-size:.62rem;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.45rem}
+.opt-row{display:flex;flex-wrap:wrap;gap:.4rem}
+.opt-btn{padding:.4rem .7rem;border-radius:7px;font-size:.7rem;cursor:pointer;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);transition:all .15s;display:flex;align-items:center;gap:.3rem}
+.opt-btn:hover{border-color:var(--border2);color:var(--text)}
+.opt-btn.selected{border-color:var(--gold);color:var(--gold);background:var(--gold-dim)}
+.opt-btn.locked{opacity:.45}
+.opt-lock{font-size:.55rem;color:var(--text3)}
+.swatch{width:28px;height:28px;border-radius:7px;cursor:pointer;border:2px solid transparent;position:relative;display:flex;align-items:center;justify-content:center;font-size:.6rem}
+.swatch.selected{border-color:var(--text)}
+.swatch.locked{opacity:.4}
+.skill-list{display:flex;flex-direction:column;gap:.6rem}
+.skill-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:.9rem 1rem}
+.skill-head{display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem}
+.skill-emoji{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0}
+.skill-name{font-size:.85rem;color:var(--text);font-weight:600}
+.skill-sub{font-size:.62rem;color:var(--text3);margin-top:.15rem}
+.skill-lvl{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;margin-left:auto;text-align:right;line-height:1}
+.skill-lvl small{display:block;font-family:'DM Mono',monospace;font-size:.55rem;font-weight:400;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-top:.15rem}
+.skill-bar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.skill-bar-fill{height:100%;border-radius:3px;transition:width .6s ease}
+.skill-foot{display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap;font-size:.6rem;color:var(--text3);margin-top:.4rem}
+.badge{font-size:.58rem;padding:.12rem .45rem;border-radius:4px;border:1px solid rgba(76,175,125,.35);color:var(--green);background:var(--green-dim)}
+.shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.65rem;margin-bottom:1.5rem}
+.shop-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:.9rem 1rem;display:flex;flex-direction:column;gap:.45rem}
+.shop-card.owned{border-color:rgba(76,175,125,0.3)}
+.shop-icon{font-size:1.5rem}
+.shop-name{font-size:.8rem;font-weight:600;color:var(--text)}
+.shop-desc{font-size:.65rem;color:var(--text3);line-height:1.55;flex:1}
+.shop-foot{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-top:.2rem}
+.shop-price{font-size:.75rem;color:var(--gold);font-weight:700}
+.shop-preview{width:54px;height:73px;border-radius:7px;overflow:hidden;border:1px solid var(--border2)}
+.title-list{display:flex;flex-wrap:wrap;gap:.45rem}
+.title-chip{padding:.45rem .8rem;border-radius:2rem;font-size:.72rem;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);cursor:pointer}
+.title-chip.selected{border-color:var(--gold);color:var(--gold);background:var(--gold-dim)}
+.title-chip.locked{opacity:.4;cursor:default}
+
 @media(max-width:768px){
   .app{grid-template-columns:1fr}
-  .sidebar{
-    position:fixed;top:0;left:0;bottom:0;z-index:150;
-    width:min(78vw,270px);
-    transform:translateX(-100%);
-    transition:transform .25s ease;
-    box-shadow:12px 0 30px rgba(0,0,0,.5);
-  }
+  .sidebar{position:fixed;top:0;left:0;bottom:0;z-index:150;width:min(78vw,270px);transform:translateX(-100%);transition:transform .25s ease;box-shadow:12px 0 30px rgba(0,0,0,.5)}
   .sidebar.open{transform:translateX(0)}
   .sidebar-toggle{display:flex}
   .topbar{padding:.75rem 1rem}
@@ -256,14 +294,13 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
   .pomodoro-wrap{padding:1rem}
   .pomodoro-stats{max-width:100%}
   .tpl-block-row{grid-template-columns:1fr 56px 56px 24px 24px;gap:.3rem}
-  .planner-tabs{flex-wrap:wrap}
   .week-nav{flex-wrap:wrap}
   .week-nav-title{width:100%;order:-1}
   .modal{padding:1.25rem;width:92%}
-  #levelup-banner{width:92%}
   #toast{right:.75rem;left:.75rem;bottom:1rem}
+  .av-hero{grid-template-columns:1fr;justify-items:center;text-align:center}
+  .av-level-row,.av-pills{justify-content:center}
 }
-
 @media(max-width:420px){
   .metrics{grid-template-columns:1fr}
   .date-badge{display:none}
@@ -272,8 +309,8 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 </head>
 <body>
 
-<!-- LOGIN SCREEN -->
-<div id="login-screen" style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--bg)">
+<!-- LOGIN -->
+<div id="login-screen" style="display:none;align-items:center;justify-content:center;min-height:100vh;background:var(--bg)">
   <div style="width:90%;max-width:380px">
     <div style="text-align:center;margin-bottom:2rem">
       <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--text);margin-bottom:.4rem">time<span style="color:var(--gold)">tolockin</span></div>
@@ -281,14 +318,14 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
     </div>
     <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:1.75rem">
       <div style="margin-bottom:.85rem">
-        <div style="font-size:.62rem;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.35rem">E-Mail</div>
-        <input id="login-email" type="email" placeholder="deine@email.de" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:.65rem .85rem;color:var(--text);font-size:.82rem">
+        <div class="form-label">E-Mail</div>
+        <input id="login-email" type="email" placeholder="deine@email.de" class="form-input">
       </div>
       <div style="margin-bottom:1.25rem">
-        <div style="font-size:.62rem;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.35rem">Passwort</div>
-        <input id="login-password" type="password" placeholder="••••••••" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:.65rem .85rem;color:var(--text);font-size:.82rem" onkeydown="if(event.key==='Enter')doLogin()">
+        <div class="form-label">Passwort</div>
+        <input id="login-password" type="password" placeholder="••••••••" class="form-input" onkeydown="if(event.key==='Enter')doLogin()">
       </div>
-      <button onclick="doLogin()" style="width:100%;padding:.7rem;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--bg);border:none;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer">Einloggen →</button>
+      <button onclick="doLogin()" class="btn btn-primary" style="width:100%;padding:.7rem;font-size:.82rem">Einloggen →</button>
       <div id="login-error" style="display:none;margin-top:.75rem;font-size:.72rem;color:var(--red);text-align:center"></div>
     </div>
   </div>
@@ -302,40 +339,37 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
       <div class="logo-sub">DEIN FOKUS-SYSTEM</div>
     </div>
     <nav class="nav">
-      <div class="nav-item active" onclick="goto('dashboard',this)">📊 Dashboard</div>
-      <div class="nav-item" onclick="goto('habits',this)">✅ Habits</div>
-      <div class="nav-item" onclick="goto('week',this)">📅 Wochenübersicht</div>
-      <div class="nav-item" onclick="goto('stats',this)">📈 Statistiken</div>
-      <div class="nav-item" onclick="goto('achievements',this)">🏆 Achievements</div>
+      <div class="nav-item active" data-nav="dashboard" onclick="goto('dashboard')">📊 Dashboard</div>
+      <div class="nav-item" data-nav="habits" onclick="goto('habits')">✅ Habits</div>
+      <div class="nav-item" data-nav="week" onclick="goto('week')">📅 Wochenübersicht</div>
+      <div class="nav-item" data-nav="stats" onclick="goto('stats')">📈 Statistiken</div>
+      <div class="nav-item" data-nav="achievements" onclick="goto('achievements')">🏆 Achievements</div>
+      <div class="nav-section">Held</div>
+      <div class="nav-item" data-nav="avatar" onclick="goto('avatar','look')">🧙 Avatar</div>
+      <div class="nav-item" data-nav="skills" onclick="goto('avatar','skills')">⚔️ Skills</div>
+      <div class="nav-item" data-nav="shop" onclick="goto('avatar','shop')">🛒 Shop</div>
       <div class="nav-section">Tools</div>
-      <div class="nav-item" onclick="goto('pomodoro',this)">⏱ Pomodoro</div>
-      <div class="nav-item" onclick="goto('journal',this)">📓 Tagebuch</div>
-      <div class="nav-item" onclick="goto('planner',this)">🗓 Zeitplaner</div>
+      <div class="nav-item" data-nav="pomodoro" onclick="goto('pomodoro')">⏱ Pomodoro</div>
+      <div class="nav-item" data-nav="journal" onclick="goto('journal')">📓 Tagebuch</div>
+      <div class="nav-item" data-nav="planner" onclick="goto('planner')">🗓 Zeitplaner</div>
       <div class="nav-section">Konto</div>
       <div class="nav-item" onclick="logout()">↪ Abmelden</div>
     </nav>
     <div class="sidebar-footer">
       <div class="streak-badge">
         <div style="font-size:1rem">🔥</div>
-        <div class="streak-info">
+        <div class="streak-info" style="flex:1">
           <div class="streak-num" id="sidebar-streak">0</div>
           <div class="streak-label">Tage Streak</div>
         </div>
+        <div style="font-size:.68rem;color:var(--blue)" id="sidebar-jokers" title="Joker (Streak-Schutz)">🃏 0</div>
       </div>
-      <div class="xp-level-block">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.35rem">
-          <div style="font-size:.72rem;font-weight:700;color:var(--gold)" id="sidebar-level">Anfänger</div>
-          <div style="font-size:.6rem;color:var(--text3);background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.1rem .4rem" id="sidebar-lvl-num">Lvl 1</div>
-        </div>
-        <div class="xp-bar" style="margin-bottom:.35rem">
-          <div class="xp-bar-fill" id="xp-bar-fill" style="width:0%"></div>
-        </div>
-        <div style="display:flex;justify-content:space-between;font-size:.58rem;color:var(--text3)">
-          <span id="sidebar-xp-current">0 XP</span>
-          <span id="sidebar-xp-needed">bis Level 2</span>
-        </div>
-        <div style="text-align:right;margin-top:.35rem">
-          <span onclick="openXpResetModal()" style="font-size:.55rem;color:var(--text3);cursor:pointer;text-decoration:underline;opacity:.5">XP korrigieren</span>
+      <div class="side-avatar" onclick="goto('avatar','look')">
+        <div class="side-avatar-img" id="side-avatar-img"></div>
+        <div style="min-width:0;flex:1">
+          <div class="side-avatar-lvl" id="side-avatar-lvl">Level 0</div>
+          <div class="side-avatar-title" id="side-avatar-title">Anfänger</div>
+          <div class="side-avatar-meta"><span id="side-avatar-coins">🪙 0</span></div>
         </div>
       </div>
     </div>
@@ -343,7 +377,6 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 
   <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeSidebar()"></div>
 
-  <!-- MAIN -->
   <main class="main">
     <div class="topbar">
       <div class="topbar-left">
@@ -352,19 +385,18 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
       </div>
       <div class="topbar-right">
         <div class="date-badge" id="today-date"></div>
+        <div class="coin-badge" id="top-coins" onclick="goto('avatar','shop')" title="Münzen – zum Shop">🪙 0</div>
         <button class="btn btn-primary" onclick="openAddHabit()">+ Habit</button>
       </div>
     </div>
 
     <!-- DASHBOARD -->
     <div class="panel active" id="panel-dashboard">
-      <!-- Tages-Intention -->
-      <div class="intention-banner" id="intention-banner">
+      <div class="intention-banner">
         <span style="font-size:1rem">🎯</span>
         <span class="intention-text" id="intention-text">Noch keine Intention für heute gesetzt.</span>
-        <span class="intention-edit" onclick="openIntentionModal()">✏ Setzen</span>
+        <span class="intention-edit" id="intention-edit" onclick="openIntentionModal()">✏ Setzen</span>
       </div>
-
       <div class="metrics">
         <div class="metric-card gold">
           <div class="m-label">Heute erledigt</div>
@@ -372,20 +404,17 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
           <div class="m-sub" id="m-today-sub">Noch nichts abgehakt</div>
         </div>
         <div class="metric-card green">
-          <div class="m-label">Längste Streak</div>
+          <div class="m-label">Streak</div>
           <div class="m-val" id="m-streak">0</div>
-          <div class="m-sub">Tage in Folge</div>
+          <div class="m-sub" id="m-streak-sub">Tage in Folge</div>
         </div>
         <div class="metric-card">
           <div class="m-label">Pomodoros heute</div>
           <div class="m-val" id="m-pomos">0</div>
-          <div class="m-sub">à 25 Minuten</div>
+          <div class="m-sub" id="m-pomos-sub">Fokus-Minuten: 0</div>
         </div>
       </div>
-
-      <!-- Wochenrückblick (nur Sonntags) -->
       <div id="wochenrueckblick" style="display:none"></div>
-
       <div class="section-header">
         <div class="section-label">Heute – <span id="dash-progress"></span></div>
       </div>
@@ -407,41 +436,39 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 
     <!-- STATS -->
     <div class="panel" id="panel-stats">
-      <div class="section-header" style="margin-bottom:1.5rem">
-        <div class="section-label">Statistiken & Fortschritt</div>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1.5rem">
-        <div style="background:var(--bg2);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:1.1rem;text-align:center;background:linear-gradient(135deg,rgba(201,168,76,0.06),var(--bg2))">
-          <div style="font-size:2rem;font-family:'Syne',sans-serif;font-weight:800;color:var(--gold)" id="stat-streak-days">0</div>
-          <div style="font-size:.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-top:.25rem">Tage Streak</div>
-          <div style="font-size:.65rem;color:var(--text3);margin-top:.15rem" id="stat-streak-start">–</div>
+      <div class="section-header" style="margin-bottom:1.5rem"><div class="section-label">Statistiken & Fortschritt</div></div>
+      <div class="metrics">
+        <div class="metric-card gold" style="text-align:center">
+          <div class="m-val" style="color:var(--gold)" id="stat-streak-days">0</div>
+          <div class="m-label" style="margin-top:.25rem">Tage Streak</div>
+          <div class="m-sub" id="stat-streak-start">–</div>
         </div>
-        <div style="background:var(--bg2);border:1px solid rgba(76,175,125,0.2);border-radius:12px;padding:1.1rem;text-align:center;background:linear-gradient(135deg,rgba(76,175,125,0.06),var(--bg2))">
-          <div style="font-size:2rem;font-family:'Syne',sans-serif;font-weight:800;color:var(--green)" id="stat-streak-weeks">0</div>
-          <div style="font-size:.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-top:.25rem">Wochen Streak</div>
-          <div style="font-size:.65rem;color:var(--text3);margin-top:.15rem">Vollständige Wochen</div>
+        <div class="metric-card green" style="text-align:center">
+          <div class="m-val" style="color:var(--green)" id="stat-streak-weeks">0</div>
+          <div class="m-label" style="margin-top:.25rem">Wochen Streak</div>
+          <div class="m-sub">Vollständige Wochen</div>
         </div>
-        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.1rem;text-align:center">
-          <div style="font-size:2rem;font-family:'Syne',sans-serif;font-weight:800;color:var(--blue)" id="stat-total-sessions">0</div>
-          <div style="font-size:.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-top:.25rem">Pomodoro Sessions</div>
-          <div style="font-size:.65rem;color:var(--text3);margin-top:.15rem" id="stat-pomo-hours">0 Stunden Fokus</div>
+        <div class="metric-card" style="text-align:center">
+          <div class="m-val" style="color:var(--blue)" id="stat-total-sessions">0</div>
+          <div class="m-label" style="margin-top:.25rem">Pomodoro Sessions</div>
+          <div class="m-sub" id="stat-pomo-hours">0 Stunden Fokus</div>
         </div>
       </div>
-      <div style="font-size:.62rem;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.75rem">Habits im Detail</div>
+      <div class="section-label" style="margin-bottom:.75rem">Habits im Detail</div>
       <div id="habit-stats-list" style="display:flex;flex-direction:column;gap:.65rem"></div>
-      <div style="font-size:.62rem;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin:1.5rem 0 .75rem">30-Tage Übersicht</div>
+      <div class="section-label" style="margin:1.5rem 0 .75rem">30-Tage Übersicht</div>
       <div id="heatmap" style="display:flex;flex-wrap:wrap;gap:4px"></div>
-      <div style="display:flex;align-items:center;gap:.75rem;margin-top:.75rem;font-size:.62rem;color:var(--text3)">
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:.75rem;margin-top:.75rem;font-size:.62rem;color:var(--text3)">
         <span style="display:flex;align-items:center;gap:.3rem"><span style="width:10px;height:10px;border-radius:2px;background:var(--green);display:inline-block"></span>Alle erledigt</span>
         <span style="display:flex;align-items:center;gap:.3rem"><span style="width:10px;height:10px;border-radius:2px;background:rgba(201,168,76,0.4);display:inline-block"></span>Teilweise</span>
         <span style="display:flex;align-items:center;gap:.3rem"><span style="width:10px;height:10px;border-radius:2px;background:rgba(224,92,92,0.2);display:inline-block"></span>Nichts</span>
-        <span style="display:flex;align-items:center;gap:.3rem"><span style="width:10px;height:10px;border-radius:2px;background:rgba(91,141,238,0.3);display:inline-block"></span>Streak-Schutz</span>
+        <span style="display:flex;align-items:center;gap:.3rem"><span style="width:10px;height:10px;border-radius:2px;background:rgba(91,141,238,0.3);display:inline-block"></span>Streak-Schutz / Joker</span>
       </div>
     </div>
 
-    <!-- WEEK VIEW -->
+    <!-- WEEK -->
     <div class="panel" id="panel-week">
-      <div class="section-header" style="margin-bottom:1rem">
+      <div class="section-header" style="margin-bottom:1rem;flex-wrap:wrap">
         <div class="section-label">Wochenübersicht</div>
         <div style="display:flex;gap:.4rem">
           <button class="btn" onclick="changeWeek(-1)">← Vorherige</button>
@@ -461,17 +488,87 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
       <div class="achieve-grid" id="achieve-grid"></div>
     </div>
 
+    <!-- AVATAR -->
+    <div class="panel" id="panel-avatar">
+      <div class="av-hero">
+        <div class="av-canvas" id="av-big"></div>
+        <div style="min-width:0">
+          <div class="av-name" id="av-name">Held</div>
+          <div class="av-title" id="av-title">Anfänger</div>
+          <div class="av-level-row">
+            <div class="av-level-num" id="av-level">0</div>
+            <div class="av-level-label">Avatar-Level<br><span id="av-rank" style="color:var(--text2)">Anfänger</span></div>
+          </div>
+          <div class="av-rank-next" id="av-rank-next"></div>
+          <div class="av-pills" id="av-pills"></div>
+        </div>
+      </div>
+
+      <div class="planner-tabs">
+        <button class="planner-tab" id="avtab-look" onclick="switchAvatarTab('look')">🎨 Aussehen</button>
+        <button class="planner-tab" id="avtab-skills" onclick="switchAvatarTab('skills')">⚔️ Skills</button>
+        <button class="planner-tab" id="avtab-shop" onclick="switchAvatarTab('shop')">🛒 Shop</button>
+        <button class="planner-tab" id="avtab-titles" onclick="switchAvatarTab('titles')">🏅 Titel</button>
+      </div>
+
+      <div id="av-look">
+        <div class="slot-group">
+          <div class="slot-title">Name deines Avatars</div>
+          <input class="form-input" id="av-name-input" maxlength="20" placeholder="z.B. Ole" oninput="setAvatarName(this.value)" style="max-width:280px">
+        </div>
+        <div id="av-editor"></div>
+      </div>
+
+      <div id="av-skills" style="display:none">
+        <div class="info-box">
+          <b>So funktioniert's:</b> Wähle vor jedem Pomodoro, an welchem Skill du arbeitest. Ein fertiger Fokus-Block (25 Min) gibt diesem Skill <b>25 XP</b>.
+          Dein <b>Avatar-Level ist die Summe aller Skill-Level</b>. Ab Skill-Level 5 gibt es <b>+10 % XP</b>, ab Level 10 <b>+20 %</b> auf diesen Skill.
+          Titel gibt es bei Skill-Level 5, 10 und 20. Alle 10 Avatar-Level bekommst du einen <b>Joker</b> geschenkt.
+        </div>
+        <div class="section-header">
+          <div class="section-label">Deine Skills (<span id="skill-count">0</span>)</div>
+          <button class="btn btn-primary" onclick="openSkillModal()">+ Skill</button>
+        </div>
+        <div class="skill-list" id="skill-list"></div>
+      </div>
+
+      <div id="av-shop" style="display:none">
+        <div class="info-box">
+          <b>Münzen verdienen:</b> 🪙 10 pro Pomodoro · 🪙 3 pro Habit · 🪙 10 Bonus, wenn alle Habits eines Tages erledigt sind · 🪙 5 pro Tagebuch-Tag · dazu Münzen für Achievements.
+          <div style="margin-top:.35rem">Dein Guthaben: <b id="shop-balance" style="color:var(--gold)">🪙 0</b></div>
+        </div>
+        <div class="section-label" style="margin-bottom:.75rem">Perks</div>
+        <div class="shop-grid" id="shop-perks"></div>
+        <div class="section-label" style="margin-bottom:.75rem">Kosmetik</div>
+        <div class="shop-grid" id="shop-cosmetics"></div>
+      </div>
+
+      <div id="av-titles" style="display:none">
+        <div class="info-box">Wähle, welcher Titel unter deinem Namen steht. Neue Titel bekommst du durch höhere Avatar-Ränge und durch Skill-Level 5, 10 und 20.</div>
+        <div class="section-label" style="margin-bottom:.6rem">Freigeschaltet</div>
+        <div class="title-list" id="title-list" style="margin-bottom:1.25rem"></div>
+        <div class="section-label" style="margin-bottom:.6rem">Als Nächstes erreichbar</div>
+        <div class="title-list" id="title-next"></div>
+      </div>
+    </div>
+
     <!-- POMODORO -->
     <div class="panel" id="panel-pomodoro">
       <div class="pomodoro-wrap">
+        <div class="pomo-skill-box">
+          <label class="form-label">Woran arbeitest du?</label>
+          <select class="form-input" id="pomo-skill" onchange="selectPomoSkill(this.value)"></select>
+          <div class="pomo-skill-info" id="pomo-skill-info"></div>
+        </div>
         <div class="timer-circle" id="timer-circle">
           <div class="timer-display" id="timer-display">25:00</div>
           <div class="timer-label" id="timer-label">FOKUS</div>
         </div>
         <div class="timer-btns">
-          <button class="btn" onclick="setMode('focus')">🎯 Fokus</button>
-          <button class="btn" onclick="setMode('short')">☕ Kurze Pause</button>
-          <button class="btn" onclick="setMode('long')">🛋 Lange Pause</button>
+          <button class="btn" id="mode-focus" onclick="setMode('focus')">🎯 Fokus</button>
+          <button class="btn" id="mode-deep" onclick="setMode('deep')" style="display:none">🧠 Deep Focus 50</button>
+          <button class="btn" id="mode-short" onclick="setMode('short')">☕ Kurze Pause</button>
+          <button class="btn" id="mode-long" onclick="setMode('long')">🛋 Lange Pause</button>
         </div>
         <div style="display:flex;gap:.75rem;margin-bottom:2rem">
           <button class="btn btn-primary" id="timer-btn" onclick="toggleTimer()">▶ Start</button>
@@ -501,6 +598,7 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
         <div id="journal-entries"></div>
       </div>
     </div>
+
     <!-- ZEITPLANER -->
     <div class="panel" id="panel-planner">
       <div class="planner-tabs">
@@ -508,8 +606,6 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
         <button class="planner-tab" id="ptab-tasks" onclick="switchPlannerTab('tasks')">✅ Aufgaben</button>
         <button class="planner-tab" id="ptab-templates" onclick="switchPlannerTab('templates')">🗂 Vorlagen</button>
       </div>
-
-      <!-- Wochenplan -->
       <div id="planner-week">
         <div class="week-nav">
           <button class="btn" onclick="changePlannerWeek(-1)">←</button>
@@ -520,20 +616,14 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
         </div>
         <div id="cal-container"></div>
       </div>
-
-      <!-- Aufgaben -->
       <div id="planner-tasks" style="display:none">
         <div class="section-header" style="margin-bottom:1rem">
           <div class="section-label">Aufgaben (<span id="task-count">0</span>)</div>
           <button class="btn btn-primary" onclick="openTaskModal()">+ Aufgabe</button>
         </div>
         <div class="task-list" id="task-list"></div>
-        <div id="no-tasks" style="display:none;text-align:center;padding:3rem;color:var(--text3);font-size:.75rem">
-          Noch keine Aufgaben — klicke auf „+ Aufgabe"
-        </div>
+        <div id="no-tasks" style="display:none;text-align:center;padding:3rem;color:var(--text3);font-size:.75rem">Noch keine Aufgaben — klicke auf „+ Aufgabe"</div>
       </div>
-
-      <!-- Vorlagen -->
       <div id="planner-templates" style="display:none">
         <div class="section-header" style="margin-bottom:1rem">
           <div class="section-label">Tagesablauf-Vorlagen (<span id="tpl-count">0</span>)</div>
@@ -543,9 +633,7 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
           Erstelle Vorlagen für typische Tage (z.B. "Schultag", "Wochenende"). Im Wochenplan kannst du eine Vorlage auf jeden Tag anwenden — alle Zeitblöcke werden automatisch übernommen.
         </p>
         <div class="tpl-list" id="tpl-list"></div>
-        <div id="no-tpls" style="display:none;text-align:center;padding:3rem;color:var(--text3);font-size:.75rem">
-          Noch keine Vorlagen — klicke auf „+ Vorlage"
-        </div>
+        <div id="no-tpls" style="display:none;text-align:center;padding:3rem;color:var(--text3);font-size:.75rem">Noch keine Vorlagen — klicke auf „+ Vorlage"</div>
       </div>
     </div>
   </main>
@@ -563,7 +651,6 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
     <div class="form-group">
       <label class="form-label">Icon</label>
       <div class="emoji-grid" id="emoji-grid"></div>
-      <input type="hidden" id="habit-emoji" value="⭐">
     </div>
     <div class="form-group">
       <label class="form-label">Häufigkeit</label>
@@ -591,6 +678,33 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
     <div class="modal-actions">
       <button class="btn" onclick="closeHabitModal()">Abbrechen</button>
       <button class="btn btn-primary" onclick="saveHabit()">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<!-- SKILL MODAL -->
+<div class="modal-overlay" id="skill-modal">
+  <div class="modal">
+    <h3 id="skill-modal-title">Neuer Skill</h3>
+    <input type="hidden" id="edit-skill-id">
+    <div style="display:grid;grid-template-columns:1fr 80px;gap:.6rem">
+      <div class="form-group">
+        <label class="form-label">Name</label>
+        <input class="form-input" id="skill-name" maxlength="24" placeholder="z.B. Französisch, Coden, Mathe">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Emoji</label>
+        <input class="form-input" id="skill-emoji" maxlength="4" placeholder="⭐" style="text-align:center;font-size:1.1rem">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Farbe</label>
+      <div style="display:flex;gap:.4rem;flex-wrap:wrap" id="skill-color-picker"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" id="skill-delete-btn" onclick="deleteSkill()" style="display:none;color:var(--red);border-color:rgba(224,92,92,0.3)">Löschen</button>
+      <button class="btn" onclick="closeSkillModal()">Abbrechen</button>
+      <button class="btn btn-primary" onclick="saveSkill()">Speichern</button>
     </div>
   </div>
 </div>
@@ -625,11 +739,9 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
         <input class="form-input" id="tpl-emoji" placeholder="📅" maxlength="2" style="text-align:center;font-size:1.1rem">
       </div>
     </div>
-
-    <div style="font-size:.62rem;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.6rem">Zeitblöcke dieser Vorlage</div>
+    <div class="section-label" style="margin-bottom:.6rem">Zeitblöcke dieser Vorlage</div>
     <div id="tpl-blocks-list" style="display:flex;flex-direction:column;gap:.35rem;margin-bottom:.6rem;max-height:260px;overflow-y:auto"></div>
     <button onclick="addTplBlockRow()" class="btn" style="width:100%;font-size:.72rem;margin-bottom:.85rem">+ Block hinzufügen</button>
-
     <div class="modal-actions">
       <button class="btn" id="tpl-delete-btn" onclick="deleteTemplate()" style="display:none;color:var(--red);border-color:rgba(224,92,92,0.3)">Löschen</button>
       <button class="btn" onclick="closeTemplateModal()">Abbrechen</button>
@@ -721,40 +833,13 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
   </div>
 </div>
 
-<!-- LEVEL-UP BANNER -->
-<div id="levelup-banner">
-  <div class="levelup-inner">
-    <div class="levelup-stars">⭐ ⭐ ⭐</div>
-    <div class="levelup-label">Level Up!</div>
-    <div class="levelup-num" id="levelup-num">Level 2</div>
-    <div class="levelup-name" id="levelup-name">Einsteiger</div>
-  </div>
-</div>
-
-<!-- XP RESET MODAL -->
-<div class="modal-overlay" id="xp-reset-modal">
-  <div class="modal" style="max-width:340px">
-    <h3>⚡ XP korrigieren</h3>
-    <p style="font-size:.75rem;color:var(--text2);margin-bottom:1.1rem;line-height:1.65">Setze deine XP auf einen bestimmten Wert oder auf 0 zurück. Nützlich wenn durch einen Fehler zu viele XP gutgeschrieben wurden.</p>
-    <div class="form-group">
-      <label class="form-label">Neuer XP-Wert</label>
-      <input class="form-input" id="xp-reset-input" type="number" min="0" placeholder="z.B. 0">
-    </div>
-    <p style="font-size:.68rem;color:var(--text3);margin-bottom:.75rem">Aktuell: <strong id="xp-reset-current" style="color:var(--gold)">0 XP</strong></p>
-    <div class="modal-actions">
-      <button class="btn" onclick="closeXpResetModal()">Abbrechen</button>
-      <button class="btn" onclick="setXP(0)" style="color:var(--red);border-color:rgba(224,92,92,.3)">Auf 0 setzen</button>
-      <button class="btn btn-primary" onclick="setXPFromInput()">Speichern</button>
-    </div>
-  </div>
-</div>
-
-<!-- ACHIEVEMENT BANNER -->
-<div id="achieve-banner">
-  <div style="background:linear-gradient(135deg,#1a1200,#2a1f00);border:2px solid var(--gold);border-radius:14px;padding:1rem 1.5rem;text-align:center;min-width:260px;box-shadow:0 8px 32px rgba(0,0,0,0.5)">
-    <div style="font-size:2rem;margin-bottom:.4rem" id="achieve-banner-icon">🏆</div>
-    <div class="achieve-title" id="achieve-banner-title">Achievement freigeschaltet!</div>
-    <div class="achieve-sub" id="achieve-banner-desc"></div>
+<!-- BANNER (Achievements & Level-Ups) -->
+<div id="big-banner">
+  <div class="banner-inner">
+    <div class="banner-icon" id="banner-icon">⭐</div>
+    <div class="banner-label" id="banner-label">Level Up!</div>
+    <div class="banner-title" id="banner-title">Level 2</div>
+    <div class="banner-sub" id="banner-sub"></div>
   </div>
 </div>
 
@@ -765,357 +850,745 @@ const SUPA_URL = 'https://ikvwvyjipcrmskblmpyt.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlrdnd2eWppcGNybXNrYmxtcHl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5NzQ3ODUsImV4cCI6MjA5NDU1MDc4NX0.co8zmRcPjXzCZylSvoSVZqroFYvy6HTxW3PkvCtt4s8';
 const _sb = window.supabase.createClient(SUPA_URL, SUPA_KEY);
 
-let HABITS = [], TODAY_COMPLETIONS = new Set(), ALL_COMPLETIONS = [];
-let currentWeekOffset = 0, timerInterval = null;
-let timerSeconds = 25*60, timerRunning = false, timerMode = 'focus';
-let pomosToday = 0, pomosTotal = 0, toastTimer, achieveTimer;
-const MODES = { focus:25*60, short:5*60, long:15*60 };
+// ── STATE ────────────────────────────────────────────────────
+let USER_ID = null;
+let HABITS = [], ALL_COMPLETIONS = [], COMPLETION_INDEX = new Set(), TODAY_COMPLETIONS = new Set();
+let SKILLS = [], SESSIONS = [], PROFILE = null;
+let JOURNAL_COUNT = 0, JOURNAL_TODAY_EXISTS = false;
+let TIME_BLOCKS = [], TASKS = [], DAY_TEMPLATES = [], TEMPLATE_BLOCKS = [];
+let currentWeekOffset = 0, plannerWeekOffset = 0, activePlannerTab = 'week', activeAvatarTab = 'look';
+let timerInterval = null, timerSeconds = 25 * 60, timerRunning = false, timerMode = 'focus';
+let toastTimer;
+const MODES = { focus: 25 * 60, deep: 50 * 60, short: 5 * 60, long: 15 * 60 };
+const MODE_LABELS = { focus: 'FOKUS', deep: 'DEEP FOCUS', short: 'PAUSE', long: 'LANGE PAUSE' };
 
-// ── XP / LEVEL SYSTEM ────────────────────────────────────────
-const XP_PER_HABIT = 10;
-const XP_PER_POMO = 25;
-const XP_PER_FULL_DAY = 30;    // alle Habits eines Tages erledigt
-const XP_PER_JOURNAL = 15;
-const LEVEL_NAMES = ['Anfänger','Einsteiger','Lernender','Durchhalter','Fokussierter',
-  'Disziplinierter','Fortgeschrittener','Profi','Meister','Fokus-Meister',
-  'Grandmaster','Legende'];
-
-function xpForLevel(lvl) { return lvl * lvl * 50; }  // Level 1→50 XP, Level 2→200 XP, ...
-function getLevel(xp) {
-  let lvl = 1;
-  while (xpForLevel(lvl + 1) <= xp && lvl < 11) lvl++;
-  return lvl;
+// ── HELPERS ──────────────────────────────────────────────────
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function ymd(d) { const x = d instanceof Date ? d : new Date(d); return x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0') + '-' + String(x.getDate()).padStart(2, '0'); }
+function dOf(ds) { const [y, m, d] = ds.split('-').map(Number); return new Date(y, m - 1, d); }
+function todayStr() { return ymd(new Date()); }
+function addDays(ds, n) { const d = dOf(ds); d.setDate(d.getDate() + n); return ymd(d); }
+function weekdayNum(ds) { return dOf(ds).getDay() || 7; }
+function formatDate(ds) { return dOf(ymd(ds)).toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: 'long', year: 'numeric' }); }
+function getWeekDays(offset = 0) {
+  const t = todayStr(), monday = addDays(t, -(weekdayNum(t) - 1) + offset * 7);
+  return Array.from({ length: 7 }, (_, i) => addDays(monday, i));
 }
-function getLevelProgress(xp) {
-  const lvl = getLevel(xp);
-  const start = xpForLevel(lvl);
-  const end = xpForLevel(lvl + 1);
-  return { lvl, pct: Math.round((xp - start) / (end - start) * 100), current: xp - start, needed: end - start };
+function shade(hex, amt) {
+  const n = parseInt(hex.slice(1), 16);
+  const f = v => Math.max(0, Math.min(255, Math.round(v * (1 + amt))));
+  return '#' + [f(n >> 16), f((n >> 8) & 255), f(n & 255)].map(v => v.toString(16).padStart(2, '0')).join('');
 }
-function addXP(amount, label) {
-  const xp = parseInt(localStorage.getItem('ttl_xp') || '0');
-  const oldLevel = getLevel(xp);
-  const newXP = xp + amount;
-  localStorage.setItem('ttl_xp', newXP);
-  const newLevel = getLevel(newXP);
 
-  // Animate XP bar: first set to old value (no transition), then to new (with transition)
-  const fill = document.getElementById('xp-bar-fill');
-  if (fill) {
-    fill.style.transition = 'none';
-    const { pct: oldPct } = getLevelProgress(xp);
-    fill.style.width = oldPct + '%';
-    requestAnimationFrame(() => {
-      fill.style.transition = 'width .8s ease';
-      const { pct: newPct } = getLevelProgress(newXP);
-      fill.style.width = newPct + '%';
-      // Pulse glow effect
-      fill.style.boxShadow = '0 0 8px var(--gold)';
-      setTimeout(() => fill.style.boxShadow = 'none', 1200);
-    });
-  }
-
-  updateXPBar();
-
-  if (newLevel > oldLevel) {
-    // Level-Up: eigenes Banner statt Toast
-    showLevelUpBanner(newLevel);
-  } else {
-    // Normaler XP-Gain: informativer Toast mit Fortschritt
-    const { current, needed } = getLevelProgress(newXP);
-    const toNext = needed - current;
-    const pct = Math.round(current / needed * 100);
-    showToast(`+${amount} XP · ${label} — Level ${newLevel} · ${pct}% (noch ${toNext} XP bis Level ${newLevel + 1})`);
-  }
-
-  // Schwebende XP-Zahl
+// ── TOAST / FLOAT / BANNER ───────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+function floatText(txt, color) {
   const el = document.createElement('div');
-  el.className = 'xp-float';
-  el.textContent = '+' + amount + ' XP';
-  el.style.cssText = `left:${Math.random() * 200 + 100}px;top:${Math.random() * 100 + 100}px`;
+  el.className = 'float-text';
+  el.textContent = txt;
+  if (color) el.style.color = color;
+  el.style.left = (window.innerWidth / 2 - 40 + Math.random() * 80) + 'px';
+  el.style.top = (window.innerHeight / 2 - 60 + Math.random() * 40) + 'px';
   document.body.appendChild(el);
   setTimeout(() => el.remove(), 1200);
 }
-
-let levelUpTimer;
-function showLevelUpBanner(level) {
-  const banner = document.getElementById('levelup-banner');
-  const nameEl = document.getElementById('levelup-name');
-  const numEl = document.getElementById('levelup-num');
-  if (!banner) return;
-  nameEl.textContent = LEVEL_NAMES[level - 1];
-  numEl.textContent = 'Level ' + level;
-  banner.classList.add('show');
-  clearTimeout(levelUpTimer);
-  levelUpTimer = setTimeout(() => banner.classList.remove('show'), 5000);
+const bannerQueue = []; let bannerBusy = false;
+function showBanner(icon, label, title, sub) { bannerQueue.push({ icon, label, title, sub }); if (!bannerBusy) nextBanner(); }
+function nextBanner() {
+  const b = bannerQueue.shift(), el = document.getElementById('big-banner');
+  if (!b) { bannerBusy = false; return; }
+  bannerBusy = true;
+  document.getElementById('banner-icon').textContent = b.icon;
+  document.getElementById('banner-label').textContent = b.label;
+  document.getElementById('banner-title').textContent = b.title;
+  document.getElementById('banner-sub').textContent = b.sub || '';
+  el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
+  setTimeout(() => { el.classList.remove('show'); setTimeout(nextBanner, 350); }, 4000);
 }
 
-function updateXPBar() {
-  const xp = parseInt(localStorage.getItem('ttl_xp') || '0');
-  const { lvl, pct, current, needed } = getLevelProgress(xp);
-  const nameEl = document.getElementById('sidebar-level');
-  const numEl = document.getElementById('sidebar-lvl-num');
-  const curEl = document.getElementById('sidebar-xp-current');
-  const nedEl = document.getElementById('sidebar-xp-needed');
-  const fill = document.getElementById('xp-bar-fill');
-  if (nameEl) nameEl.textContent = LEVEL_NAMES[lvl - 1];
-  if (numEl) numEl.textContent = 'Lvl ' + lvl;
-  if (curEl) curEl.textContent = current + ' XP';
-  if (nedEl) nedEl.textContent = 'bis Level ' + (lvl + 1);
-  if (fill) fill.style.width = pct + '%';
+// ══════════════════════════════════════════════════════════════
+//  AVATAR: PIXEL-GRAFIK
+// ══════════════════════════════════════════════════════════════
+// Raster 16 × 24. Jedes Zeichen = ein Pixel, "." = durchsichtig.
+// S/s Haut · E Auge · M Mund · K Schuhe · H/h Haare · T/t Oberteil · D Detail
+// P/p Hose · C/c Zubehör · Y Gold · R Rot · X/x Metall · B Leder · W Weiß
+const BODY = { y: 0, rows: [
+  '................', '................',
+  '.....SSSSSS.....', '....SSSSSSSS....', '....SSSSSSSS....',
+  '....SSESSESS....', '...sSSSSSSSSs...', '....SSSSSSSS....',
+  '....SSSMMSSS....', '.....SSSSSS.....', '......ssss......',
+  '..SSSSSSSSSSSS..', '..SSSSSSSSSSSS..', '..SSSSSSSSSSSS..',
+  '..SSSSSSSSSSSS..', '..SSSSSSSSSSSS..', '..SSSSSSSSSSSS..',
+  '..ss.SSSSSS.ss..', '.....SS..SS.....', '.....SS..SS.....',
+  '.....SS..SS.....', '.....SS..SS.....', '.....KK..KK.....', '....KKK..KKK....'
+] };
+
+const SKIN_TONES = ['#f6d5b8', '#ebba92', '#cf9468', '#a8703f', '#7d4e2b', '#573520'];
+const TOP_COLORS = ['#5b8dee', '#e05c5c', '#4caf7d', '#2b2b38', '#e9e7df', '#c9a84c', '#9b59b6', '#e08a3c'];
+const PANTS_COLORS = ['#2f4a7a', '#22222b', '#6b5a3e', '#3d5a3a', '#7a7a86', '#7b2e3a'];
+
+// Freischalt-Arten: free | level (Avatar-Level) | shop (Münzen) | achieve (Achievement)
+const ITEMS = {
+  hair: [
+    { id: 'none', name: 'Glatze', unlock: { type: 'free' } },
+    { id: 'short', name: 'Kurz', unlock: { type: 'free' }, map: { y: 1, rows: ['.....HHHHHH.....', '....HHHHHHHH....', '....HHHHHHHH....', '....Hh....hH....'] } },
+    { id: 'spiky', name: 'Stachelig', unlock: { type: 'free' }, map: { y: 0, rows: ['....H..H..H.....', '....HH.HH.HH....', '....HHHHHHHH....', '...hHHHHHHHHh...', '....H......H....'] } },
+    { id: 'long', name: 'Lang', unlock: { type: 'free' }, map: { y: 1, rows: ['.....HHHHHH.....', '....HHHHHHHH....', '...HHHHHHHHHH...', '...HH......HH...', '...Hh......hH...', '...Hh......hH...', '...Hh......hH...', '...Hh......hH...', '...Hh......hH...', '...Hh......hH...', '...hh......hh...'] } },
+    { id: 'bun', name: 'Dutt', unlock: { type: 'free' }, map: { y: 0, rows: ['......HHHH......', '......hHHh......', '....HHHHHHHH....', '....HHHHHHHH....', '....H......H....'] } },
+    { id: 'afro', name: 'Locken', unlock: { type: 'level', n: 3 }, map: { y: 0, rows: ['...HHHHHHHHHH...', '..HHHHHHHHHHHH..', '..HHHHHHHHHHHH..', '..HHHHHHHHHHHH..', '..HHh......hHH..', '..HH........HH..', '..Hh........hH..'] } },
+    { id: 'mohawk', name: 'Iro', unlock: { type: 'level', n: 8 }, map: { y: 0, rows: ['.......HH.......', '......HHHH......', '......HHHH......', '....hhHHHHhh....'] } },
+  ],
+  hairColor: [
+    { id: 'black', name: 'Schwarz', color: '#1f1c1c', unlock: { type: 'free' } },
+    { id: 'brown', name: 'Braun', color: '#5c3b23', unlock: { type: 'free' } },
+    { id: 'blonde', name: 'Blond', color: '#d9b45a', unlock: { type: 'free' } },
+    { id: 'red', name: 'Rot', color: '#a8442a', unlock: { type: 'free' } },
+    { id: 'gray', name: 'Grau', color: '#8f8f8f', unlock: { type: 'free' } },
+    { id: 'blue', name: 'Blau', color: '#3d7be0', unlock: { type: 'level', n: 10 } },
+    { id: 'pink', name: 'Pink', color: '#e66aa8', unlock: { type: 'shop', price: 60 } },
+    { id: 'green', name: 'Grün', color: '#3fae6b', unlock: { type: 'shop', price: 60 } },
+    { id: 'gold', name: 'Gold', color: '#e8c97a', unlock: { type: 'achieve', id: 'fortnight' } },
+    { id: 'white', name: 'Silber', color: '#eef0f4', unlock: { type: 'level', n: 20 } },
+  ],
+  top: [
+    { id: 'tshirt', name: 'T-Shirt', unlock: { type: 'free' }, map: { y: 11, rows: ['..TTTTTTTTTTTT..', '..tTTTTTTTTTTt..', '....TTTTTTTT....', '....TTTTTTTT....', '....TTTTTTTT....', '....tttttttt....'] } },
+    { id: 'hoodie', name: 'Hoodie', unlock: { type: 'free' }, map: { y: 10, rows: ['.....T....T.....', '..TTTTTTTTTTTT..', '..TTTTTDDTTTTT..', '..TTTTTDDTTTTT..', '..TTTTTTTTTTTT..', '..TttTTTTTTttT..', '..tttttttttttt..'] } },
+    { id: 'shirt', name: 'Hemd & Krawatte', unlock: { type: 'level', n: 5 }, map: { y: 11, rows: ['..TTTTTRRTTTTT..', '..TTTTTRRTTTTT..', '..TTTTTRRTTTTT..', '..TTTTTRRTTTTT..', '..TTTTTTRTTTTT..', '..tttttttttttt..'] } },
+    { id: 'robe', name: 'Magierrobe', unlock: { type: 'level', n: 15 }, map: { y: 10, rows: ['.....T....T.....', '..TTTTTTTTTTTT..', '..TTTTTYYTTTTT..', '..TTTTTYYTTTTT..', '..TTTTTYYTTTTT..', '..TTTTTYYTTTTT..', '..TTTTTYYTTTTT..', '..ss.TTYYTT.ss..', '....TTTYYTTT....', '....TTTYYTTT....', '....TTTYYTTT....', '....tttttttt....'] } },
+    { id: 'armor', name: 'Rüstung', unlock: { type: 'level', n: 20 }, map: { y: 11, rows: ['..XXXXXXXXXXXX..', '..XxXXXXXXXXxX..', '..XXxXXXXXXxXX..', '..XXXXXYYXXXXX..', '..XXxXXXXXXxXX..', '..xxBBBBBBBBxx..'] } },
+    { id: 'goldarmor', name: 'Goldrüstung', unlock: { type: 'achieve', id: 'month1' }, colors: { X: '#e8c97a', x: '#b08a2e', Y: '#d63c4a' }, map: { y: 11, rows: ['..XXXXXXXXXXXX..', '..XxXXXXXXXXxX..', '..XXxXXXXXXxXX..', '..XXXXXYYXXXXX..', '..XXxXXXXXXxXX..', '..xxBBBBBBBBxx..'] } },
+  ],
+  pants: [
+    { id: 'jeans', name: 'Lange Hose', unlock: { type: 'free' }, map: { y: 17, rows: ['.....PPPPPP.....', '.....PP..PP.....', '.....Pp..pP.....', '.....PP..PP.....', '.....pp..pp.....'] } },
+    { id: 'shorts', name: 'Shorts', unlock: { type: 'free' }, map: { y: 17, rows: ['.....PPPPPP.....', '.....Pp..pP.....'] } },
+    { id: 'armorlegs', name: 'Beinschienen', unlock: { type: 'level', n: 20 }, map: { y: 17, rows: ['.....XXXXXX.....', '.....Xx..xX.....', '.....Xx..xX.....', '.....Xx..xX.....', '.....XX..XX.....'] } },
+  ],
+  face: [
+    { id: 'none', name: 'Nichts', unlock: { type: 'free' } },
+    { id: 'sunglasses', name: 'Sonnenbrille', unlock: { type: 'level', n: 5 }, map: { y: 5, rows: ['....KKKKKKKK....', '.....KK..KK.....'] } },
+    { id: 'glasses', name: 'Lesebrille', unlock: { type: 'achieve', id: 'journal10' }, map: { y: 5, rows: ['....K..KK..K....', '.....KK..KK.....'] } },
+  ],
+  head: [
+    { id: 'none', name: 'Nichts', unlock: { type: 'free' } },
+    { id: 'headband', name: 'Stirnband', unlock: { type: 'achieve', id: 'first_habit' }, map: { y: 3, rows: ['....RRRRRRRR....'] } },
+    { id: 'cap', name: 'Cap', unlock: { type: 'shop', price: 40 }, colors: { C: '#e05c5c', c: '#a83a3a' }, map: { y: 1, rows: ['.....CCCCCC.....', '....CCCCCCCC....', '....ccccccccCC..'] } },
+    { id: 'wizard', name: 'Zauberhut', unlock: { type: 'achieve', id: 'pomo_total' }, colors: { C: '#5b3fa0', c: '#3f2a75' }, map: { y: 0, rows: ['.......CC.......', '......CCCC......', '.....CCYCCC.....', '..cccccccccccc..'] } },
+    { id: 'helmet', name: 'Ritterhelm', unlock: { type: 'level', n: 25 }, map: { y: 0, rows: ['.....XXXXXX.....', '....XXXXXXXX....', '....XxXXXXxX....', '....XXXXXXXX....', '....X......X....'] } },
+    { id: 'crown', name: 'Krone', unlock: { type: 'achieve', id: 'month1' }, map: { y: 0, rows: ['....Y.Y..Y.Y....', '....YYYYYYYY....', '....YRYYYYRY....'] } },
+  ],
+  back: [
+    { id: 'none', name: 'Nichts', unlock: { type: 'free' } },
+    { id: 'cape_red', name: 'Roter Umhang', unlock: { type: 'achieve', id: 'week1' }, colors: { C: '#c0392b', c: '#8e2a20' } },
+    { id: 'cape_blue', name: 'Blauer Umhang', unlock: { type: 'shop', price: 150 }, colors: { C: '#3d6fd1', c: '#2a4f99' } },
+    { id: 'cape_purple', name: 'Königsumhang', unlock: { type: 'level', n: 30 }, colors: { C: '#7d3fa8', c: '#572c75' } },
+  ],
+  bg: [
+    { id: 'plain', name: 'Schlicht', unlock: { type: 'free' } },
+    { id: 'night', name: 'Nacht', unlock: { type: 'free' } },
+    { id: 'forest', name: 'Wald', unlock: { type: 'level', n: 3 } },
+    { id: 'sunset', name: 'Sonnenuntergang', unlock: { type: 'achieve', id: 'all_done' } },
+    { id: 'space', name: 'Weltall', unlock: { type: 'shop', price: 120 } },
+    { id: 'gold', name: 'Goldhalle', unlock: { type: 'level', n: 30 } },
+  ],
+  aura: [
+    { id: 'none', name: 'Keine', unlock: { type: 'free' } },
+    { id: 'blue', name: 'Blau', color: '#5b8dee', unlock: { type: 'achieve', id: 'pomo5' } },
+    { id: 'green', name: 'Grün', color: '#4caf7d', unlock: { type: 'level', n: 10 } },
+    { id: 'purple', name: 'Violett', color: '#b46be0', unlock: { type: 'shop', price: 200 } },
+    { id: 'gold', name: 'Gold', color: '#f2c94c', unlock: { type: 'achieve', id: 'month1' } },
+  ],
+};
+const CAPE_MAP = { y: 10, rows: ['....CC....CC....', '..CCCCCCCCCCCC..', '.CCCCCCCCCCCCCC.', '.CCCCCCCCCCCCCC.', '.CCCCCCCCCCCCCC.', '.CCCCCCCCCCCCCC.', '.CCCCCCCCCCCCCC.', '.CCCCCCCCCCCCCC.', '.CCCCCCCCCCCCCC.', '.CCCCCCCCCCCCCC.', '.cCCCCCCCCCCCCc.', '.cccccccccccccc.'] };
+
+const DEFAULT_AVATAR = { name: '', skin: 1, hair: 'short', hairColor: 'brown', top: 'hoodie', topColor: '#5b8dee', pants: 'jeans', pantsColor: '#2f4a7a', face: 'none', head: 'none', back: 'none', bg: 'night', aura: 'none' };
+function avatarCfg() { return Object.assign({}, DEFAULT_AVATAR, PROFILE?.avatar || {}); }
+function findItem(slot, id) { return (ITEMS[slot] || []).find(i => i.id === id); }
+
+function pixelRects(layer, pal) {
+  let out = '';
+  layer.rows.forEach((row, r) => {
+    let x = 0;
+    while (x < row.length) {
+      const ch = row[x];
+      if (ch === '.' || !pal[ch]) { x++; continue; }
+      let w = 1;
+      while (x + w < row.length && row[x + w] === ch) w++;
+      out += `<rect x="${x}" y="${layer.y + r}" width="${w}" height="1" fill="${pal[ch]}"/>`;
+      x += w;
+    }
+  });
+  return out;
 }
 
-function openXpResetModal() {
-  const xp = parseInt(localStorage.getItem('ttl_xp') || '0');
-  document.getElementById('xp-reset-input').value = xp;
-  document.getElementById('xp-reset-current').textContent = xp + ' XP';
-  document.getElementById('xp-reset-modal').classList.add('open');
-}
-function closeXpResetModal() {
-  document.getElementById('xp-reset-modal').classList.remove('open');
-}
-function setXP(val) {
-  const newXP = Math.max(0, parseInt(val) || 0);
-  localStorage.setItem('ttl_xp', newXP);
-  updateXPBar();
-  closeXpResetModal();
-  showToast('✓ XP auf ' + newXP + ' gesetzt');
-}
-function setXPFromInput() {
-  const val = document.getElementById('xp-reset-input').value;
-  setXP(val);
+function bgSvg(id, uid) {
+  const g = (a, b) => `<defs><linearGradient id="g${uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><rect x="-2" y="-2" width="20" height="27" fill="url(#g${uid})"/>`;
+  const stars = (pts, c = '#ffffff') => pts.map(([x, y]) => `<rect x="${x}" y="${y}" width=".5" height=".5" fill="${c}" opacity=".85"/>`).join('');
+  switch (id) {
+    case 'night': return g('#0b1030', '#26366f') + stars([[-1, 0], [3, -1], [14, 1], [16.5, 4], [-1.2, 8], [16, 11], [0, 14], [13, -1.2]]) + '<rect x="-2" y="24" width="20" height="1" fill="#16203d"/>';
+    case 'forest': return g('#a8dcc8', '#4d8f63') + '<rect x="-2" y="14" width="3" height="10" fill="#2e6b3e"/><rect x="-1" y="11" width="1" height="3" fill="#2e6b3e"/><rect x="15" y="12" width="3" height="12" fill="#2e6b3e"/><rect x="16" y="9" width="1" height="3" fill="#2e6b3e"/><rect x="-2" y="24" width="20" height="1" fill="#3a2a18"/><rect x="-2" y="23.6" width="20" height=".4" fill="#5aa04f"/>';
+    case 'sunset': return g('#f7a35c', '#6e3a8a') + '<rect x="11" y="1" width="4" height="4" fill="#ffd98a" opacity=".9"/><rect x="-2" y="24" width="20" height="1" fill="#3f2446"/>';
+    case 'space': return g('#07031a', '#2b0f4f') + stars([[-1, 1], [2, -1.5], [6, 0], [15, 2], [17, 6], [-1.5, 10], [16, 15], [0, 18], [12, -1], [8, -1.6]], '#d8ccff') + '<rect x="-1.5" y="2" width="3" height="3" fill="#9b59b6"/><rect x="-1.5" y="3.2" width="3" height=".5" fill="#c08ae0"/><rect x="-2" y="24" width="20" height="1" fill="#1a0f30"/>';
+    case 'gold': return g('#2a1d05', '#b8913a') + '<rect x="-2" y="-2" width="2" height="26" fill="#e8c97a" opacity=".15"/><rect x="16" y="-2" width="2" height="26" fill="#e8c97a" opacity=".15"/><rect x="-2" y="24" width="20" height="1" fill="#5a4310"/><rect x="-2" y="23.6" width="20" height=".4" fill="#f2c94c"/>';
+    default: return '<rect x="-2" y="-2" width="20" height="27" fill="#14141f"/><rect x="-2" y="24" width="20" height="1" fill="#1c1c2a"/>';
+  }
 }
 
-// ── ACHIEVEMENTS ──────────────────────────────────────────────
-const ACHIEVEMENTS = [
-  { id:'first_habit', icon:'✅', name:'Erster Schritt', desc:'Ersten Habit erstellt', xp:50 },
-  { id:'week1', icon:'🔥', name:'Erste Woche', desc:'7 Tage Streak erreicht', xp:100 },
-  { id:'month1', icon:'💎', name:'Unaufhaltbar', desc:'30 Tage Streak erreicht', xp:300 },
-  { id:'all_done', icon:'⭐', name:'Perfektion', desc:'Alle Habits an einem Tag erledigt', xp:75 },
-  { id:'pomo5', icon:'⚡', name:'Fokus-Block', desc:'5 Pomodoros an einem Tag', xp:80 },
-  { id:'pomo_total', icon:'🎯', name:'Marathonläufer', desc:'50 Pomodoros insgesamt', xp:150 },
-  { id:'journal10', icon:'📓', name:'Selbstreflexion', desc:'10 Tagebucheinträge geschrieben', xp:100 },
-  { id:'fortnight', icon:'🏆', name:'14 Tage', desc:'14 Tage alle Habits erledigt', xp:200 },
-];
+function renderAvatarSVG(cfgIn, opts = {}) {
+  const cfg = Object.assign({}, DEFAULT_AVATAR, cfgIn || {});
+  const uid = Math.random().toString(36).slice(2, 9);
+  const skin = SKIN_TONES[cfg.skin] || SKIN_TONES[1];
+  const hc = (findItem('hairColor', cfg.hairColor) || ITEMS.hairColor[1]).color;
+  const base = {
+    S: skin, s: shade(skin, -0.15), E: '#1a1a2e', M: '#9a4a4a', K: '#26262e',
+    H: hc, h: shade(hc, -0.28), T: cfg.topColor, t: shade(cfg.topColor, -0.25), D: '#e9e7df',
+    P: cfg.pantsColor, p: shade(cfg.pantsColor, -0.25), Y: '#f2c94c', R: '#d63c4a', W: '#ffffff',
+    X: '#c3cad4', x: '#8a929e', B: '#5a3a1a', C: '#888', c: '#666'
+  };
+  const layer = (item, mapOverride) => {
+    if (!item) return '';
+    const map = mapOverride || item.map;
+    if (!map) return '';
+    return pixelRects(map, Object.assign({}, base, item.colors || {}));
+  };
+  let figure = '';
+  const back = findItem('back', cfg.back);
+  if (back && back.id !== 'none') figure += layer(back, CAPE_MAP);
+  figure += pixelRects(BODY, base);
+  const top = findItem('top', cfg.top);
+  if (!(top && top.id === 'robe')) figure += layer(findItem('pants', cfg.pants));
+  figure += layer(top);
+  figure += layer(findItem('hair', cfg.hair));
+  figure += layer(findItem('face', cfg.face));
+  figure += layer(findItem('head', cfg.head));
 
-function getUnlocked() {
-  try { return JSON.parse(localStorage.getItem('ttl_achievements') || '[]'); } catch { return []; }
-}
-function unlockAchievement(id) {
-  const unlocked = getUnlocked();
-  if (unlocked.includes(id)) return;
-  unlocked.push(id);
-  localStorage.setItem('ttl_achievements', JSON.stringify(unlocked));
-  const a = ACHIEVEMENTS.find(x => x.id === id);
-  if (!a) return;
-  addXP(a.xp, a.name);
-  // Show banner
-  document.getElementById('achieve-banner-icon').textContent = a.icon;
-  document.getElementById('achieve-banner-title').textContent = a.name;
-  document.getElementById('achieve-banner-desc').textContent = a.desc + ' • +' + a.xp + ' XP';
-  const banner = document.getElementById('achieve-banner');
-  banner.classList.add('show');
-  clearTimeout(achieveTimer);
-  achieveTimer = setTimeout(() => banner.classList.remove('show'), 4000);
-}
-function checkAchievements() {
-  const streak = calcStreak();
-  const unlocked = getUnlocked();
-  if (HABITS.length > 0 && !unlocked.includes('first_habit')) unlockAchievement('first_habit');
-  if (streak >= 7) unlockAchievement('week1');
-  if (streak >= 14) unlockAchievement('fortnight');
-  if (streak >= 30) unlockAchievement('month1');
-  if (pomosToday >= 5) unlockAchievement('pomo5');
-  if (pomosTotal >= 50) unlockAchievement('pomo_total');
-  const journalCount = parseInt(localStorage.getItem('ttl_journal_count') || '0');
-  if (journalCount >= 10) unlockAchievement('journal10');
-  const dueToday = HABITS.filter(h => isHabitDueToday(h));
-  if (dueToday.length > 0 && dueToday.every(h => TODAY_COMPLETIONS.has(h.id))) unlockAchievement('all_done');
-}
-function renderAchievements() {
-  const unlocked = getUnlocked();
-  const grid = document.getElementById('achieve-grid');
-  if (!grid) return;
-  grid.innerHTML = ACHIEVEMENTS.map(a => {
-    const isUnlocked = unlocked.includes(a.id);
-    return `<div class="achieve-card ${isUnlocked ? 'unlocked' : 'locked'}">
-      <div class="achieve-icon">${a.icon}</div>
-      <div>
-        <div class="achieve-name">${a.name}</div>
-        <div class="achieve-desc">${a.desc}</div>
-        ${isUnlocked ? `<div style="font-size:.6rem;color:var(--gold);margin-top:.2rem">+${a.xp} XP ✓</div>` : ''}
-      </div>
-    </div>`;
-  }).join('');
-  const count = unlocked.length;
-  const el = document.getElementById('achieve-count');
-  if (el) el.textContent = `${count} / ${ACHIEVEMENTS.length} freigeschaltet`;
+  const aura = findItem('aura', cfg.aura);
+  let filterDef = '', filterAttr = '';
+  if (aura && aura.color) {
+    filterDef = `<filter id="a${uid}" x="-40%" y="-40%" width="180%" height="180%"><feMorphology operator="dilate" radius=".45" in="SourceAlpha" result="d"/><feGaussianBlur in="d" stdDeviation=".7" result="b"/><feFlood flood-color="${aura.color}" flood-opacity=".95"/><feComposite in2="b" operator="in" result="glow"/><feMerge><feMergeNode in="glow"/><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`;
+    filterAttr = ` filter="url(#a${uid})"`;
+  }
+  const bob = opts.bob ? ' class="av-figure-bob"' : '';
+  return `<svg viewBox="-2 -2 20 27" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">${bgSvg(cfg.bg, uid)}<defs>${filterDef}</defs><g${bob}><g${filterAttr} shape-rendering="crispEdges">${figure}</g></g></svg>`;
 }
 
-// ── INTENTION ─────────────────────────────────────────────────
-function loadIntention() {
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 0);
-  const key = 'ttl_intention_' + todayStr();
-  const val = localStorage.getItem(key) || '';
-  const textEl = document.getElementById('intention-text');
-  const editEl = document.querySelector('.intention-edit');
-  if (textEl) textEl.textContent = val || 'Noch keine Intention für heute gesetzt.';
-  if (editEl) editEl.textContent = val ? '✏ Ändern' : '✏ Setzen';
-  // Show reminder in journal
-  const hour = new Date().getHours();
-  const reminder = document.getElementById('journal-intention-reminder');
-  if (reminder) reminder.style.display = hour >= 17 ? 'block' : 'none';
+// ══════════════════════════════════════════════════════════════
+//  SKILLS, LEVEL, TITEL
+// ══════════════════════════════════════════════════════════════
+// Level L ist erreicht bei 15·(L²−1) XP → Level 10 = 1.485 XP ≈ 60 Pomodoros ≈ 25 Std.
+function skillLevel(xp) { return Math.max(1, Math.floor(Math.sqrt((xp || 0) / 15 + 1))); }
+function xpAtLevel(L) { return 15 * (L * L - 1); }
+function skillProgress(xp) {
+  const L = skillLevel(xp), a = xpAtLevel(L), b = xpAtLevel(L + 1);
+  return { L, cur: xp - a, need: b - a, pct: Math.round((xp - a) / (b - a) * 100) };
 }
-function openIntentionModal() {
-  const key = 'ttl_intention_' + todayStr();
-  const val = localStorage.getItem(key) || '';
-  document.getElementById('intention-input').value = val;
-  document.getElementById('intention-modal').classList.add('open');
+function skillBonus(L) { return L >= 10 ? 0.2 : L >= 5 ? 0.1 : 0; }
+function avatarLevel() { return SKILLS.reduce((s, k) => s + skillLevel(k.xp), 0); }
+
+const RANK_NAMES = ['Anfänger', 'Einsteiger', 'Lernender', 'Durchhalter', 'Fokussierter', 'Disziplinierter', 'Fortgeschrittener', 'Profi', 'Meister', 'Fokus-Meister', 'Grandmaster', 'Legende'];
+const RANK_STEP = 5; // alle 5 Avatar-Level ein neuer Rang
+function rankIndex(lvl) { return Math.min(RANK_NAMES.length - 1, Math.floor(lvl / RANK_STEP)); }
+const SKILL_TITLES = [{ lvl: 5, suffix: 'Lehrling' }, { lvl: 10, suffix: 'Kenner' }, { lvl: 20, suffix: 'Meister' }];
+
+function earnedTitles() {
+  const out = [];
+  for (let i = 0; i <= rankIndex(avatarLevel()); i++) out.push(RANK_NAMES[i]);
+  SKILLS.forEach(s => {
+    const L = skillLevel(s.xp);
+    SKILL_TITLES.forEach(t => { if (L >= t.lvl) out.push(`${s.name}-${t.suffix}`); });
+  });
+  return out;
 }
-function closeIntentionModal() {
-  document.getElementById('intention-modal').classList.remove('open');
+function nextTitles() {
+  const out = [], lvl = avatarLevel(), ri = rankIndex(lvl);
+  if (ri < RANK_NAMES.length - 1) out.push({ name: RANK_NAMES[ri + 1], req: `Avatar-Level ${(ri + 1) * RANK_STEP}` });
+  SKILLS.forEach(s => {
+    const L = skillLevel(s.xp), t = SKILL_TITLES.find(t => L < t.lvl);
+    if (t) out.push({ name: `${s.name}-${t.suffix}`, req: `${s.name} Level ${t.lvl}` });
+  });
+  return out;
 }
-function saveIntention() {
-  const val = document.getElementById('intention-input').value.trim();
-  if (!val) { showToast('⚠ Bitte eine Intention eingeben'); return; }
-  // Store for TOMORROW (set in the evening, shown next day)
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const key = 'ttl_intention_' + tomorrow.toISOString().split('T')[0];
-  localStorage.setItem(key, val);
-  // Also update for today display if it's empty
-  const todayKey = 'ttl_intention_' + todayStr();
-  if (!localStorage.getItem(todayKey)) localStorage.setItem(todayKey, val);
-  closeIntentionModal();
-  loadIntention();
-  showToast('✓ Intention für morgen gesetzt');
+function activeTitle() {
+  const earned = earnedTitles();
+  if (PROFILE?.title && earned.includes(PROFILE.title)) return PROFILE.title;
+  return RANK_NAMES[rankIndex(avatarLevel())];
 }
 
-// ── STREAK-SCHUTZ ─────────────────────────────────────────────
-// Regel: 1 fehlender Tag ist okay, wenn der folgende Tag erledigt wurde.
-// 2 aufeinanderfolgende fehlende Tage brechen den Streak.
+// ── UNLOCKS ──────────────────────────────────────────────────
+function isUnlocked(slot, item) {
+  const u = item.unlock || { type: 'free' };
+  if (u.type === 'free') return true;
+  if (u.type === 'level') return avatarLevel() >= u.n;
+  if (u.type === 'shop') return (PROFILE?.inventory || []).includes(`${slot}:${item.id}`);
+  if (u.type === 'achieve') return (PROFILE?.achievements || []).includes(u.id);
+  return false;
+}
+function unlockText(item) {
+  const u = item.unlock;
+  if (u.type === 'level') return `Avatar-Level ${u.n}`;
+  if (u.type === 'shop') return `Shop · 🪙 ${u.price}`;
+  if (u.type === 'achieve') { const a = ACHIEVEMENTS.find(a => a.id === u.id); return `Achievement „${a ? a.name : u.id}"`; }
+  return '';
+}
+
+// ══════════════════════════════════════════════════════════════
+//  PROFIL (Supabase)
+// ══════════════════════════════════════════════════════════════
+async function ensureProfile() {
+  let { data, error } = await _sb.from('player_profiles').select('*').eq('user_id', USER_ID).maybeSingle();
+  if (error) { showToast('✗ Profil: ' + error.message); return; }
+  if (!data) {
+    const ins = await _sb.from('player_profiles').insert({ user_id: USER_ID, avatar: DEFAULT_AVATAR }).select().single();
+    if (ins.error) { showToast('✗ Profil: ' + ins.error.message); return; }
+    data = ins.data;
+  }
+  data.inventory = data.inventory || [];
+  data.achievements = data.achievements || [];
+  data.used_jokers = data.used_jokers || [];
+  PROFILE = data;
+}
+async function saveProfile(fields) {
+  if (!PROFILE) return;
+  Object.assign(PROFILE, fields);
+  const { error } = await _sb.from('player_profiles').update({ ...fields, updated_at: new Date().toISOString() }).eq('user_id', USER_ID);
+  if (error) showToast('✗ Speichern fehlgeschlagen: ' + error.message);
+}
+async function addCoins(n, label) {
+  if (!PROFILE || !n) return;
+  const coins = Math.max(0, (PROFILE.coins || 0) + n);
+  await saveProfile({ coins });
+  floatText((n > 0 ? '+' : '') + n + ' 🪙', n > 0 ? 'var(--gold)' : 'var(--red)');
+  updateHud();
+  if (label) showToast(`${n > 0 ? '+' : ''}${n} 🪙 · ${label}`);
+}
+
+// Kopfzeile, Sidebar und Avatar-Kopf aktualisieren
+function updateHud() {
+  if (!PROFILE) return;
+  const lvl = avatarLevel(), title = activeTitle();
+  document.getElementById('side-avatar-img').innerHTML = renderAvatarSVG(avatarCfg());
+  document.getElementById('side-avatar-lvl').textContent = 'Level ' + lvl;
+  document.getElementById('side-avatar-title').textContent = title;
+  document.getElementById('side-avatar-coins').textContent = '🪙 ' + (PROFILE.coins || 0);
+  document.getElementById('top-coins').textContent = '🪙 ' + (PROFILE.coins || 0);
+  document.getElementById('sidebar-jokers').textContent = '🃏 ' + (PROFILE.jokers || 0);
+  if (document.getElementById('panel-avatar').classList.contains('active')) renderAvatarHero();
+}
+
+async function checkJokerGrant() {
+  const g = Math.floor(avatarLevel() / 10);
+  if (g > (PROFILE.jokers_granted || 0)) {
+    const diff = g - (PROFILE.jokers_granted || 0);
+    await saveProfile({ jokers: (PROFILE.jokers || 0) + diff, jokers_granted: g });
+    showBanner('🃏', 'Geschenk', `+${diff} Joker`, `Für Avatar-Level ${g * 10}. Ein Joker rettet deinen Streak, wenn du 2 Tage in Folge verpasst.`);
+    updateHud();
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+//  STREAK & JOKER
+// ══════════════════════════════════════════════════════════════
+function rebuildCompletionIndex() {
+  COMPLETION_INDEX = new Set(ALL_COMPLETIONS.map(c => c.habit_id + '|' + c.completed_date));
+  const t = todayStr();
+  TODAY_COMPLETIONS = new Set(ALL_COMPLETIONS.filter(c => c.completed_date === t).map(c => c.habit_id));
+}
+function doneOn(habitId, ds) { return COMPLETION_INDEX.has(habitId + '|' + ds); }
+function habitExistsOn(h, ds) { return !h.created_at || ymd(h.created_at) <= ds; }
+function dueHabitsOn(ds) { return HABITS.filter(h => habitExistsOn(h, ds) && isHabitDueToday(h, ds)); }
+// 'none' = nichts fällig · 'done' · 'missed' · 'joker'
+function dayStatus(ds, used) {
+  const due = dueHabitsOn(ds);
+  if (!due.length) return 'none';
+  if (due.every(h => doneOn(h.id, ds))) return 'done';
+  if ((used || PROFILE?.used_jokers || []).includes(ds)) return 'joker';
+  return 'missed';
+}
+// Regel: 1 verpasster Tag ist automatisch okay. Bei 2 verpassten Tagen in Folge bricht der Streak – außer ein Joker springt ein.
 function calcStreak() {
   if (!HABITS.length) return 0;
-  let streak = 0;
-  const today = new Date();
-  let missedInRow = 0;
-  for (let i = 0; i < 365; i++) {
-    const d = new Date(today);
-    d.setDate(today.getDate() - i);
-    const ds = d.toISOString().split('T')[0];
-    const dueHabits = HABITS.filter(h => isHabitDueToday(h, ds));
-    if (!dueHabits.length) continue;
-    const allDone = dueHabits.every(h =>
-      ALL_COMPLETIONS.some(c => c.habit_id === h.id && c.completed_date === ds)
-    );
-    if (allDone) {
-      streak++;
-      missedInRow = 0;
-    } else if (i === 0) {
-      // Heute noch nicht erledigt — Streak läuft noch
-      missedInRow = 0;
-    } else {
-      missedInRow++;
-      if (missedInRow >= 2) break; // 2 Tage in Folge verpasst → Streak bricht
-      // 1 Tag verpasst → zählt als Streak-Schutz (kein break)
-    }
+  let streak = 0, missed = 0;
+  const t = todayStr();
+  for (let i = 0; i < 400; i++) {
+    const ds = addDays(t, -i), st = dayStatus(ds);
+    if (st === 'none') continue;
+    if (st === 'done') { streak++; missed = 0; }
+    else if (st === 'joker') { missed = 0; }
+    else if (i === 0) { /* heute läuft noch */ }
+    else { missed++; if (missed >= 2) break; }
   }
   return streak;
 }
-
-// Prüft ob ein Tag durch Streak-Schutz gerettet wurde (für visuelle Darstellung)
-function isStreakFrozen(dateStr) {
-  const d = new Date(dateStr);
-  const prev = new Date(d); prev.setDate(d.getDate() - 1);
-  const next = new Date(d); next.setDate(d.getDate() + 1);
-  const prevStr = prev.toISOString().split('T')[0];
-  const nextStr = next.toISOString().split('T')[0];
-  const today = todayStr();
-  if (dateStr >= today) return false;
-  const doneOnDay = HABITS.filter(h => isHabitDueToday(h, dateStr)).every(h =>
-    ALL_COMPLETIONS.some(c => c.habit_id === h.id && c.completed_date === dateStr)
-  );
-  if (doneOnDay) return false;
-  // Vortag und Folgetag müssen erledigt sein
-  const prevDone = HABITS.filter(h => isHabitDueToday(h, prevStr)).every(h =>
-    ALL_COMPLETIONS.some(c => c.habit_id === h.id && c.completed_date === prevStr)
-  );
-  const nextDone = nextStr > today ? false : HABITS.filter(h => isHabitDueToday(h, nextStr)).every(h =>
-    ALL_COMPLETIONS.some(c => c.habit_id === h.id && c.completed_date === nextStr)
-  );
-  return prevDone && nextDone;
+// Setzt automatisch Joker ein, wenn ein laufender Streak sonst brechen würde
+async function autoUseJokers() {
+  if (!PROFILE || !(PROFILE.jokers > 0) || !HABITS.length) return;
+  const used = [...(PROFILE.used_jokers || [])];
+  let jokers = PROFILE.jokers, changed = 0, missed = 0;
+  const t = todayStr();
+  for (let i = 1; i < 400; i++) {
+    const ds = addDays(t, -i), st = dayStatus(ds, used);
+    if (st === 'none') continue;
+    if (st === 'done' || st === 'joker') { missed = 0; continue; }
+    missed++;
+    if (missed >= 2) {
+      let older = null;
+      for (let j = i + 1; j < i + 60; j++) { const s = dayStatus(addDays(t, -j), used); if (s !== 'none') { older = s; break; } }
+      if ((older === 'done' || older === 'joker') && jokers > 0) { used.push(ds); jokers--; changed++; missed = 0; }
+      else break;
+    }
+  }
+  if (changed) {
+    await saveProfile({ jokers, used_jokers: used });
+    showBanner('🃏', 'Joker eingesetzt', 'Streak gerettet!', `${changed} Joker verbraucht. Übrig: ${jokers}.`);
+  }
 }
-
+function isStreakFrozen(ds) {
+  if (ds >= todayStr()) return false;
+  const st = dayStatus(ds);
+  if (st === 'joker') return true;
+  if (st !== 'missed') return false;
+  const prev = dayStatus(addDays(ds, -1)), next = dayStatus(addDays(ds, 1));
+  return (prev === 'done' || prev === 'joker') && (next === 'done' || next === 'joker');
+}
 function calcHabitStreak(habitId) {
   let streak = 0, missed = 0;
-  const today = new Date();
+  const t = todayStr();
   for (let i = 0; i < 365; i++) {
-    const d = new Date(today);
-    d.setDate(today.getDate() - i);
-    const ds = d.toISOString().split('T')[0];
-    const done = ALL_COMPLETIONS.some(c => c.habit_id === habitId && c.completed_date === ds);
-    if (done) { streak++; missed = 0; }
+    const ds = addDays(t, -i);
+    if (doneOn(habitId, ds)) { streak++; missed = 0; }
     else if (i === 0) missed = 0;
     else { missed++; if (missed >= 2) break; }
   }
   return streak;
 }
 
-// ── WOCHENRÜCKBLICK (Sonntags) ────────────────────────────────
-function renderWochenrueckblick() {
-  const el = document.getElementById('wochenrueckblick');
-  if (!el) return;
-  const isSunday = new Date().getDay() === 0;
-  if (!isSunday) { el.style.display = 'none'; return; }
-  const days = getWeekDays(0);
-  const today = todayStr();
-  const pastDays = days.filter(d => d <= today);
-  let totalPossible = 0, totalDone = 0;
-  pastDays.forEach(d => {
-    const due = HABITS.filter(h => isHabitDueToday(h, d));
-    totalPossible += due.length;
-    totalDone += due.filter(h => ALL_COMPLETIONS.some(c => c.habit_id === h.id && c.completed_date === d)).length;
-  });
-  const pct = totalPossible > 0 ? Math.round(totalDone / totalPossible * 100) : 0;
-  const pomos = pomosToday + (parseInt(localStorage.getItem('ttl_pomos_total') || '0') - pomosTotal);
-  let grade, gradeColor, msg;
-  if (pct >= 90) { grade = '🥇'; gradeColor = 'var(--gold)'; msg = 'Außergewöhnliche Woche! Du hast fast alles geschafft.'; }
-  else if (pct >= 70) { grade = '🥈'; gradeColor = 'var(--text2)'; msg = 'Sehr gute Woche. Noch ein kleiner Schritt zur Perfektion.'; }
-  else if (pct >= 50) { grade = '🥉'; gradeColor = '#cd7f32'; msg = 'Solide Woche. Nächste Woche legst du noch eine Schippe drauf.'; }
-  else { grade = '💪'; gradeColor = 'var(--red)'; msg = 'Schwierige Woche. Morgen ist ein neuer Start — du schaffst das.'; }
-  el.style.display = 'block';
-  el.innerHTML = `<div class="wochenbewertung">
-    <div style="font-size:.62rem;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.75rem;text-align:center">📅 Wochenrückblick</div>
-    <div class="woche-grade" style="color:${gradeColor}">${grade}</div>
-    <div class="woche-text">${msg}</div>
-    <div style="display:flex;justify-content:center;gap:2rem;margin-top:1rem;font-size:.72rem;color:var(--text3)">
-      <span>✅ ${totalDone}/${totalPossible} Habits</span>
-      <span style="color:${pct >= 70 ? 'var(--gold)' : 'var(--text3)'}">📊 ${pct}%</span>
-    </div>
-    <textarea class="journal-input" id="woche-reflection" placeholder="Was lief gut? Was möchtest du nächste Woche verbessern?" style="margin-top:1rem;min-height:80px"></textarea>
-    <button onclick="saveWochenreflexion()" class="btn btn-primary" style="width:100%;margin-top:.5rem">Reflexion speichern</button>
-  </div>`;
+// ══════════════════════════════════════════════════════════════
+//  ACHIEVEMENTS
+// ══════════════════════════════════════════════════════════════
+const ACHIEVEMENTS = [
+  { id: 'first_habit', icon: '✅', name: 'Erster Schritt', desc: 'Ersten Habit erstellt', coins: 20 },
+  { id: 'all_done', icon: '⭐', name: 'Perfektion', desc: 'Alle Habits an einem Tag erledigt', coins: 30 },
+  { id: 'pomo5', icon: '⚡', name: 'Fokus-Block', desc: '5 Pomodoros an einem Tag', coins: 40 },
+  { id: 'week1', icon: '🔥', name: 'Erste Woche', desc: '7 Tage Streak erreicht', coins: 75 },
+  { id: 'journal10', icon: '📓', name: 'Selbstreflexion', desc: '10 Tagebucheinträge geschrieben', coins: 50 },
+  { id: 'fortnight', icon: '🏆', name: '14 Tage', desc: '14 Tage Streak erreicht', coins: 100 },
+  { id: 'pomo_total', icon: '🎯', name: 'Marathonläufer', desc: '50 Pomodoros insgesamt', coins: 100 },
+  { id: 'month1', icon: '💎', name: 'Unaufhaltbar', desc: '30 Tage Streak erreicht', coins: 250 },
+];
+function achievementRewards(id) {
+  const out = [];
+  Object.entries(ITEMS).forEach(([slot, items]) => items.forEach(it => { if (it.unlock?.type === 'achieve' && it.unlock.id === id) out.push(it.name + (slot === 'hairColor' ? ' (Haarfarbe)' : slot === 'aura' ? ' (Aura)' : slot === 'bg' ? ' (Hintergrund)' : '')); }));
+  return out;
 }
-async function saveWochenreflexion() {
-  const { data: { session } } = await _sb.auth.getSession();
-  if (!session) return;
-  const content = document.getElementById('woche-reflection')?.value?.trim();
-  if (!content) return;
-  await _sb.from('journal_entries').upsert({
-    user_id: session.user.id,
-    entry_date: todayStr(),
-    content: '[Wochenrückblick] ' + content
-  }, { onConflict: 'user_id,entry_date' });
-  showToast('✓ Wochenreflexion gespeichert');
+async function unlockAchievement(id) {
+  if (!PROFILE || PROFILE.achievements.includes(id)) return;
+  const a = ACHIEVEMENTS.find(x => x.id === id);
+  if (!a) return;
+  await saveProfile({ achievements: [...PROFILE.achievements, id], coins: (PROFILE.coins || 0) + a.coins });
+  const rewards = achievementRewards(id);
+  showBanner(a.icon, 'Achievement freigeschaltet', a.name, `${a.desc} · +${a.coins} 🪙${rewards.length ? ' · Neu: ' + rewards.join(', ') : ''}`);
+  updateHud();
+}
+async function checkAchievements() {
+  if (!PROFILE) return;
+  const streak = calcStreak();
+  const pomosToday = sessionsToday().length;
+  if (HABITS.length > 0) await unlockAchievement('first_habit');
+  if (streak >= 7) await unlockAchievement('week1');
+  if (streak >= 14) await unlockAchievement('fortnight');
+  if (streak >= 30) await unlockAchievement('month1');
+  if (pomosToday >= 5) await unlockAchievement('pomo5');
+  if (SESSIONS.length >= 50) await unlockAchievement('pomo_total');
+  if (JOURNAL_COUNT >= 10) await unlockAchievement('journal10');
+  const due = dueHabitsOn(todayStr());
+  if (due.length && due.every(h => TODAY_COMPLETIONS.has(h.id))) await unlockAchievement('all_done');
+}
+function renderAchievements() {
+  const unlocked = PROFILE?.achievements || [];
+  document.getElementById('achieve-grid').innerHTML = ACHIEVEMENTS.map(a => {
+    const ok = unlocked.includes(a.id), rewards = achievementRewards(a.id);
+    return `<div class="achieve-card ${ok ? 'unlocked' : 'locked'}">
+      <div class="achieve-icon">${a.icon}</div>
+      <div>
+        <div class="achieve-name">${a.name}${ok ? ' ✓' : ''}</div>
+        <div class="achieve-desc">${a.desc}</div>
+        <div class="achieve-reward">🪙 ${a.coins}${rewards.length ? ' · 🎁 ' + rewards.join(', ') : ''}</div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('achieve-count').textContent = `${unlocked.length} / ${ACHIEVEMENTS.length} freigeschaltet`;
 }
 
-// ── NAVIGATION ──────────────────────────────────────────────
-const PAGE_TITLES = {
-  dashboard:'Dashboard', habits:'Habits', week:'Wochenübersicht',
-  stats:'Statistiken', achievements:'Achievements', pomodoro:'Pomodoro Timer',
-  journal:'Tagebuch', planner:'Zeitplaner'
-};
+// ══════════════════════════════════════════════════════════════
+//  AVATAR-SEITE
+// ══════════════════════════════════════════════════════════════
+function switchAvatarTab(tab) {
+  activeAvatarTab = tab;
+  ['look', 'skills', 'shop', 'titles'].forEach(t => {
+    document.getElementById('avtab-' + t).classList.toggle('active', t === tab);
+    document.getElementById('av-' + t).style.display = t === tab ? 'block' : 'none';
+  });
+  const navKey = tab === 'skills' ? 'skills' : tab === 'shop' ? 'shop' : 'avatar';
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.nav === navKey));
+  document.getElementById('page-title').textContent = tab === 'skills' ? 'Skills' : tab === 'shop' ? 'Shop' : 'Avatar';
+  renderAvatarHero();
+  if (tab === 'look') renderEditor();
+  if (tab === 'skills') renderSkills();
+  if (tab === 'shop') renderShop();
+  if (tab === 'titles') renderTitles();
+}
+function renderAvatarHero() {
+  if (!PROFILE) return;
+  const cfg = avatarCfg(), lvl = avatarLevel(), ri = rankIndex(lvl);
+  document.getElementById('av-big').innerHTML = renderAvatarSVG(cfg, { bob: true });
+  document.getElementById('av-name').textContent = cfg.name || 'Namenloser Held';
+  document.getElementById('av-title').textContent = activeTitle();
+  document.getElementById('av-level').textContent = lvl;
+  document.getElementById('av-rank').textContent = RANK_NAMES[ri];
+  document.getElementById('av-rank-next').textContent = !SKILLS.length
+    ? 'Lege unter ⚔️ Skills deinen ersten Skill an, um zu leveln.'
+    : ri < RANK_NAMES.length - 1 ? `Nächster Rang „${RANK_NAMES[ri + 1]}" bei Level ${(ri + 1) * RANK_STEP} · nächster Joker bei Level ${(Math.floor(lvl / 10) + 1) * 10}` : 'Höchster Rang erreicht!';
+  const pills = [`<span class="av-pill gold">🪙 ${PROFILE.coins || 0} Münzen</span>`, `<span class="av-pill blue">🃏 ${PROFILE.jokers || 0} Joker</span>`];
+  if (PROFILE.boost_pomos > 0) pills.push(`<span class="av-pill purple">⚡ XP×2 für ${PROFILE.boost_pomos} Pomodoro${PROFILE.boost_pomos > 1 ? 's' : ''}</span>`);
+  if (hasPerk('deepfocus')) pills.push(`<span class="av-pill">🧠 Deep Focus</span>`);
+  pills.push(`<span class="av-pill">⚔️ ${SKILLS.length} Skill${SKILLS.length !== 1 ? 's' : ''}</span>`);
+  document.getElementById('av-pills').innerHTML = pills.join('');
+}
+
+// Editor
+const SLOTS = [
+  { key: 'skin', label: 'Hautfarbe', kind: 'skin' },
+  { key: 'hair', label: 'Frisur', kind: 'item' },
+  { key: 'hairColor', label: 'Haarfarbe', kind: 'colorItem' },
+  { key: 'top', label: 'Oberteil', kind: 'item' },
+  { key: 'topColor', label: 'Farbe Oberteil (gilt nicht für Rüstungen)', kind: 'free', colors: TOP_COLORS },
+  { key: 'pants', label: 'Hose', kind: 'item' },
+  { key: 'pantsColor', label: 'Farbe Hose', kind: 'free', colors: PANTS_COLORS },
+  { key: 'face', label: 'Gesicht', kind: 'item' },
+  { key: 'head', label: 'Kopf', kind: 'item' },
+  { key: 'back', label: 'Rücken', kind: 'item' },
+  { key: 'bg', label: 'Hintergrund', kind: 'item' },
+  { key: 'aura', label: 'Aura', kind: 'item' },
+];
+function renderEditor() {
+  const cfg = avatarCfg();
+  document.getElementById('av-name-input').value = cfg.name || '';
+  document.getElementById('av-editor').innerHTML = SLOTS.map(slot => {
+    let opts = '';
+    if (slot.kind === 'skin') {
+      opts = SKIN_TONES.map((c, i) => `<div class="swatch ${cfg.skin === i ? 'selected' : ''}" style="background:${c}" onclick="equip('skin',${i})"></div>`).join('');
+    } else if (slot.kind === 'free') {
+      opts = slot.colors.map(c => `<div class="swatch ${cfg[slot.key] === c ? 'selected' : ''}" style="background:${c}" onclick="equip('${slot.key}','${c}')"></div>`).join('');
+    } else if (slot.kind === 'colorItem') {
+      opts = ITEMS.hairColor.map(it => {
+        const ok = isUnlocked('hairColor', it);
+        return `<div class="swatch ${cfg.hairColor === it.id ? 'selected' : ''} ${ok ? '' : 'locked'}" style="background:${it.color}" title="${esc(it.name + (ok ? '' : ' – ' + unlockText(it)))}" onclick="equip('hairColor','${it.id}')">${ok ? '' : '🔒'}</div>`;
+      }).join('');
+    } else {
+      opts = ITEMS[slot.key].map(it => {
+        const ok = isUnlocked(slot.key, it);
+        return `<button class="opt-btn ${cfg[slot.key] === it.id ? 'selected' : ''} ${ok ? '' : 'locked'}" onclick="equip('${slot.key}','${it.id}')">${ok ? '' : '🔒 '}${esc(it.name)}${ok ? '' : `<span class="opt-lock">· ${esc(unlockText(it))}</span>`}</button>`;
+      }).join('');
+    }
+    return `<div class="slot-group"><div class="slot-title">${slot.label}</div><div class="opt-row">${opts}</div></div>`;
+  }).join('');
+}
+let avatarSaveTimer;
+function equip(slot, value) {
+  if (ITEMS[slot]) {
+    const it = findItem(slot, value);
+    if (!it) return;
+    if (!isUnlocked(slot, it)) {
+      if (it.unlock.type === 'shop') { showToast(`🔒 ${it.name} gibt es im Shop für 🪙 ${it.unlock.price}`); switchAvatarTab('shop'); }
+      else showToast(`🔒 ${it.name} – freischalten durch: ${unlockText(it)}`);
+      return;
+    }
+  }
+  PROFILE.avatar = Object.assign(avatarCfg(), { [slot]: value });
+  renderEditor(); updateHud(); renderAvatarHero();
+  clearTimeout(avatarSaveTimer);
+  avatarSaveTimer = setTimeout(() => saveProfile({ avatar: PROFILE.avatar }), 600);
+}
+function setAvatarName(v) {
+  PROFILE.avatar = Object.assign(avatarCfg(), { name: v.trim().slice(0, 20) });
+  document.getElementById('av-name').textContent = PROFILE.avatar.name || 'Namenloser Held';
+  clearTimeout(avatarSaveTimer);
+  avatarSaveTimer = setTimeout(() => saveProfile({ avatar: PROFILE.avatar }), 800);
+}
+
+// Skills
+const SKILL_COLORS = ['#c9a84c', '#5b8dee', '#4caf7d', '#e05c5c', '#9b59b6', '#e08a3c', '#3fb6c4', '#e66aa8'];
+let selectedSkillColor = SKILL_COLORS[0];
+function skillMinutes(id) { return SESSIONS.filter(s => s.skill_id === id).reduce((a, s) => a + (s.minutes || 25), 0); }
+function renderSkills() {
+  document.getElementById('skill-count').textContent = SKILLS.length;
+  const list = document.getElementById('skill-list');
+  if (!SKILLS.length) {
+    list.innerHTML = '<div style="text-align:center;padding:2.5rem;color:var(--text3);font-size:.75rem">Noch keine Skills. Lege z.B. „Französisch", „Mathe" oder „Coden" an.</div>';
+    return;
+  }
+  list.innerHTML = [...SKILLS].sort((a, b) => b.xp - a.xp).map(s => {
+    const p = skillProgress(s.xp), bonus = skillBonus(p.L), hrs = Math.round(skillMinutes(s.id) / 6) / 10;
+    const nextT = SKILL_TITLES.find(t => p.L < t.lvl);
+    const curT = [...SKILL_TITLES].reverse().find(t => p.L >= t.lvl);
+    return `<div class="skill-card">
+      <div class="skill-head">
+        <div class="skill-emoji" style="background:${s.color}22;border:1px solid ${s.color}55">${esc(s.emoji || '⭐')}</div>
+        <div style="min-width:0">
+          <div class="skill-name">${esc(s.name)}</div>
+          <div class="skill-sub">${hrs} Std Fokus · ${s.xp} XP gesamt${curT ? ' · Titel: ' + esc(s.name + '-' + curT.suffix) : ''}</div>
+        </div>
+        <div class="skill-lvl" style="color:${s.color}">${p.L}<small>Level</small></div>
+        <button class="icon-btn" style="margin-left:.4rem" onclick="openSkillModal('${s.id}')">✏</button>
+      </div>
+      <div class="skill-bar"><div class="skill-bar-fill" style="width:${p.pct}%;background:${s.color}"></div></div>
+      <div class="skill-foot">
+        <span>${p.cur} / ${p.need} XP bis Level ${p.L + 1} (≈ ${Math.ceil((p.need - p.cur) / (25 * (1 + bonus)))} Pomodoros)</span>
+        <span>${bonus ? `<span class="badge">+${Math.round(bonus * 100)} % XP</span> ` : ''}${nextT ? `Nächster Titel bei Level ${nextT.lvl}` : 'Alle Titel erreicht'}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+function renderSkillColorPicker() {
+  document.getElementById('skill-color-picker').innerHTML = SKILL_COLORS.map(c =>
+    `<div class="swatch ${c === selectedSkillColor ? 'selected' : ''}" style="background:${c}" onclick="selectedSkillColor='${c}';renderSkillColorPicker()"></div>`).join('');
+}
+function openSkillModal(id) {
+  const s = id ? SKILLS.find(x => x.id === id) : null;
+  document.getElementById('skill-modal-title').textContent = s ? 'Skill bearbeiten' : 'Neuer Skill';
+  document.getElementById('edit-skill-id').value = s ? s.id : '';
+  document.getElementById('skill-name').value = s ? s.name : '';
+  document.getElementById('skill-emoji').value = s ? (s.emoji || '') : '';
+  document.getElementById('skill-delete-btn').style.display = s ? 'block' : 'none';
+  selectedSkillColor = s ? s.color : SKILL_COLORS[SKILLS.length % SKILL_COLORS.length];
+  renderSkillColorPicker();
+  document.getElementById('skill-modal').classList.add('open');
+}
+function closeSkillModal() { document.getElementById('skill-modal').classList.remove('open'); }
+async function saveSkill() {
+  const name = document.getElementById('skill-name').value.trim();
+  const emoji = document.getElementById('skill-emoji').value.trim() || '⭐';
+  const id = document.getElementById('edit-skill-id').value;
+  if (!name) { showToast('⚠ Bitte einen Namen eingeben'); return; }
+  if (SKILLS.some(s => s.id !== id && s.name.toLowerCase() === name.toLowerCase())) { showToast('⚠ Diesen Skill gibt es schon'); return; }
+  if (id) {
+    const { error } = await _sb.from('skills').update({ name, emoji, color: selectedSkillColor }).eq('id', id);
+    if (error) { showToast('✗ ' + error.message); return; }
+    Object.assign(SKILLS.find(s => s.id === id), { name, emoji, color: selectedSkillColor });
+    showToast('✓ Skill aktualisiert');
+  } else {
+    const { data, error } = await _sb.from('skills').insert({ user_id: USER_ID, name, emoji, color: selectedSkillColor }).select().single();
+    if (error) { showToast('✗ ' + error.message); return; }
+    SKILLS.push(data);
+    if (!localStorage.getItem('ttl_sel_skill')) setSelectedSkill(data.id);
+    showToast(`✓ Skill „${name}" angelegt · Avatar-Level +1`);
+    await checkJokerGrant();
+  }
+  closeSkillModal();
+  renderSkills(); renderPomoSkillSelect(); updateHud(); renderAvatarHero();
+}
+async function deleteSkill() {
+  const id = document.getElementById('edit-skill-id').value;
+  const s = SKILLS.find(x => x.id === id);
+  if (!s || !confirm(`Skill „${s.name}" wirklich löschen? Seine ${s.xp} XP gehen verloren und dein Avatar-Level sinkt.`)) return;
+  const { error } = await _sb.from('skills').delete().eq('id', id);
+  if (error) { showToast('✗ ' + error.message); return; }
+  SKILLS = SKILLS.filter(x => x.id !== id);
+  if (localStorage.getItem('ttl_sel_skill') === id) setSelectedSkill('');
+  closeSkillModal();
+  renderSkills(); renderPomoSkillSelect(); updateHud(); renderAvatarHero();
+  showToast('✓ Skill gelöscht');
+}
+
+// Shop
+const PERKS = [
+  { id: 'joker', icon: '🃏', name: 'Joker', price: 150, desc: 'Rettet deinen Streak automatisch, wenn du 2 Tage in Folge verpasst. Du kannst höchstens 3 gekaufte Joker gleichzeitig besitzen.' },
+  { id: 'boost', icon: '⚡', name: 'XP-Boost', price: 100, desc: 'Doppelte Skill-XP für deine nächsten 3 Fokus-Blöcke. Stapelbar.' },
+  { id: 'deepfocus', icon: '🧠', name: 'Deep Focus 50', price: 250, once: true, desc: 'Schaltet dauerhaft einen 50-Minuten-Fokusmodus frei. Gibt 50 Basis-XP und 20 Münzen.' },
+];
+function hasPerk(id) { return (PROFILE?.inventory || []).includes('perk:' + id); }
+function renderShop() {
+  const coins = PROFILE.coins || 0;
+  document.getElementById('shop-balance').textContent = '🪙 ' + coins;
+  document.getElementById('shop-perks').innerHTML = PERKS.map(p => {
+    const owned = p.once && hasPerk(p.id);
+    const extra = p.id === 'joker' ? `Du hast: ${PROFILE.jokers || 0}` : p.id === 'boost' ? `Aktiv: ${PROFILE.boost_pomos || 0} Pomodoros` : '';
+    const disabled = owned || coins < p.price || (p.id === 'joker' && (PROFILE.jokers || 0) >= 3);
+    return `<div class="shop-card ${owned ? 'owned' : ''}">
+      <div class="shop-icon">${p.icon}</div>
+      <div class="shop-name">${p.name}</div>
+      <div class="shop-desc">${p.desc}${extra ? `<br><span style="color:var(--text2)">${extra}</span>` : ''}</div>
+      <div class="shop-foot">
+        <span class="shop-price">${owned ? '✓ Gekauft' : '🪙 ' + p.price}</span>
+        ${owned ? '' : `<button class="btn btn-primary" ${disabled ? 'disabled' : ''} onclick="buyPerk('${p.id}')">Kaufen</button>`}
+      </div>
+    </div>`;
+  }).join('');
+  const cosmetics = [];
+  Object.entries(ITEMS).forEach(([slot, items]) => items.forEach(it => { if (it.unlock?.type === 'shop') cosmetics.push({ slot, it }); }));
+  document.getElementById('shop-cosmetics').innerHTML = cosmetics.map(({ slot, it }) => {
+    const owned = isUnlocked(slot, it);
+    const preview = renderAvatarSVG(Object.assign(avatarCfg(), { [slot]: it.id }));
+    const slotName = { hairColor: 'Haarfarbe', head: 'Kopf', back: 'Rücken', bg: 'Hintergrund', aura: 'Aura' }[slot] || slot;
+    return `<div class="shop-card ${owned ? 'owned' : ''}">
+      <div style="display:flex;gap:.75rem;align-items:center">
+        <div class="shop-preview">${preview}</div>
+        <div><div class="shop-name">${esc(it.name)}</div><div class="shop-desc">${slotName}</div></div>
+      </div>
+      <div class="shop-foot">
+        <span class="shop-price">${owned ? '✓ Im Besitz' : '🪙 ' + it.unlock.price}</span>
+        ${owned ? `<button class="btn" onclick="equip('${slot}','${it.id}');showToast('✓ Angelegt')">Anlegen</button>` : `<button class="btn btn-primary" ${coins < it.unlock.price ? 'disabled' : ''} onclick="buyCosmetic('${slot}','${it.id}')">Kaufen</button>`}
+      </div>
+    </div>`;
+  }).join('');
+}
+async function buyPerk(id) {
+  const p = PERKS.find(x => x.id === id);
+  if (!p || (PROFILE.coins || 0) < p.price) { showToast('⚠ Nicht genug Münzen'); return; }
+  if (id === 'joker' && (PROFILE.jokers || 0) >= 3) { showToast('⚠ Du hast schon 3 Joker'); return; }
+  if (p.once && hasPerk(id)) return;
+  const fields = { coins: PROFILE.coins - p.price };
+  if (id === 'joker') fields.jokers = (PROFILE.jokers || 0) + 1;
+  if (id === 'boost') fields.boost_pomos = (PROFILE.boost_pomos || 0) + 3;
+  if (id === 'deepfocus') fields.inventory = [...PROFILE.inventory, 'perk:deepfocus'];
+  await saveProfile(fields);
+  showToast(`✓ ${p.name} gekauft`);
+  updateHud(); renderShop(); renderAvatarHero(); updateModeButtons(); renderPomoSkillSelect();
+}
+async function buyCosmetic(slot, id) {
+  const it = findItem(slot, id);
+  if (!it || isUnlocked(slot, it)) return;
+  if ((PROFILE.coins || 0) < it.unlock.price) { showToast('⚠ Nicht genug Münzen'); return; }
+  await saveProfile({ coins: PROFILE.coins - it.unlock.price, inventory: [...PROFILE.inventory, `${slot}:${id}`] });
+  showToast(`✓ ${it.name} gekauft`);
+  equip(slot, id);
+  renderShop();
+}
+
+// Titel
+function renderTitles() {
+  const earned = earnedTitles(), active = activeTitle();
+  document.getElementById('title-list').innerHTML = earned.map(t =>
+    `<div class="title-chip ${t === active ? 'selected' : ''}" onclick="chooseTitle(this.dataset.t)" data-t="${esc(t)}">${t === active ? '✓ ' : ''}${esc(t)}</div>`).join('');
+  const next = nextTitles();
+  document.getElementById('title-next').innerHTML = next.length
+    ? next.map(t => `<div class="title-chip locked">🔒 ${esc(t.name)} <span style="font-size:.6rem">· ${esc(t.req)}</span></div>`).join('')
+    : '<div style="font-size:.72rem;color:var(--text3)">Lege Skills an, um neue Titel zu verdienen.</div>';
+}
+async function chooseTitle(t) {
+  await saveProfile({ title: t });
+  renderTitles(); updateHud(); renderAvatarHero();
+  showToast('✓ Titel: ' + t);
+}
+
+// ══════════════════════════════════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════════════════════════════════
+const PAGE_TITLES = { dashboard: 'Dashboard', habits: 'Habits', week: 'Wochenübersicht', stats: 'Statistiken', achievements: 'Achievements', pomodoro: 'Pomodoro Timer', journal: 'Tagebuch', planner: 'Zeitplaner', avatar: 'Avatar' };
 function toggleSidebar() {
   document.querySelector('.sidebar').classList.toggle('open');
   document.getElementById('sidebar-backdrop').classList.toggle('open');
@@ -1124,225 +1597,256 @@ function closeSidebar() {
   document.querySelector('.sidebar').classList.remove('open');
   document.getElementById('sidebar-backdrop').classList.remove('open');
 }
-function goto(id, el) {
+function goto(id, sub) {
   closeSidebar();
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('panel-' + id).classList.add('active');
-  if (el) el.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.nav === id));
   document.getElementById('page-title').textContent = PAGE_TITLES[id] || id;
+  if (id === 'dashboard') renderDashboard();
   if (id === 'week') renderWeekView();
   if (id === 'journal') { loadJournal(); loadIntention(); }
   if (id === 'habits') renderAllHabits();
   if (id === 'stats') renderStats();
   if (id === 'achievements') renderAchievements();
-  if (id === 'planner') {
-    switchPlannerTab(activePlannerTab);
-    renderPlannerWeek();
-  }
+  if (id === 'pomodoro') { renderPomoSkillSelect(); updatePomoStats(); updateModeButtons(); }
+  if (id === 'planner') switchPlannerTab(activePlannerTab);
+  if (id === 'avatar') switchAvatarTab(sub || activeAvatarTab);
 }
 
-// ── TOAST ────────────────────────────────────────────────────
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+// ══════════════════════════════════════════════════════════════
+//  DATEN LADEN
+// ══════════════════════════════════════════════════════════════
+function logout() { _sb.auth.signOut().then(() => window.location.reload()); }
+
+function sessionsToday() {
+  const midnight = new Date(); midnight.setHours(0, 0, 0, 0);
+  return SESSIONS.filter(s => new Date(s.created_at) >= midnight);
 }
 
-// ── DATE ─────────────────────────────────────────────────────
-function formatDate(d) {
-  return new Date(d).toLocaleDateString('de-DE', {weekday:'short', day:'2-digit', month:'long', year:'numeric'});
-}
-function todayStr() { return new Date().toISOString().split('T')[0]; }
-function getWeekDays(offset = 0) {
-  const days = [], now = new Date(), day = now.getDay() || 7;
-  const monday = new Date(now);
-  monday.setDate(now.getDate() - day + 1 + offset * 7);
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(monday);
-    d.setDate(monday.getDate() + i);
-    days.push(d.toISOString().split('T')[0]);
-  }
-  return days;
-}
-
-// ── AUTH ─────────────────────────────────────────────────────
-function logout() { _sb.auth.signOut().then(() => { window.location.reload(); }); }
-
-// ── DATA LOADING ─────────────────────────────────────────────
 async function loadAll() {
   const { data: { session } } = await _sb.auth.getSession();
   if (!session) return;
-  const { data: habits } = await _sb.from('habits')
-    .select('*').eq('user_id', session.user.id).order('created_at');
-  HABITS = habits || [];
-  const since = new Date(); since.setDate(since.getDate() - 60);
-  const { data: completions } = await _sb.from('habit_completions')
-    .select('*').eq('user_id', session.user.id)
-    .gte('completed_date', since.toISOString().split('T')[0]);
-  ALL_COMPLETIONS = completions || [];
-  TODAY_COMPLETIONS = new Set(
-    ALL_COMPLETIONS.filter(c => c.completed_date === todayStr()).map(c => c.habit_id)
-  );
-  const { data: pomos } = await _sb.from('pomodoro_sessions')
-    .select('*').eq('user_id', session.user.id)
-    .gte('created_at', todayStr());
-  pomosToday = (pomos || []).length;
-  pomosTotal = parseInt(localStorage.getItem('ttl_pomos_total') || '0');
+  USER_ID = session.user.id;
 
-  // Load time blocks (current week ± 4 weeks)
-  const wb = new Date(); wb.setDate(wb.getDate() - 28);
-  const we = new Date(); we.setDate(we.getDate() + 28);
-  const { data: blocks } = await _sb.from('time_blocks')
-    .select('*').eq('user_id', session.user.id)
-    .gte('date', wb.toISOString().split('T')[0])
-    .lte('date', we.toISOString().split('T')[0]);
-  TIME_BLOCKS = blocks || [];
-
-  // Load tasks
-  const { data: taskData } = await _sb.from('tasks')
-    .select('*').eq('user_id', session.user.id).order('created_at');
-  TASKS = taskData || [];
-
-  // Load day templates + their blocks
-  const { data: tplData } = await _sb.from('day_templates')
-    .select('*').eq('user_id', session.user.id).order('created_at');
-  DAY_TEMPLATES = tplData || [];
-  const tplIds = DAY_TEMPLATES.map(t => t.id);
-  if (tplIds.length) {
-    const { data: tplBlocks } = await _sb.from('template_blocks')
-      .select('*').eq('user_id', session.user.id);
-    TEMPLATE_BLOCKS = tplBlocks || [];
+  // Alte Browser-Daten (altes XP-System) einmalig entfernen
+  if (!localStorage.getItem('ttl_v2')) {
+    Object.keys(localStorage).filter(k => k.startsWith('ttl_')).forEach(k => localStorage.removeItem(k));
+    localStorage.setItem('ttl_v2', '1');
   }
 
+  const since = addDays(todayStr(), -400);
+  const wb = addDays(todayStr(), -28), we = addDays(todayStr(), 28);
+  const [habitsR, complR, sessR, skillsR, journalR, journalTodayR, blocksR, tasksR, tplR, tplBlocksR] = await Promise.all([
+    _sb.from('habits').select('*').eq('user_id', USER_ID).order('created_at'),
+    _sb.from('habit_completions').select('*').eq('user_id', USER_ID).gte('completed_date', since),
+    _sb.from('pomodoro_sessions').select('id,skill_id,minutes,xp,created_at').eq('user_id', USER_ID).order('created_at'),
+    _sb.from('skills').select('*').eq('user_id', USER_ID).order('created_at'),
+    _sb.from('journal_entries').select('id', { count: 'exact', head: true }).eq('user_id', USER_ID),
+    _sb.from('journal_entries').select('id').eq('user_id', USER_ID).eq('entry_date', todayStr()).maybeSingle(),
+    _sb.from('time_blocks').select('*').eq('user_id', USER_ID).gte('date', wb).lte('date', we),
+    _sb.from('tasks').select('*').eq('user_id', USER_ID).order('created_at'),
+    _sb.from('day_templates').select('*').eq('user_id', USER_ID).order('created_at'),
+    _sb.from('template_blocks').select('*').eq('user_id', USER_ID),
+  ]);
+  if (skillsR.error) showToast('✗ Tabelle "skills" fehlt – bitte zuerst die SQL-Datei in Supabase ausführen');
+  HABITS = habitsR.data || [];
+  ALL_COMPLETIONS = complR.data || [];
+  rebuildCompletionIndex();
+  SESSIONS = sessR.data || [];
+  SKILLS = skillsR.data || [];
+  JOURNAL_COUNT = journalR.count || 0;
+  JOURNAL_TODAY_EXISTS = !!journalTodayR.data;
+  TIME_BLOCKS = blocksR.data || [];
+  TASKS = tasksR.data || [];
+  DAY_TEMPLATES = tplR.data || [];
+  TEMPLATE_BLOCKS = tplBlocksR.data || [];
+
+  await ensureProfile();
+  await autoUseJokers();
+  await checkJokerGrant();
+
+  document.getElementById('today-date').textContent = formatDate(todayStr());
   renderDashboard();
-  updateXPBar();
+  updateHud();
   loadIntention();
-  checkAchievements();
-  document.getElementById('today-date').textContent = formatDate(new Date());
-  document.getElementById('sidebar-streak').textContent = calcStreak();
+  renderPomoSkillSelect(); updatePomoStats(); updateModeButtons();
+  await checkAchievements();
 }
 
-// ── STATS ─────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+//  INTENTION
+// ══════════════════════════════════════════════════════════════
+function loadIntention() {
+  const val = localStorage.getItem('ttl_intention_' + todayStr()) || '';
+  document.getElementById('intention-text').textContent = val || 'Noch keine Intention für heute gesetzt.';
+  document.getElementById('intention-edit').textContent = val ? '✏ Ändern' : '✏ Setzen';
+  document.getElementById('journal-intention-reminder').style.display = new Date().getHours() >= 17 ? 'block' : 'none';
+}
+function openIntentionModal() {
+  document.getElementById('intention-input').value = localStorage.getItem('ttl_intention_' + addDays(todayStr(), 1)) || '';
+  document.getElementById('intention-modal').classList.add('open');
+}
+function closeIntentionModal() { document.getElementById('intention-modal').classList.remove('open'); }
+function saveIntention() {
+  const val = document.getElementById('intention-input').value.trim();
+  if (!val) { showToast('⚠ Bitte eine Intention eingeben'); return; }
+  localStorage.setItem('ttl_intention_' + addDays(todayStr(), 1), val);
+  const todayKey = 'ttl_intention_' + todayStr();
+  if (!localStorage.getItem(todayKey)) localStorage.setItem(todayKey, val);
+  closeIntentionModal(); loadIntention();
+  showToast('✓ Intention für morgen gesetzt');
+}
+
+// ══════════════════════════════════════════════════════════════
+//  WOCHENRÜCKBLICK (Sonntags)
+// ══════════════════════════════════════════════════════════════
+function renderWochenrueckblick() {
+  const el = document.getElementById('wochenrueckblick');
+  if (dOf(todayStr()).getDay() !== 0) { el.style.display = 'none'; return; }
+  const pastDays = getWeekDays(0).filter(d => d <= todayStr());
+  let totalPossible = 0, totalDone = 0;
+  pastDays.forEach(d => {
+    const due = dueHabitsOn(d);
+    totalPossible += due.length;
+    totalDone += due.filter(h => doneOn(h.id, d)).length;
+  });
+  const pct = totalPossible > 0 ? Math.round(totalDone / totalPossible * 100) : 0;
+  const weekStart = dOf(pastDays[0]);
+  const weekPomos = SESSIONS.filter(s => new Date(s.created_at) >= weekStart);
+  let grade, gradeColor, msg;
+  if (pct >= 90) { grade = '🥇'; gradeColor = 'var(--gold)'; msg = 'Außergewöhnliche Woche! Du hast fast alles geschafft.'; }
+  else if (pct >= 70) { grade = '🥈'; gradeColor = 'var(--text2)'; msg = 'Sehr gute Woche. Noch ein kleiner Schritt zur Perfektion.'; }
+  else if (pct >= 50) { grade = '🥉'; gradeColor = '#cd7f32'; msg = 'Solide Woche. Nächste Woche legst du noch eine Schippe drauf.'; }
+  else { grade = '💪'; gradeColor = 'var(--red)'; msg = 'Schwierige Woche. Morgen ist ein neuer Start — du schaffst das.'; }
+  el.style.display = 'block';
+  el.innerHTML = `<div class="wochenbewertung">
+    <div class="section-label" style="margin-bottom:.75rem;text-align:center">📅 Wochenrückblick</div>
+    <div class="woche-grade" style="color:${gradeColor}">${grade}</div>
+    <div class="woche-text">${msg}</div>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:1.5rem;margin-top:1rem;font-size:.72rem;color:var(--text3)">
+      <span>✅ ${totalDone}/${totalPossible} Habits</span>
+      <span style="color:${pct >= 70 ? 'var(--gold)' : 'var(--text3)'}">📊 ${pct}%</span>
+      <span>⏱ ${weekPomos.length} Pomodoros</span>
+    </div>
+    <textarea class="journal-input" id="woche-reflection" placeholder="Was lief gut? Was möchtest du nächste Woche verbessern?" style="margin-top:1rem;min-height:80px"></textarea>
+    <button onclick="saveWochenreflexion()" class="btn btn-primary" style="width:100%;margin-top:.5rem">Reflexion speichern</button>
+  </div>`;
+}
+async function saveWochenreflexion() {
+  const content = document.getElementById('woche-reflection')?.value?.trim();
+  if (!content) return;
+  // Hängt die Reflexion an den heutigen Tagebucheintrag an, statt ihn zu überschreiben
+  const { data: existing } = await _sb.from('journal_entries').select('content').eq('user_id', USER_ID).eq('entry_date', todayStr()).maybeSingle();
+  const full = (existing?.content ? existing.content + '\n\n' : '') + '[Wochenrückblick] ' + content;
+  const { error } = await _sb.from('journal_entries').upsert({ user_id: USER_ID, entry_date: todayStr(), content: full }, { onConflict: 'user_id,entry_date' });
+  if (error) { showToast('✗ ' + error.message); return; }
+  if (!JOURNAL_TODAY_EXISTS) { JOURNAL_TODAY_EXISTS = true; JOURNAL_COUNT++; await addCoins(5, 'Tagebuch'); }
+  document.getElementById('woche-reflection').value = '';
+  showToast('✓ Wochenreflexion gespeichert');
+}
+
+// ══════════════════════════════════════════════════════════════
+//  STATISTIKEN
+// ══════════════════════════════════════════════════════════════
 function calcWeekStreak() {
   if (!HABITS.length) return 0;
   let streak = 0;
   for (let w = 0; w < 52; w++) {
-    const days = getWeekDays(-w);
-    const pastDays = days.filter(d => d <= todayStr());
-    if (!pastDays.length) continue;
-    const allComplete = pastDays.every(d =>
-      HABITS.filter(h => isHabitDueToday(h,d)).every(h =>
-        ALL_COMPLETIONS.some(c => c.habit_id === h.id && c.completed_date === d)
-      )
-    );
-    if (allComplete) streak++;
+    const pastDays = getWeekDays(-w).filter(d => d <= todayStr());
+    const relevant = pastDays.filter(d => dayStatus(d) !== 'none');
+    if (!relevant.length) { if (w > 0) break; continue; }
+    const complete = relevant.every(d => { const st = dayStatus(d); return st === 'done' || st === 'joker' || (d === todayStr()); });
+    if (complete) streak++;
     else if (w > 0) break;
   }
   return streak;
 }
 function calcHabitRate(habitId) {
-  const days = [];
-  for (let i = 6; i >= 0; i--) { const d = new Date(); d.setDate(d.getDate() - i); days.push(d.toISOString().split('T')[0]); }
-  const done = days.filter(d => ALL_COMPLETIONS.some(c => c.habit_id === habitId && c.completed_date === d)).length;
-  return Math.round((done / 7) * 100);
+  const h = HABITS.find(x => x.id === habitId);
+  let due = 0, done = 0;
+  for (let i = 6; i >= 0; i--) {
+    const d = addDays(todayStr(), -i);
+    if (!h || !habitExistsOn(h, d) || !isHabitDueToday(h, d)) continue;
+    due++; if (doneOn(habitId, d)) done++;
+  }
+  return due ? Math.round(done / due * 100) : 0;
 }
 function renderStats() {
   const dayStreak = calcStreak(), weekStreak = calcWeekStreak();
-  const totalPomos = parseInt(localStorage.getItem('ttl_pomos_total') || '0');
+  const totalMin = SESSIONS.reduce((a, s) => a + (s.minutes || 25), 0);
   document.getElementById('stat-streak-days').textContent = dayStreak;
   document.getElementById('stat-streak-weeks').textContent = weekStreak;
-  document.getElementById('stat-total-sessions').textContent = totalPomos;
-  document.getElementById('stat-pomo-hours').textContent = Math.round(totalPomos * 25 / 60 * 10) / 10 + ' Stunden Fokus';
-  if (dayStreak > 0) {
-    const startDate = new Date(); startDate.setDate(startDate.getDate() - dayStreak + 1);
-    document.getElementById('stat-streak-start').textContent = 'Seit ' + startDate.toLocaleDateString('de-DE', {day:'2-digit', month:'long'});
-  }
-  const list = document.getElementById('habit-stats-list');
-  list.innerHTML = HABITS.map(h => {
+  document.getElementById('stat-total-sessions').textContent = SESSIONS.length;
+  document.getElementById('stat-pomo-hours').textContent = Math.round(totalMin / 6) / 10 + ' Stunden Fokus';
+  document.getElementById('stat-streak-start').textContent = dayStreak > 0 ? `${PROFILE?.jokers || 0} Joker übrig` : '–';
+  document.getElementById('habit-stats-list').innerHTML = HABITS.map(h => {
     const hStreak = calcHabitStreak(h.id);
     const total = ALL_COMPLETIONS.filter(c => c.habit_id === h.id).length;
     const rate = calcHabitRate(h.id);
     const color = rate >= 80 ? 'var(--green)' : rate >= 50 ? 'var(--gold)' : 'var(--red)';
     return `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem">
-        <div style="font-size:.78rem;color:var(--text)">${h.emoji || '⭐'} ${h.name}</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;gap:.5rem">
+        <div style="font-size:.78rem;color:var(--text)">${esc(h.emoji || '⭐')} ${esc(h.name)}</div>
         <div style="display:flex;gap:.75rem;font-size:.68rem;color:var(--text3)">
-          <span>🔥 ${hStreak}d</span><span>✓ ${total}x</span>
-          <span style="color:${color}">${rate}%</span>
+          <span>🔥 ${hStreak}d</span><span>✓ ${total}x</span><span style="color:${color}">${rate}%</span>
         </div>
       </div>
       <div style="height:4px;background:var(--bg3);border-radius:2px;overflow:hidden">
-        <div style="height:100%;width:${Math.min(100,rate)}%;background:${color};border-radius:2px;transition:width .4s ease"></div>
+        <div style="height:100%;width:${Math.min(100, rate)}%;background:${color};border-radius:2px;transition:width .4s ease"></div>
       </div>
     </div>`;
   }).join('') || '<div style="color:var(--text3);font-size:.75rem">Noch keine Habits</div>';
-  // Heatmap
-  const heatmap = document.getElementById('heatmap');
-  const days30 = [];
-  for (let i = 29; i >= 0; i--) { const d = new Date(); d.setDate(d.getDate() - i); days30.push(d.toISOString().split('T')[0]); }
-  heatmap.innerHTML = days30.map(d => {
-    const activeHabits = HABITS.filter(h => (h.created_at||todayStr()).split('T')[0] <= d && isHabitDueToday(h, d));
-    const total = activeHabits.length;
-    if (!total) return `<div style="width:24px;height:24px;border-radius:4px;background:var(--bg3)" title="${d}"></div>`;
-    const done = activeHabits.filter(h => ALL_COMPLETIONS.some(c => c.habit_id === h.id && c.completed_date === d)).length;
-    const ratio = done / total, isFuture = d > todayStr(), frozen = isStreakFrozen(d);
-    const bg = isFuture ? 'var(--bg3)' : frozen ? 'rgba(91,141,238,0.3)' : ratio === 1 ? 'var(--green)' : ratio > 0 ? 'rgba(201,168,76,0.5)' : 'rgba(224,92,92,0.15)';
-    return `<div title="${d.slice(8)}.${d.slice(5,7)}: ${done}/${total}${frozen?' (Streak-Schutz)':''}" style="width:24px;height:24px;border-radius:4px;background:${bg}"></div>`;
+  const days30 = Array.from({ length: 30 }, (_, i) => addDays(todayStr(), i - 29));
+  document.getElementById('heatmap').innerHTML = days30.map(d => {
+    const due = dueHabitsOn(d);
+    if (!due.length) return `<div style="width:24px;height:24px;border-radius:4px;background:var(--bg3)" title="${d}"></div>`;
+    const done = due.filter(h => doneOn(h.id, d)).length, ratio = done / due.length, frozen = isStreakFrozen(d);
+    const bg = frozen ? 'rgba(91,141,238,0.3)' : ratio === 1 ? 'var(--green)' : ratio > 0 ? 'rgba(201,168,76,0.5)' : 'rgba(224,92,92,0.15)';
+    return `<div title="${d.slice(8)}.${d.slice(5, 7)}: ${done}/${due.length}${frozen ? ' (Streak-Schutz)' : ''}" style="width:24px;height:24px;border-radius:4px;background:${bg}"></div>`;
   }).join('');
 }
 
-// ── FREQUENCY CHECK ──────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+//  HABITS
+// ══════════════════════════════════════════════════════════════
 function isHabitDueToday(h, dateStr) {
   const ds = dateStr || todayStr();
   if (!h.frequency || h.frequency === 'daily') return true;
-  if (h.frequency === 'weekly') {
-    const createdDay = new Date(h.created_at || ds).getDay() || 7;
-    return (new Date(ds).getDay() || 7) === createdDay;
-  }
-  if (h.frequency === 'weekday') {
-    const days = (h.weekdays || '').split(',').filter(Boolean).map(Number);
-    return days.includes(new Date(ds).getDay() || 7);
-  }
+  if (h.frequency === 'weekly') return weekdayNum(ds) === (new Date(h.created_at || Date.now()).getDay() || 7);
+  if (h.frequency === 'weekday') return (h.weekdays || '').split(',').filter(Boolean).map(Number).includes(weekdayNum(ds));
   return true;
 }
-
-// ── DASHBOARD ────────────────────────────────────────────────
 function renderDashboard() {
-  const dueToday = HABITS.filter(h => isHabitDueToday(h));
-  const doneCount = dueToday.filter(h => TODAY_COMPLETIONS.has(h.id)).length;
-  const totalCount = dueToday.length;
-  const streak = calcStreak();
+  const dueToday = dueHabitsOn(todayStr());
+  const doneCount = dueToday.filter(h => TODAY_COMPLETIONS.has(h.id)).length, totalCount = dueToday.length;
+  const streak = calcStreak(), pt = sessionsToday();
   document.getElementById('m-today').textContent = `${doneCount}/${totalCount}`;
   document.getElementById('m-today-sub').textContent = doneCount === totalCount && totalCount > 0 ? '🎉 Alles erledigt!'
     : doneCount > 0 ? `${totalCount - doneCount} noch offen` : totalCount === 0 ? 'Heute nichts fällig' : 'Noch nichts abgehakt';
   document.getElementById('m-streak').textContent = streak;
-  document.getElementById('m-pomos').textContent = pomosToday;
+  document.getElementById('m-streak-sub').textContent = `Tage in Folge · 🃏 ${PROFILE?.jokers || 0} Joker`;
+  document.getElementById('m-pomos').textContent = pt.length;
+  document.getElementById('m-pomos-sub').textContent = 'Fokus-Minuten: ' + pt.reduce((a, s) => a + (s.minutes || 25), 0);
   document.getElementById('dash-progress').textContent = `${doneCount}/${totalCount} erledigt`;
   document.getElementById('sidebar-streak').textContent = streak;
   renderWochenrueckblick();
   const grid = document.getElementById('dash-habits');
   if (!dueToday.length) {
-    grid.innerHTML = HABITS.length ? '<div style="text-align:center;padding:2rem;color:var(--text3);font-size:.78rem">Heute ist kein Habit fällig 🎉</div>'
-      : '<div style="text-align:center;padding:2rem;color:var(--text3);font-size:.78rem">Noch keine Habits — klicke auf „+ Habit"</div>';
+    grid.innerHTML = `<div style="text-align:center;padding:2rem;color:var(--text3);font-size:.78rem">${HABITS.length ? 'Heute ist kein Habit fällig 🎉' : 'Noch keine Habits — klicke auf „+ Habit"'}</div>`;
     return;
   }
-  grid.innerHTML = dueToday.map(h => renderHabitCard(h)).join('');
+  grid.innerHTML = dueToday.map(renderHabitCard).join('');
 }
-
 function renderHabitCard(h) {
-  const done = TODAY_COMPLETIONS.has(h.id);
-  const hStreak = calcHabitStreak(h.id);
+  const done = TODAY_COMPLETIONS.has(h.id), hStreak = calcHabitStreak(h.id);
   const freqLabel = h.frequency === 'weekly' ? 'Wöchentlich'
-    : h.frequency === 'weekday' ? ['Mo','Di','Mi','Do','Fr','Sa','So'].filter((_,i) => (h.weekdays||'').split(',').includes(String(i+1))).join('/')
-    : '';
+    : h.frequency === 'weekday' ? ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'].filter((_, i) => (h.weekdays || '').split(',').includes(String(i + 1))).join('/') : '';
   return `<div class="habit-card ${done ? 'done' : ''}" onclick="toggleHabit('${h.id}')">
-    <div class="habit-check" onclick="event.stopPropagation();toggleHabit('${h.id}')">${done ? '✓' : ''}</div>
+    <div class="habit-check">${done ? '✓' : ''}</div>
     <div class="habit-info">
-      <div class="habit-name">${h.emoji || '⭐'} ${h.name}</div>
-      <div class="habit-meta">${h.goal ? h.goal + ' · ' : ''}${freqLabel ? freqLabel + ' · ' : ''}${hStreak > 0 ? `🔥 ${hStreak} Tage` : 'Noch kein Streak'}</div>
+      <div class="habit-name">${esc(h.emoji || '⭐')} ${esc(h.name)}</div>
+      <div class="habit-meta">${h.goal ? esc(h.goal) + ' · ' : ''}${freqLabel ? freqLabel + ' · ' : ''}${hStreak > 0 ? `🔥 ${hStreak} Tage` : 'Noch kein Streak'}</div>
     </div>
     <div class="habit-actions">
       <button class="icon-btn" onclick="event.stopPropagation();openEditHabit('${h.id}')">✏</button>
@@ -1350,62 +1854,45 @@ function renderHabitCard(h) {
     </div>
   </div>`;
 }
-
-// ── TOGGLE HABIT ─────────────────────────────────────────────
+let habitBusy = false;
 async function toggleHabit(habitId) {
-  const { data: { session } } = await _sb.auth.getSession();
-  if (!session) return;
-  const done = TODAY_COMPLETIONS.has(habitId);
-  if (done) {
-    await _sb.from('habit_completions').delete()
-      .eq('habit_id', habitId).eq('user_id', session.user.id).eq('completed_date', todayStr());
-    TODAY_COMPLETIONS.delete(habitId);
-    ALL_COMPLETIONS = ALL_COMPLETIONS.filter(c => !(c.habit_id === habitId && c.completed_date === todayStr()));
-    // XP abziehen — aber nie unter 0
-    const currentXP = parseInt(localStorage.getItem('ttl_xp') || '0');
-    const newXP = Math.max(0, currentXP - XP_PER_HABIT);
-    localStorage.setItem('ttl_xp', newXP);
-    const fill = document.getElementById('xp-bar-fill');
-    if (fill) {
-      fill.style.transition = 'none';
-      fill.style.width = getLevelProgress(currentXP).pct + '%';
-      requestAnimationFrame(() => {
-        fill.style.transition = 'width .7s ease';
-        fill.style.width = getLevelProgress(newXP).pct + '%';
-      });
+  if (habitBusy) return; habitBusy = true;
+  try {
+    const t = todayStr();
+    if (TODAY_COMPLETIONS.has(habitId)) {
+      const { error } = await _sb.from('habit_completions').delete().eq('habit_id', habitId).eq('user_id', USER_ID).eq('completed_date', t);
+      if (error) { showToast('✗ ' + error.message); return; }
+      ALL_COMPLETIONS = ALL_COMPLETIONS.filter(c => !(c.habit_id === habitId && c.completed_date === t));
+      rebuildCompletionIndex();
+      await addCoins(-3, 'Habit rückgängig gemacht');
+    } else {
+      const { data, error } = await _sb.from('habit_completions').insert({ habit_id: habitId, user_id: USER_ID, completed_date: t }).select().single();
+      if (error) { showToast('✗ ' + error.message); return; }
+      ALL_COMPLETIONS.push(data);
+      rebuildCompletionIndex();
+      await addCoins(3, 'Habit erledigt');
+      const due = dueHabitsOn(t);
+      if (due.every(h => TODAY_COMPLETIONS.has(h.id)) && PROFILE.last_full_day !== t) {
+        await saveProfile({ last_full_day: t });
+        await addCoins(10, '🎉 Alle Habits für heute erledigt – Bonus');
+      }
     }
-    updateXPBar();
-    showToast(`−${XP_PER_HABIT} XP · Habit rückgängig gemacht`);
-  } else {
-    const { data } = await _sb.from('habit_completions').insert({
-      habit_id: habitId, user_id: session.user.id, completed_date: todayStr()
-    }).select().single();
-    TODAY_COMPLETIONS.add(habitId);
-    if (data) ALL_COMPLETIONS.push(data);
-    addXP(XP_PER_HABIT, 'Habit');
-    // Alle fälligen heute erledigt?
-    const dueToday = HABITS.filter(h => isHabitDueToday(h));
-    if (dueToday.every(h => TODAY_COMPLETIONS.has(h.id))) {
-      addXP(XP_PER_FULL_DAY, 'Alle Habits');
-      showToast('🎉 Alle Habits für heute erledigt! +' + XP_PER_FULL_DAY + ' Bonus XP');
-    }
-  }
-  renderDashboard();
-  checkAchievements();
-  if (document.getElementById('panel-habits').classList.contains('active')) renderAllHabits();
+    renderDashboard();
+    await checkAchievements();
+    if (document.getElementById('panel-habits').classList.contains('active')) renderAllHabits();
+  } finally { habitBusy = false; }
 }
-
 function renderAllHabits() {
-  const grid = document.getElementById('all-habits');
-  const empty = document.getElementById('no-habits');
+  const grid = document.getElementById('all-habits'), empty = document.getElementById('no-habits');
   document.getElementById('habit-count').textContent = HABITS.length;
   if (!HABITS.length) { grid.innerHTML = ''; empty.style.display = 'block'; return; }
   empty.style.display = 'none';
-  grid.innerHTML = HABITS.map(h => renderHabitCard(h)).join('');
+  grid.innerHTML = HABITS.map(renderHabitCard).join('');
 }
 
-// ── HABIT MODAL ───────────────────────────────────────────────
 let selectedEmoji = '⭐', selectedWeekdays = new Set();
+const EMOJIS = ['💪', '📚', '🧘', '💧', '🏃', '🎯', '✍️', '🌅', '🥗', '😴', '💻', '🎵', '🚶', '🧹', '📱', '🫀', '🌿', '⚡', '🔥', '⭐', '🎨', '🏋️', '🤸', '🧠', '💊', '🛁', '☀️', '🌙', '🥤', '📝'];
+document.getElementById('emoji-grid').innerHTML = EMOJIS.map(e => `<button class="emoji-btn" onclick="selectEmoji(this,'${e}')">${e}</button>`).join('');
 function openAddHabit() {
   document.getElementById('modal-title').textContent = 'Neues Habit';
   document.getElementById('edit-habit-id').value = '';
@@ -1413,9 +1900,10 @@ function openAddHabit() {
   document.getElementById('habit-goal').value = '';
   selectedEmoji = '⭐'; selectedWeekdays = new Set();
   document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
-  document.getElementById('habit-modal').classList.add('open');
-  selectFrequency('daily');
   document.querySelectorAll('.weekday-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('habit-weekdays').value = '';
+  selectFrequency('daily');
+  document.getElementById('habit-modal').classList.add('open');
 }
 function openEditHabit(id) {
   const h = HABITS.find(h => h.id === id);
@@ -1439,8 +1927,6 @@ function selectEmoji(btn, emoji) {
   btn.classList.add('selected');
 }
 async function saveHabit() {
-  const { data: { session } } = await _sb.auth.getSession();
-  if (!session) { showToast('⚠ Nicht eingeloggt'); return; }
   const name = document.getElementById('habit-name').value.trim();
   const goal = document.getElementById('habit-goal').value.trim();
   const editId = document.getElementById('edit-habit-id').value;
@@ -1451,48 +1937,50 @@ async function saveHabit() {
   if (editId) {
     const { error } = await _sb.from('habits').update({ name, emoji: selectedEmoji, goal, frequency, weekdays: weekdays || null }).eq('id', editId);
     if (error) { showToast('✗ ' + error.message); return; }
-    const h = HABITS.find(h => h.id === editId);
-    if (h) Object.assign(h, { name, emoji: selectedEmoji, goal, frequency, weekdays });
+    Object.assign(HABITS.find(h => h.id === editId) || {}, { name, emoji: selectedEmoji, goal, frequency, weekdays });
     showToast('✓ Habit aktualisiert');
   } else {
-    const { data, error } = await _sb.from('habits').insert({
-      user_id: session.user.id, name, emoji: selectedEmoji, goal: goal || null, frequency, weekdays: weekdays || null
-    }).select().single();
+    const { data, error } = await _sb.from('habits').insert({ user_id: USER_ID, name, emoji: selectedEmoji, goal: goal || null, frequency, weekdays: weekdays || null }).select().single();
     if (error) { showToast('✗ ' + error.message); return; }
-    if (data) HABITS.push(data);
+    HABITS.push(data);
     showToast('✓ Habit erstellt');
-    checkAchievements();
   }
   closeHabitModal(); renderDashboard(); renderAllHabits();
+  await checkAchievements();
 }
 async function deleteHabit(id) {
   if (!confirm('Habit wirklich löschen? Alle bisherigen Daten gehen verloren.')) return;
   await _sb.from('habits').delete().eq('id', id);
   HABITS = HABITS.filter(h => h.id !== id);
-  TODAY_COMPLETIONS.delete(id);
   ALL_COMPLETIONS = ALL_COMPLETIONS.filter(c => c.habit_id !== id);
+  rebuildCompletionIndex();
   showToast('✓ Habit gelöscht'); renderDashboard(); renderAllHabits();
 }
-
-// ── WEEK VIEW ─────────────────────────────────────────────────
-function changeWeek(dir) {
-  if (dir === 0) currentWeekOffset = 0; else currentWeekOffset += dir;
-  renderWeekView();
+function selectFrequency(freq) {
+  document.getElementById('habit-frequency').value = freq;
+  document.querySelectorAll('.freq-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('freq-' + freq).classList.add('selected');
+  document.getElementById('weekday-picker').style.display = freq === 'weekday' ? 'flex' : 'none';
 }
+function toggleWeekday(day) {
+  if (selectedWeekdays.has(day)) selectedWeekdays.delete(day); else selectedWeekdays.add(day);
+  document.querySelectorAll('.weekday-btn').forEach(b => b.classList.toggle('selected', selectedWeekdays.has(parseInt(b.dataset.day))));
+  document.getElementById('habit-weekdays').value = Array.from(selectedWeekdays).join(',');
+}
+
+// ── WOCHENANSICHT ────────────────────────────────────────────
+function changeWeek(dir) { currentWeekOffset = dir === 0 ? 0 : currentWeekOffset + dir; renderWeekView(); }
 function renderWeekView() {
-  const days = getWeekDays(currentWeekOffset), dayNames = ['Mo','Di','Mi','Do','Fr','Sa','So'], today = todayStr();
-  let html = `<div class="week-grid"><div></div>${days.map((d,i) =>
-    `<div class="week-day ${d===today?'today':''}">${dayNames[i]}<br><span style="font-size:.55rem">${d.slice(8)}</span></div>`).join('')}</div>`;
+  const days = getWeekDays(currentWeekOffset), dayNames = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'], today = todayStr();
+  let html = `<div class="week-grid"><div></div>${days.map((d, i) => `<div class="week-day ${d === today ? 'today' : ''}">${dayNames[i]}<br><span style="font-size:.55rem">${d.slice(8)}</span></div>`).join('')}</div>`;
   HABITS.forEach(h => {
-    const habitCreated = h.created_at ? h.created_at.split('T')[0] : today;
     html += `<div class="week-grid" style="margin-bottom:.35rem">
-      <div class="week-habit-name">${h.emoji||'⭐'} ${h.name}</div>
+      <div class="week-habit-name">${esc(h.emoji || '⭐')} ${esc(h.name)}</div>
       ${days.map(d => {
-        const done = ALL_COMPLETIONS.some(c => c.habit_id === h.id && c.completed_date === d);
-        const isFuture = d > today, before = d < habitCreated, frozen = isStreakFrozen(d);
-        const due = isHabitDueToday(h, d);
-        const cls = done ? 'done' : frozen ? 'frozen' : (isFuture || before || !due) ? '' : 'missed';
-        return `<div class="week-dot ${cls} ${d===today?'today-dot':''}" title="${d}${frozen?' (Streak-Schutz)':''}"></div>`;
+        const done = doneOn(h.id, d), frozen = isStreakFrozen(d);
+        const relevant = d <= today && habitExistsOn(h, d) && isHabitDueToday(h, d);
+        const cls = done ? 'done' : frozen && relevant ? 'frozen' : (relevant && d < today) ? 'missed' : '';
+        return `<div class="week-dot ${cls} ${d === today ? 'today-dot' : ''}" title="${d}${frozen ? ' (Streak-Schutz)' : ''}"></div>`;
       }).join('')}
     </div>`;
   });
@@ -1500,54 +1988,126 @@ function renderWeekView() {
   document.getElementById('week-view').innerHTML = html;
 }
 
-// ── POMODORO ──────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+//  POMODORO
+// ══════════════════════════════════════════════════════════════
+function getSelectedSkill() { const id = localStorage.getItem('ttl_sel_skill'); return SKILLS.find(s => s.id === id) || null; }
+function setSelectedSkill(id) { if (id) localStorage.setItem('ttl_sel_skill', id); else localStorage.removeItem('ttl_sel_skill'); }
+function selectPomoSkill(id) { setSelectedSkill(id); renderPomoSkillSelect(); }
+function renderPomoSkillSelect() {
+  const sel = document.getElementById('pomo-skill');
+  const cur = getSelectedSkill();
+  if (!SKILLS.length) {
+    sel.innerHTML = '<option value="">— Noch keine Skills —</option>';
+    document.getElementById('pomo-skill-info').innerHTML = 'Lege unter <a onclick="goto(\'avatar\',\'skills\')" style="color:var(--gold);cursor:pointer;text-decoration:underline">⚔️ Skills</a> einen Skill an, damit deine Pomodoros XP geben.';
+    return;
+  }
+  sel.innerHTML = '<option value="">— Kein Skill (nur Münzen) —</option>' + SKILLS.map(s =>
+    `<option value="${s.id}" ${cur && cur.id === s.id ? 'selected' : ''}>${esc(s.emoji || '⭐')} ${esc(s.name)} · Level ${skillLevel(s.xp)}</option>`).join('');
+  const info = document.getElementById('pomo-skill-info');
+  if (!cur) { info.innerHTML = 'Ohne Skill bekommst du nur Münzen, keine XP.'; return; }
+  const p = skillProgress(cur.xp), bonus = skillBonus(p.L), mins = timerMode === 'deep' ? 50 : 25;
+  const boost = (PROFILE?.boost_pomos || 0) > 0;
+  const xp = Math.round(mins * (1 + bonus) * (boost ? 2 : 1));
+  info.innerHTML = `Nächster Fokus-Block: <b style="color:var(--gold)">+${xp} XP</b> auf ${esc(cur.name)}${bonus ? ` (inkl. +${Math.round(bonus * 100)} % Perk)` : ''}${boost ? ` · ⚡ Boost aktiv (${PROFILE.boost_pomos} übrig)` : ''}<br>${p.cur}/${p.need} XP bis Level ${p.L + 1}`;
+}
+function updateModeButtons() {
+  document.getElementById('mode-deep').style.display = hasPerk('deepfocus') ? '' : 'none';
+  ['focus', 'deep', 'short', 'long'].forEach(m => document.getElementById('mode-' + m).classList.toggle('active-mode', m === timerMode));
+}
+function updatePomoStats() {
+  const pt = sessionsToday();
+  document.getElementById('pomo-count').textContent = pt.length;
+  document.getElementById('pomo-minutes').textContent = pt.reduce((a, s) => a + (s.minutes || 25), 0);
+  document.getElementById('pomo-total').textContent = SESSIONS.length;
+  document.getElementById('m-pomos').textContent = pt.length;
+}
 function setMode(mode) {
+  if (mode === 'deep' && !hasPerk('deepfocus')) return;
   timerMode = mode; timerSeconds = MODES[mode]; timerRunning = false;
   clearInterval(timerInterval);
   document.getElementById('timer-btn').textContent = '▶ Start';
   document.getElementById('timer-circle').classList.remove('running');
-  document.getElementById('timer-label').textContent = mode==='focus'?'FOKUS':mode==='short'?'PAUSE':'LANGE PAUSE';
-  updateTimerDisplay();
+  document.getElementById('timer-label').textContent = MODE_LABELS[mode];
+  updateTimerDisplay(); updateModeButtons(); renderPomoSkillSelect();
 }
 function updateTimerDisplay() {
-  const m = Math.floor(timerSeconds/60).toString().padStart(2,'0');
-  const s = (timerSeconds%60).toString().padStart(2,'0');
+  const m = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
+  const s = (timerSeconds % 60).toString().padStart(2, '0');
   document.getElementById('timer-display').textContent = `${m}:${s}`;
+  if (timerRunning) document.title = `${m}:${s} · timetolockin`; else document.title = 'timetolockin';
 }
+// Läuft über die echte Uhrzeit, damit der Timer auch im Hintergrund-Tab stimmt
+let timerEndsAt = 0;
 function toggleTimer() {
   if (timerRunning) {
     clearInterval(timerInterval); timerRunning = false;
+    timerSeconds = Math.max(0, Math.round((timerEndsAt - Date.now()) / 1000));
     document.getElementById('timer-btn').textContent = '▶ Start';
     document.getElementById('timer-circle').classList.remove('running');
-  } else {
-    timerRunning = true;
-    document.getElementById('timer-btn').textContent = '⏸ Pause';
-    document.getElementById('timer-circle').classList.add('running');
-    timerInterval = setInterval(async () => {
-      timerSeconds--;
-      updateTimerDisplay();
-      if (timerSeconds <= 0) {
-        clearInterval(timerInterval); timerRunning = false;
-        document.getElementById('timer-btn').textContent = '▶ Start';
-        document.getElementById('timer-circle').classList.remove('running');
-        if (timerMode === 'focus') {
-          pomosToday++; pomosTotal++;
-          localStorage.setItem('ttl_pomos_total', pomosTotal);
-          document.getElementById('m-pomos').textContent = pomosToday;
-          document.getElementById('pomo-count').textContent = pomosToday;
-          document.getElementById('pomo-minutes').textContent = pomosToday * 25;
-          document.getElementById('pomo-total').textContent = pomosTotal;
-          const { data: { session } } = await _sb.auth.getSession();
-          if (session) await _sb.from('pomodoro_sessions').insert({ user_id: session.user.id });
-          addXP(XP_PER_POMO, 'Pomodoro');
-          checkAchievements();
-          showToast('🎯 Pomodoro fertig! +' + XP_PER_POMO + ' XP');
-        } else {
-          showToast('☕ Pause vorbei — weiter geht\'s!');
-        }
-      }
-    }, 1000);
+    updateTimerDisplay();
+    return;
   }
+  timerRunning = true;
+  timerEndsAt = Date.now() + timerSeconds * 1000;
+  document.getElementById('timer-btn').textContent = '⏸ Pause';
+  document.getElementById('timer-circle').classList.add('running');
+  timerInterval = setInterval(() => {
+    timerSeconds = Math.max(0, Math.round((timerEndsAt - Date.now()) / 1000));
+    updateTimerDisplay();
+    if (timerSeconds <= 0) finishTimer();
+  }, 500);
+}
+async function finishTimer() {
+  clearInterval(timerInterval); timerRunning = false;
+  document.getElementById('timer-btn').textContent = '▶ Start';
+  document.getElementById('timer-circle').classList.remove('running');
+  document.title = 'timetolockin';
+  try { // kurzer Signalton
+    const ctx = new (window.AudioContext || window.webkitAudioContext)(), o = ctx.createOscillator(), g = ctx.createGain();
+    o.frequency.value = 880; g.gain.setValueAtTime(0.15, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.8);
+    o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime + 0.8);
+  } catch (e) {}
+  if (timerMode === 'focus' || timerMode === 'deep') await completeFocusBlock(timerMode === 'deep' ? 50 : 25);
+  else showToast('☕ Pause vorbei — weiter geht\'s!');
+  timerSeconds = MODES[timerMode];
+  updateTimerDisplay();
+}
+async function completeFocusBlock(minutes) {
+  const skill = getSelectedSkill();
+  let xp = 0, levelUp = null;
+  const avBefore = avatarLevel();
+  if (skill) {
+    const before = skillLevel(skill.xp);
+    const boost = (PROFILE.boost_pomos || 0) > 0;
+    xp = Math.round(minutes * (1 + skillBonus(before)) * (boost ? 2 : 1));
+    const newXp = skill.xp + xp;
+    const { error } = await _sb.from('skills').update({ xp: newXp }).eq('id', skill.id);
+    if (error) { showToast('✗ XP konnten nicht gespeichert werden: ' + error.message); xp = 0; }
+    else {
+      skill.xp = newXp;
+      if (boost) await saveProfile({ boost_pomos: PROFILE.boost_pomos - 1 });
+      const after = skillLevel(newXp);
+      if (after > before) levelUp = { skill, after };
+    }
+  }
+  const { data } = await _sb.from('pomodoro_sessions').insert({ user_id: USER_ID, skill_id: skill?.id || null, xp, minutes }).select('id,skill_id,minutes,xp,created_at').single();
+  SESSIONS.push(data || { skill_id: skill?.id || null, minutes, xp, created_at: new Date().toISOString() });
+  if (xp) floatText(`+${xp} XP`, skill.color);
+  await addCoins(minutes / 25 * 10, skill ? `Fokus-Block fertig · +${xp} XP auf ${skill.name}` : 'Fokus-Block fertig');
+  if (levelUp) {
+    const t = SKILL_TITLES.find(t => t.lvl === levelUp.after);
+    const perk = levelUp.after === 5 ? ' · Perk: +10 % XP' : levelUp.after === 10 ? ' · Perk: +20 % XP' : '';
+    showBanner(levelUp.skill.emoji || '⭐', 'Skill Level Up!', `${levelUp.skill.name} Level ${levelUp.after}`, `Avatar-Level jetzt ${avatarLevel()}${t ? ` · Neuer Titel: ${levelUp.skill.name}-${t.suffix}` : ''}${perk}`);
+    const newRank = rankIndex(avatarLevel());
+    if (newRank > rankIndex(avBefore)) showBanner('👑', 'Neuer Rang', RANK_NAMES[newRank], 'Neuer Titel freigeschaltet.');
+    const unlockedNow = [];
+    Object.entries(ITEMS).forEach(([slot, items]) => items.forEach(it => { if (it.unlock?.type === 'level' && it.unlock.n > avBefore && it.unlock.n <= avatarLevel()) unlockedNow.push(it.name); }));
+    if (unlockedNow.length) showBanner('🎁', 'Freigeschaltet', unlockedNow.join(', '), 'Probier es im Avatar-Editor aus.');
+    await checkJokerGrant();
+  }
+  updatePomoStats(); renderPomoSkillSelect(); updateHud();
+  await checkAchievements();
 }
 function resetTimer() {
   clearInterval(timerInterval); timerRunning = false; timerSeconds = MODES[timerMode];
@@ -1556,53 +2116,35 @@ function resetTimer() {
   updateTimerDisplay();
 }
 
-// ── JOURNAL ───────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+//  TAGEBUCH
+// ══════════════════════════════════════════════════════════════
 async function loadJournal() {
-  const { data: { session } } = await _sb.auth.getSession();
-  if (!session) return;
-  const { data: entries } = await _sb.from('journal_entries')
-    .select('*').eq('user_id', session.user.id)
-    .order('entry_date', { ascending: false }).limit(10);
-  const todayEntry = (entries||[]).find(e => e.entry_date === todayStr());
+  const { data: entries } = await _sb.from('journal_entries').select('*').eq('user_id', USER_ID).order('entry_date', { ascending: false }).limit(10);
+  const t = todayStr();
+  const todayEntry = (entries || []).find(e => e.entry_date === t);
   document.getElementById('journal-today').value = todayEntry?.content || '';
-  const older = (entries||[]).filter(e => e.entry_date !== todayStr());
+  const older = (entries || []).filter(e => e.entry_date !== t);
   document.getElementById('journal-entries').innerHTML = older.map(e =>
-    `<div class="journal-entry"><div class="journal-date">${formatDate(e.entry_date)}</div><div class="journal-text">${e.content}</div></div>`
+    `<div class="journal-entry"><div class="journal-date">${formatDate(e.entry_date)}</div><div class="journal-text">${esc(e.content)}</div></div>`
   ).join('') || '<div style="color:var(--text3);font-size:.75rem">Noch keine früheren Einträge</div>';
 }
 async function saveJournal() {
-  const { data: { session } } = await _sb.auth.getSession();
-  if (!session) return;
   const content = document.getElementById('journal-today').value.trim();
   if (!content) { showToast('⚠ Nichts zu speichern'); return; }
-  await _sb.from('journal_entries').upsert({
-    user_id: session.user.id, entry_date: todayStr(), content
-  }, { onConflict: 'user_id,entry_date' });
-  const count = parseInt(localStorage.getItem('ttl_journal_count') || '0') + 1;
-  localStorage.setItem('ttl_journal_count', count);
-  addXP(XP_PER_JOURNAL, 'Journal');
-  checkAchievements();
-  showToast('✓ Tagebuch gespeichert +' + XP_PER_JOURNAL + ' XP');
+  const { error } = await _sb.from('journal_entries').upsert({ user_id: USER_ID, entry_date: todayStr(), content }, { onConflict: 'user_id,entry_date' });
+  if (error) { showToast('✗ ' + error.message); return; }
+  if (!JOURNAL_TODAY_EXISTS) {
+    JOURNAL_TODAY_EXISTS = true; JOURNAL_COUNT++;
+    await addCoins(5, 'Tagebuch gespeichert');
+  } else showToast('✓ Tagebuch aktualisiert');
+  await checkAchievements();
   loadJournal();
 }
 
-// ── FREQUENCY SELECTION ──────────────────────────────────────
-function selectFrequency(freq) {
-  document.getElementById('habit-frequency').value = freq;
-  document.querySelectorAll('.freq-btn').forEach(b => b.classList.remove('selected'));
-  document.getElementById('freq-' + freq).classList.add('selected');
-  document.getElementById('weekday-picker').style.display = freq === 'weekday' ? 'flex' : 'none';
-}
-function toggleWeekday(day) {
-  if (selectedWeekdays.has(day)) selectedWeekdays.delete(day);
-  else selectedWeekdays.add(day);
-  document.querySelectorAll('.weekday-btn').forEach(b =>
-    b.classList.toggle('selected', selectedWeekdays.has(parseInt(b.dataset.day)))
-  );
-  document.getElementById('habit-weekdays').value = Array.from(selectedWeekdays).join(',');
-}
-
-// ── LOGIN ─────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+//  LOGIN
+// ══════════════════════════════════════════════════════════════
 async function doLogin() {
   const email = document.getElementById('login-email').value.trim();
   const password = document.getElementById('login-password').value;
@@ -1616,173 +2158,80 @@ async function doLogin() {
   document.getElementById('app').style.display = 'grid';
 }
 
-// ── ZEITPLANER ────────────────────────────────────────────────
-let TIME_BLOCKS = [], TASKS = [], DAY_TEMPLATES = [], TEMPLATE_BLOCKS = [];
-let plannerWeekOffset = 0, activePlannerTab = 'week';
+// ══════════════════════════════════════════════════════════════
+//  ZEITPLANER
+// ══════════════════════════════════════════════════════════════
 let selectedBlockColor = '#c9a84c', applyTplTargetDate = null;
-
-// Stunden die im Kalender angezeigt werden (06:00 bis 22:00)
-const CAL_START_HOUR = 6, CAL_END_HOUR = 22;
-const CELL_HEIGHT = 40; // px pro Stunde
-
+const CAL_START_HOUR = 6, CAL_END_HOUR = 22, CELL_HEIGHT = 40;
 function switchPlannerTab(tab) {
   activePlannerTab = tab;
-  document.getElementById('ptab-week').classList.toggle('active', tab === 'week');
-  document.getElementById('ptab-tasks').classList.toggle('active', tab === 'tasks');
-  document.getElementById('ptab-templates').classList.toggle('active', tab === 'templates');
-  document.getElementById('planner-week').style.display = tab === 'week' ? 'block' : 'none';
-  document.getElementById('planner-tasks').style.display = tab === 'tasks' ? 'block' : 'none';
-  document.getElementById('planner-templates').style.display = tab === 'templates' ? 'block' : 'none';
+  ['week', 'tasks', 'templates'].forEach(t => {
+    document.getElementById('ptab-' + t).classList.toggle('active', t === tab);
+    document.getElementById('planner-' + t).style.display = t === tab ? 'block' : 'none';
+  });
   if (tab === 'week') renderPlannerWeek();
   if (tab === 'tasks') renderTasks();
   if (tab === 'templates') renderTemplateList();
 }
-
-function changePlannerWeek(dir) {
-  if (dir === 0) plannerWeekOffset = 0; else plannerWeekOffset += dir;
-  renderPlannerWeek();
-}
-
-function getPlannerWeekDays() {
-  const days = [], now = new Date(), dow = now.getDay() || 7;
-  const monday = new Date(now);
-  monday.setDate(now.getDate() - dow + 1 + plannerWeekOffset * 7);
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(monday);
-    d.setDate(monday.getDate() + i);
-    days.push(d.toISOString().split('T')[0]);
-  }
-  return days;
-}
-
+function changePlannerWeek(dir) { plannerWeekOffset = dir === 0 ? 0 : plannerWeekOffset + dir; renderPlannerWeek(); }
 function renderPlannerWeek() {
-  const days = getPlannerWeekDays();
-  const today = todayStr();
-  const dayNames = ['Mo','Di','Mi','Do','Fr','Sa','So'];
-  const startD = new Date(days[0]).toLocaleDateString('de-DE', {day:'2-digit', month:'short'});
-  const endD = new Date(days[6]).toLocaleDateString('de-DE', {day:'2-digit', month:'short', year:'numeric'});
+  const days = getWeekDays(plannerWeekOffset), today = todayStr(), dayNames = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+  const startD = dOf(days[0]).toLocaleDateString('de-DE', { day: '2-digit', month: 'short' });
+  const endD = dOf(days[6]).toLocaleDateString('de-DE', { day: '2-digit', month: 'short', year: 'numeric' });
   document.getElementById('planner-week-title').textContent = `${startD} – ${endD}`;
-
-  const hours = [];
-  for (let h = CAL_START_HOUR; h <= CAL_END_HOUR; h++) hours.push(h);
-  const totalHours = CAL_END_HOUR - CAL_START_HOUR + 1;
-
-  // Header row
-  let html = `<div class="cal-wrap" id="cal-grid">
-    <div></div>
-    ${days.map((d,i) => {
-      const isToday = d === today;
-      const dayNum = new Date(d).getDate();
-      return `<div class="cal-day-head ${isToday ? 'today' : ''}" style="padding-bottom:.4rem">
-        ${dayNames[i]}<br><span style="font-size:.75rem;font-weight:700">${dayNum}</span>
-        <br><button class="apply-tpl-btn" onclick="openApplyTemplateModal('${d}')">⊕ Vorlage</button>
-      </div>`;
-    }).join('')}`;
-
-  // Time rows
-  hours.forEach(h => {
-    const timeStr = String(h).padStart(2,'0') + ':00';
-    html += `<div class="cal-time-label">${timeStr}</div>`;
-    days.forEach(d => {
-      html += `<div class="cal-cell ${d === today ? 'today-col' : ''}" data-date="${d}" data-hour="${h}" onclick="calCellClick('${d}',${h})"></div>`;
-    });
-  });
+  let html = `<div class="cal-wrap" id="cal-grid"><div></div>
+    ${days.map((d, i) => `<div class="cal-day-head ${d === today ? 'today' : ''}" style="padding-bottom:.4rem">${dayNames[i]}<br><span style="font-size:.75rem;font-weight:700">${dOf(d).getDate()}</span><br><button class="apply-tpl-btn" onclick="openApplyTemplateModal('${d}')">⊕ Vorlage</button></div>`).join('')}`;
+  for (let h = CAL_START_HOUR; h <= CAL_END_HOUR; h++) {
+    html += `<div class="cal-time-label">${String(h).padStart(2, '0')}:00</div>`;
+    days.forEach(d => { html += `<div class="cal-cell ${d === today ? 'today-col' : ''}" data-date="${d}" data-hour="${h}" onclick="calCellClick('${d}',${h})"></div>`; });
+  }
   html += '</div>';
   document.getElementById('cal-container').innerHTML = html;
-
-  // Render blocks on top
+  const grid = document.getElementById('cal-grid');
   TIME_BLOCKS.forEach(b => {
     if (!days.includes(b.date)) return;
-    const colIdx = days.indexOf(b.date);
     const [sh, sm] = b.start_time.split(':').map(Number);
     const [eh, em] = b.end_time.split(':').map(Number);
-    const startFrac = (sh - CAL_START_HOUR) + sm / 60;
-    const endFrac = (eh - CAL_START_HOUR) + em / 60;
-    if (endFrac <= 0 || startFrac >= totalHours) return;
-    const topPx = Math.max(0, startFrac) * CELL_HEIGHT;
-    const heightPx = Math.max(20, (endFrac - startFrac) * CELL_HEIGHT - 2);
-    const grid = document.getElementById('cal-grid');
-    if (!grid) return;
-    // Position block absolutely relative to the grid using a wrapper
-    const block = document.createElement('div');
-    block.className = 'time-block';
-    block.style.cssText = `background:${b.color || '#c9a84c'};color:#000;top:${topPx + CELL_HEIGHT}px;height:${heightPx}px;opacity:.88`;
-    // Offset by column: each day column has equal width
-    block.dataset.id = b.id;
-    block.innerHTML = `<strong>${b.start_time.slice(0,5)}</strong> ${b.title}`;
-    block.onclick = (e) => { e.stopPropagation(); openBlockModal(b.id); };
-    // We'll position via a relative container approach
-    const cells = grid.querySelectorAll(`[data-date="${b.date}"]`);
-    const hourCell = cells[sh - CAL_START_HOUR];
-    if (hourCell) {
-      hourCell.style.position = 'relative';
-      const inner = document.createElement('div');
-      inner.className = 'time-block';
-      inner.style.cssText = `background:${b.color||'#c9a84c'};color:#0a0a0f;top:${(sm/60)*CELL_HEIGHT}px;height:${heightPx}px;font-weight:500;white-space:nowrap;text-overflow:ellipsis`;
-      inner.dataset.blockId = b.id;
-      inner.innerHTML = `<span style="opacity:.8">${b.start_time.slice(0,5)}–${b.end_time.slice(0,5)}</span> ${b.title}`;
-      inner.onclick = (e) => { e.stopPropagation(); openBlockModal(b.id); };
-      hourCell.appendChild(inner);
-    }
+    if (sh < CAL_START_HOUR || sh > CAL_END_HOUR) return;
+    const heightPx = Math.max(20, ((eh + em / 60) - (sh + sm / 60)) * CELL_HEIGHT - 2);
+    const cell = grid.querySelector(`[data-date="${b.date}"][data-hour="${sh}"]`);
+    if (!cell) return;
+    const inner = document.createElement('div');
+    inner.className = 'time-block';
+    inner.style.cssText = `background:${b.color || '#c9a84c'};color:#0a0a0f;top:${(sm / 60) * CELL_HEIGHT}px;height:${heightPx}px;font-weight:500;white-space:nowrap;text-overflow:ellipsis`;
+    inner.innerHTML = `<span style="opacity:.8">${b.start_time.slice(0, 5)}–${b.end_time.slice(0, 5)}</span> ${esc(b.title)}`;
+    inner.onclick = e => { e.stopPropagation(); openBlockModal(b.id); };
+    cell.appendChild(inner);
   });
 }
-
 function calCellClick(date, hour) {
-  // Pre-fill modal with clicked date/time
+  openBlockModal();
   document.getElementById('block-date').value = date;
-  const h = String(hour).padStart(2,'0');
-  document.getElementById('block-start').value = `${h}:00`;
-  document.getElementById('block-end').value = `${String(hour+1).padStart(2,'0')}:00`;
-  document.getElementById('edit-block-id').value = '';
-  document.getElementById('block-title').value = '';
-  document.getElementById('block-modal-title').textContent = 'Neuer Zeitblock';
-  document.getElementById('block-delete-btn').style.display = 'none';
-  selectBlockColor(document.querySelector('#block-color-picker div'), '#c9a84c');
-  document.getElementById('block-modal').classList.add('open');
+  document.getElementById('block-start').value = `${String(hour).padStart(2, '0')}:00`;
+  document.getElementById('block-end').value = `${String(Math.min(23, hour + 1)).padStart(2, '0')}:00`;
 }
-
 function openBlockModal(id) {
-  if (!id) {
-    // New block — set date to today
-    document.getElementById('block-date').value = todayStr();
-    document.getElementById('block-start').value = '08:00';
-    document.getElementById('block-end').value = '09:00';
-    document.getElementById('block-title').value = '';
-    document.getElementById('edit-block-id').value = '';
-    document.getElementById('block-modal-title').textContent = 'Neuer Zeitblock';
-    document.getElementById('block-delete-btn').style.display = 'none';
-    selectBlockColor(document.querySelector('#block-color-picker div'), '#c9a84c');
-  } else {
-    const b = TIME_BLOCKS.find(x => x.id === id);
-    if (!b) return;
-    document.getElementById('block-title').value = b.title;
-    document.getElementById('block-date').value = b.date;
-    document.getElementById('block-start').value = b.start_time.slice(0,5);
-    document.getElementById('block-end').value = b.end_time.slice(0,5);
-    document.getElementById('edit-block-id').value = b.id;
-    document.getElementById('block-modal-title').textContent = 'Block bearbeiten';
-    document.getElementById('block-delete-btn').style.display = 'block';
-    const colorDiv = document.querySelector(`#block-color-picker div[onclick*="${b.color}"]`);
-    if (colorDiv) selectBlockColor(colorDiv, b.color); else {
-      selectedBlockColor = b.color || '#c9a84c';
-      document.getElementById('block-color').value = selectedBlockColor;
-    }
-  }
+  const b = id ? TIME_BLOCKS.find(x => x.id === id) : null;
+  document.getElementById('block-title').value = b ? b.title : '';
+  document.getElementById('block-date').value = b ? b.date : todayStr();
+  document.getElementById('block-start').value = b ? b.start_time.slice(0, 5) : '08:00';
+  document.getElementById('block-end').value = b ? b.end_time.slice(0, 5) : '09:00';
+  document.getElementById('edit-block-id').value = b ? b.id : '';
+  document.getElementById('block-modal-title').textContent = b ? 'Block bearbeiten' : 'Neuer Zeitblock';
+  document.getElementById('block-delete-btn').style.display = b ? 'block' : 'none';
+  const color = b?.color || '#c9a84c';
+  const colorDiv = document.querySelector(`#block-color-picker div[onclick*="${color}"]`) || document.querySelector('#block-color-picker div');
+  selectBlockColor(colorDiv, color);
   document.getElementById('block-modal').classList.add('open');
 }
-
 function closeBlockModal() { document.getElementById('block-modal').classList.remove('open'); }
-
 function selectBlockColor(el, color) {
   selectedBlockColor = color;
   document.getElementById('block-color').value = color;
   document.querySelectorAll('#block-color-picker div').forEach(d => d.style.border = '2px solid transparent');
-  el.style.border = '2px solid var(--text)';
+  if (el) el.style.border = '2px solid var(--text)';
 }
-
 async function saveBlock() {
-  const { data: { session } } = await _sb.auth.getSession();
-  if (!session) return;
   const title = document.getElementById('block-title').value.trim();
   const date = document.getElementById('block-date').value;
   const start = document.getElementById('block-start').value;
@@ -1799,163 +2248,93 @@ async function saveBlock() {
     if (idx >= 0) TIME_BLOCKS[idx] = { ...TIME_BLOCKS[idx], title, date, start_time: start, end_time: end, color };
     showToast('✓ Block aktualisiert');
   } else {
-    const { data, error } = await _sb.from('time_blocks').insert({
-      user_id: session.user.id, title, date, start_time: start, end_time: end, color
-    }).select().single();
+    const { data, error } = await _sb.from('time_blocks').insert({ user_id: USER_ID, title, date, start_time: start, end_time: end, color }).select().single();
     if (error) { showToast('✗ ' + error.message); return; }
-    if (data) TIME_BLOCKS.push(data);
+    TIME_BLOCKS.push(data);
     showToast('✓ Block erstellt');
   }
-  closeBlockModal();
-  renderPlannerWeek();
+  closeBlockModal(); renderPlannerWeek();
 }
-
 async function deleteBlock() {
   const id = document.getElementById('edit-block-id').value;
   if (!id || !confirm('Block wirklich löschen?')) return;
   await _sb.from('time_blocks').delete().eq('id', id);
   TIME_BLOCKS = TIME_BLOCKS.filter(b => b.id !== id);
-  closeBlockModal();
-  renderPlannerWeek();
+  closeBlockModal(); renderPlannerWeek();
   showToast('✓ Block gelöscht');
 }
 
-// ── TAGESABLAUF-VORLAGEN ─────────────────────────────────────
+// Vorlagen
 function renderTemplateList() {
-  const list = document.getElementById('tpl-list');
-  const empty = document.getElementById('no-tpls');
-  const count = document.getElementById('tpl-count');
-  if (count) count.textContent = DAY_TEMPLATES.length;
-  if (!DAY_TEMPLATES.length) {
-    if (list) list.innerHTML = '';
-    if (empty) empty.style.display = 'block';
-    return;
-  }
-  if (empty) empty.style.display = 'none';
-  if (!list) return;
+  const list = document.getElementById('tpl-list'), empty = document.getElementById('no-tpls');
+  document.getElementById('tpl-count').textContent = DAY_TEMPLATES.length;
+  if (!DAY_TEMPLATES.length) { list.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
   list.innerHTML = DAY_TEMPLATES.map(t => {
-    const blocks = TEMPLATE_BLOCKS.filter(b => b.template_id === t.id);
-    const blockSummary = blocks.length
-      ? blocks.sort((a,b) => a.start_time.localeCompare(b.start_time))
-              .slice(0, 3).map(b => `${b.start_time.slice(0,5)} ${b.title}`).join(' · ')
-              + (blocks.length > 3 ? ` +${blocks.length - 3}` : '')
-      : 'Noch keine Blöcke';
+    const blocks = TEMPLATE_BLOCKS.filter(b => b.template_id === t.id).sort((a, b) => a.start_time.localeCompare(b.start_time));
+    const summary = blocks.length ? blocks.slice(0, 3).map(b => `${b.start_time.slice(0, 5)} ${esc(b.title)}`).join(' · ') + (blocks.length > 3 ? ` +${blocks.length - 3}` : '') : 'Noch keine Blöcke';
     return `<div class="tpl-card" onclick="openTemplateModal('${t.id}')">
-      <div class="tpl-emoji">${t.emoji || '📅'}</div>
-      <div style="flex:1;min-width:0">
-        <div class="tpl-name">${t.name}</div>
-        <div class="tpl-count" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${blockSummary}</div>
-      </div>
+      <div class="tpl-emoji">${esc(t.emoji || '📅')}</div>
+      <div style="flex:1;min-width:0"><div class="tpl-name">${esc(t.name)}</div><div class="tpl-count" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${summary}</div></div>
       <div style="font-size:.68rem;color:var(--blue)">${blocks.length} Block${blocks.length !== 1 ? 'e' : ''}</div>
     </div>`;
   }).join('');
 }
-
-// Temporäre Block-Zeilen im Vorlage-Modal (noch nicht in DB)
-let tplBlockRows = [];  // [{title, start_time, end_time, color}]
-
+let tplBlockRows = [];
+const TPL_COLORS = ['#c9a84c', '#5b8dee', '#4caf7d', '#e05c5c', '#9b59b6'];
 function openTemplateModal(id) {
-  tplBlockRows = [];
-  if (!id) {
-    document.getElementById('tpl-modal-title').textContent = 'Neue Vorlage';
-    document.getElementById('edit-tpl-id').value = '';
-    document.getElementById('tpl-name').value = '';
-    document.getElementById('tpl-emoji').value = '📅';
-    document.getElementById('tpl-delete-btn').style.display = 'none';
-  } else {
-    const t = DAY_TEMPLATES.find(x => x.id === id);
-    if (!t) return;
-    document.getElementById('tpl-modal-title').textContent = 'Vorlage bearbeiten';
-    document.getElementById('edit-tpl-id').value = t.id;
-    document.getElementById('tpl-name').value = t.name;
-    document.getElementById('tpl-emoji').value = t.emoji || '📅';
-    document.getElementById('tpl-delete-btn').style.display = 'block';
-    // Load existing blocks into tplBlockRows
-    tplBlockRows = TEMPLATE_BLOCKS.filter(b => b.template_id === t.id)
-      .sort((a,b) => a.start_time.localeCompare(b.start_time))
-      .map(b => ({ _id: b.id, title: b.title, start_time: b.start_time.slice(0,5), end_time: b.end_time.slice(0,5), color: b.color || '#c9a84c' }));
-  }
+  const t = id ? DAY_TEMPLATES.find(x => x.id === id) : null;
+  document.getElementById('tpl-modal-title').textContent = t ? 'Vorlage bearbeiten' : 'Neue Vorlage';
+  document.getElementById('edit-tpl-id').value = t ? t.id : '';
+  document.getElementById('tpl-name').value = t ? t.name : '';
+  document.getElementById('tpl-emoji').value = t ? (t.emoji || '📅') : '📅';
+  document.getElementById('tpl-delete-btn').style.display = t ? 'block' : 'none';
+  tplBlockRows = t ? TEMPLATE_BLOCKS.filter(b => b.template_id === t.id).sort((a, b) => a.start_time.localeCompare(b.start_time))
+    .map(b => ({ title: b.title, start_time: b.start_time.slice(0, 5), end_time: b.end_time.slice(0, 5), color: b.color || '#c9a84c' })) : [];
   renderTplBlockRows();
   document.getElementById('template-modal').classList.add('open');
 }
-
-function closeTemplateModal() {
-  document.getElementById('template-modal').classList.remove('open');
-  tplBlockRows = [];
-}
-
-const TPL_COLORS = ['#c9a84c','#5b8dee','#4caf7d','#e05c5c','#9b59b6'];
-
+function closeTemplateModal() { document.getElementById('template-modal').classList.remove('open'); tplBlockRows = []; }
 function renderTplBlockRows() {
-  const container = document.getElementById('tpl-blocks-list');
-  if (!container) return;
-  if (!tplBlockRows.length) {
-    container.innerHTML = '<div style="font-size:.72rem;color:var(--text3);text-align:center;padding:.5rem">Noch keine Blöcke — klicke auf „+ Block hinzufügen"</div>';
-    return;
-  }
-  container.innerHTML = tplBlockRows.map((row, i) => `
+  const c = document.getElementById('tpl-blocks-list');
+  if (!tplBlockRows.length) { c.innerHTML = '<div style="font-size:.72rem;color:var(--text3);text-align:center;padding:.5rem">Noch keine Blöcke — klicke auf „+ Block hinzufügen"</div>'; return; }
+  c.innerHTML = tplBlockRows.map((row, i) => `
     <div class="tpl-block-row">
-      <input value="${row.title}" placeholder="Titel" onchange="tplBlockRows[${i}].title=this.value">
+      <input value="${esc(row.title)}" placeholder="Titel" onchange="tplBlockRows[${i}].title=this.value">
       <input type="time" value="${row.start_time}" onchange="tplBlockRows[${i}].start_time=this.value">
       <input type="time" value="${row.end_time}" onchange="tplBlockRows[${i}].end_time=this.value">
-      <div style="display:flex;gap:3px;flex-wrap:wrap">
-        ${TPL_COLORS.map(c => `<div onclick="tplBlockRows[${i}].color='${c}';renderTplBlockRows()" style="width:12px;height:12px;border-radius:3px;background:${c};cursor:pointer;border:1.5px solid ${row.color===c?'var(--text)':'transparent'}"></div>`).join('')}
-      </div>
+      <div style="display:flex;gap:3px;flex-wrap:wrap">${TPL_COLORS.map(col => `<div onclick="tplBlockRows[${i}].color='${col}';renderTplBlockRows()" style="width:12px;height:12px;border-radius:3px;background:${col};cursor:pointer;border:1.5px solid ${row.color === col ? 'var(--text)' : 'transparent'}"></div>`).join('')}</div>
       <button onclick="tplBlockRows.splice(${i},1);renderTplBlockRows()" style="background:transparent;border:none;color:var(--red);cursor:pointer;font-size:.9rem">✕</button>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
-
-function addTplBlockRow() {
-  tplBlockRows.push({ title: '', start_time: '08:00', end_time: '09:00', color: '#c9a84c' });
-  renderTplBlockRows();
-}
-
+function addTplBlockRow() { tplBlockRows.push({ title: '', start_time: '08:00', end_time: '09:00', color: '#c9a84c' }); renderTplBlockRows(); }
 async function saveTemplate() {
-  const { data: { session } } = await _sb.auth.getSession();
-  if (!session) return;
   const name = document.getElementById('tpl-name').value.trim();
   const emoji = document.getElementById('tpl-emoji').value.trim() || '📅';
   const editId = document.getElementById('edit-tpl-id').value;
   if (!name) { showToast('⚠ Bitte einen Namen eingeben'); return; }
-  // Validate blocks
   for (const b of tplBlockRows) {
     if (!b.title.trim()) { showToast('⚠ Bitte alle Blocktitel ausfüllen'); return; }
     if (b.start_time >= b.end_time) { showToast('⚠ Endzeit muss nach Startzeit liegen'); return; }
   }
-
   let tplId = editId;
   if (editId) {
     await _sb.from('day_templates').update({ name, emoji }).eq('id', editId);
-    const t = DAY_TEMPLATES.find(x => x.id === editId);
-    if (t) Object.assign(t, { name, emoji });
-    // Delete all old blocks, re-insert
+    Object.assign(DAY_TEMPLATES.find(x => x.id === editId) || {}, { name, emoji });
     await _sb.from('template_blocks').delete().eq('template_id', editId);
     TEMPLATE_BLOCKS = TEMPLATE_BLOCKS.filter(b => b.template_id !== editId);
   } else {
-    const { data, error } = await _sb.from('day_templates').insert({
-      user_id: session.user.id, name, emoji
-    }).select().single();
+    const { data, error } = await _sb.from('day_templates').insert({ user_id: USER_ID, name, emoji }).select().single();
     if (error) { showToast('✗ ' + error.message); return; }
-    DAY_TEMPLATES.push(data);
-    tplId = data.id;
+    DAY_TEMPLATES.push(data); tplId = data.id;
   }
-
-  // Insert blocks
   if (tplBlockRows.length) {
-    const inserts = tplBlockRows.map(b => ({
-      template_id: tplId, user_id: session.user.id,
-      title: b.title.trim(), start_time: b.start_time, end_time: b.end_time, color: b.color
-    }));
-    const { data: newBlocks } = await _sb.from('template_blocks').insert(inserts).select();
+    const { data: newBlocks } = await _sb.from('template_blocks').insert(tplBlockRows.map(b => ({ template_id: tplId, user_id: USER_ID, title: b.title.trim(), start_time: b.start_time, end_time: b.end_time, color: b.color }))).select();
     if (newBlocks) TEMPLATE_BLOCKS.push(...newBlocks);
   }
-
   showToast(`✓ Vorlage "${name}" gespeichert`);
-  closeTemplateModal();
-  renderTemplateList();
+  closeTemplateModal(); renderTemplateList();
 }
-
 async function deleteTemplate() {
   const id = document.getElementById('edit-tpl-id').value;
   if (!id || !confirm('Vorlage wirklich löschen? Alle Blöcke dieser Vorlage werden entfernt.')) return;
@@ -1963,114 +2342,64 @@ async function deleteTemplate() {
   await _sb.from('day_templates').delete().eq('id', id);
   DAY_TEMPLATES = DAY_TEMPLATES.filter(t => t.id !== id);
   TEMPLATE_BLOCKS = TEMPLATE_BLOCKS.filter(b => b.template_id !== id);
-  closeTemplateModal();
-  renderTemplateList();
+  closeTemplateModal(); renderTemplateList();
   showToast('✓ Vorlage gelöscht');
 }
-
-// Vorlage auf einen Tag anwenden
 function openApplyTemplateModal(date) {
   applyTplTargetDate = date;
-  const label = document.getElementById('apply-tpl-date-label');
-  if (label) {
-    const dateObj = new Date(date);
-    label.textContent = `Wähle eine Vorlage für ${dateObj.toLocaleDateString('de-DE', {weekday:'long', day:'2-digit', month:'long'})}:`;
-  }
-  const list = document.getElementById('apply-tpl-list');
-  if (!list) return;
-  if (!DAY_TEMPLATES.length) {
-    list.innerHTML = '<div style="font-size:.75rem;color:var(--text3);text-align:center;padding:1rem">Noch keine Vorlagen — erst unter „🗂 Vorlagen" eine Vorlage erstellen.</div>';
-  } else {
-    list.innerHTML = DAY_TEMPLATES.map(t => {
-      const blocks = TEMPLATE_BLOCKS.filter(b => b.template_id === t.id);
-      return `<div class="tpl-card" onclick="applyTemplate('${t.id}')">
-        <div class="tpl-emoji">${t.emoji || '📅'}</div>
-        <div style="flex:1">
-          <div class="tpl-name">${t.name}</div>
-          <div class="tpl-count">${blocks.length} Block${blocks.length !== 1 ? 'e' : ''}</div>
-        </div>
-        <div style="font-size:.75rem;color:var(--blue)">Anwenden →</div>
-      </div>`;
-    }).join('');
-  }
+  document.getElementById('apply-tpl-date-label').textContent = `Wähle eine Vorlage für ${dOf(date).toLocaleDateString('de-DE', { weekday: 'long', day: '2-digit', month: 'long' })}:`;
+  document.getElementById('apply-tpl-list').innerHTML = DAY_TEMPLATES.length ? DAY_TEMPLATES.map(t => {
+    const n = TEMPLATE_BLOCKS.filter(b => b.template_id === t.id).length;
+    return `<div class="tpl-card" onclick="applyTemplate('${t.id}')"><div class="tpl-emoji">${esc(t.emoji || '📅')}</div><div style="flex:1"><div class="tpl-name">${esc(t.name)}</div><div class="tpl-count">${n} Block${n !== 1 ? 'e' : ''}</div></div><div style="font-size:.75rem;color:var(--blue)">Anwenden →</div></div>`;
+  }).join('') : '<div style="font-size:.75rem;color:var(--text3);text-align:center;padding:1rem">Noch keine Vorlagen — erst unter „🗂 Vorlagen" eine Vorlage erstellen.</div>';
   document.getElementById('apply-tpl-modal').classList.add('open');
 }
-
 async function applyTemplate(tplId) {
-  const { data: { session } } = await _sb.auth.getSession();
-  if (!session || !applyTplTargetDate) return;
+  if (!applyTplTargetDate) return;
   const blocks = TEMPLATE_BLOCKS.filter(b => b.template_id === tplId);
   if (!blocks.length) { showToast('Diese Vorlage hat keine Blöcke'); return; }
-  const inserts = blocks.map(b => ({
-    user_id: session.user.id,
-    date: applyTplTargetDate,
-    title: b.title, start_time: b.start_time, end_time: b.end_time, color: b.color
-  }));
-  const { data: newBlocks, error } = await _sb.from('time_blocks').insert(inserts).select();
+  const { data: newBlocks, error } = await _sb.from('time_blocks').insert(blocks.map(b => ({ user_id: USER_ID, date: applyTplTargetDate, title: b.title, start_time: b.start_time, end_time: b.end_time, color: b.color }))).select();
   if (error) { showToast('✗ ' + error.message); return; }
-  if (newBlocks) TIME_BLOCKS.push(...newBlocks);
+  TIME_BLOCKS.push(...(newBlocks || []));
   document.getElementById('apply-tpl-modal').classList.remove('open');
   renderPlannerWeek();
-  const tpl = DAY_TEMPLATES.find(t => t.id === tplId);
-  showToast(`✓ Vorlage "${tpl?.name}" auf diesen Tag angewendet`);
+  showToast(`✓ Vorlage "${DAY_TEMPLATES.find(t => t.id === tplId)?.name}" angewendet`);
 }
 
-// ── AUFGABEN ─────────────────────────────────────────────────
+// Aufgaben
 function renderTasks() {
-  const list = document.getElementById('task-list');
-  const empty = document.getElementById('no-tasks');
+  const list = document.getElementById('task-list'), empty = document.getElementById('no-tasks');
   document.getElementById('task-count').textContent = TASKS.filter(t => !t.done).length;
   if (!TASKS.length) { list.innerHTML = ''; empty.style.display = 'block'; return; }
   empty.style.display = 'none';
-  // Sort: undone first, then by due_date
-  const sorted = [...TASKS].sort((a,b) => {
+  const sorted = [...TASKS].sort((a, b) => {
     if (a.done !== b.done) return a.done ? 1 : -1;
     if (a.due_date && b.due_date) return a.due_date.localeCompare(b.due_date);
-    if (a.due_date) return -1;
-    if (b.due_date) return 1;
-    return 0;
+    return a.due_date ? -1 : b.due_date ? 1 : 0;
   });
   list.innerHTML = sorted.map(t => {
-    const dueLabel = t.due_date ? `📅 ${new Date(t.due_date).toLocaleDateString('de-DE', {day:'2-digit', month:'short'})}` : '';
+    const dueLabel = t.due_date ? `📅 ${dOf(t.due_date).toLocaleDateString('de-DE', { day: '2-digit', month: 'short' })}` : '';
     const durLabel = t.duration_minutes ? `⏱ ${t.duration_minutes} Min` : '';
     const overdue = t.due_date && !t.done && t.due_date < todayStr();
     return `<div class="task-item ${t.done ? 'done-task' : ''}">
       <div class="task-check" onclick="toggleTask('${t.id}')">${t.done ? '✓' : ''}</div>
-      <div style="flex:1;min-width:0">
-        <div class="task-title">${t.title}</div>
-        <div class="task-meta" style="${overdue ? 'color:var(--red)' : ''}">${[dueLabel, durLabel].filter(Boolean).join(' · ')}</div>
-      </div>
+      <div style="flex:1;min-width:0"><div class="task-title">${esc(t.title)}</div><div class="task-meta" style="${overdue ? 'color:var(--red)' : ''}">${[dueLabel, durLabel].filter(Boolean).join(' · ')}</div></div>
       <button class="icon-btn" onclick="openTaskModal('${t.id}')">✏</button>
     </div>`;
   }).join('');
 }
-
 function openTaskModal(id) {
-  if (!id) {
-    document.getElementById('task-title').value = '';
-    document.getElementById('task-due').value = '';
-    document.getElementById('task-duration').value = '';
-    document.getElementById('edit-task-id').value = '';
-    document.getElementById('task-modal-title').textContent = 'Neue Aufgabe';
-    document.getElementById('task-delete-btn').style.display = 'none';
-  } else {
-    const t = TASKS.find(x => x.id === id);
-    if (!t) return;
-    document.getElementById('task-title').value = t.title;
-    document.getElementById('task-due').value = t.due_date || '';
-    document.getElementById('task-duration').value = t.duration_minutes || '';
-    document.getElementById('edit-task-id').value = t.id;
-    document.getElementById('task-modal-title').textContent = 'Aufgabe bearbeiten';
-    document.getElementById('task-delete-btn').style.display = 'block';
-  }
+  const t = id ? TASKS.find(x => x.id === id) : null;
+  document.getElementById('task-title').value = t ? t.title : '';
+  document.getElementById('task-due').value = t?.due_date || '';
+  document.getElementById('task-duration').value = t?.duration_minutes || '';
+  document.getElementById('edit-task-id').value = t ? t.id : '';
+  document.getElementById('task-modal-title').textContent = t ? 'Aufgabe bearbeiten' : 'Neue Aufgabe';
+  document.getElementById('task-delete-btn').style.display = t ? 'block' : 'none';
   document.getElementById('task-modal').classList.add('open');
 }
-
 function closeTaskModal() { document.getElementById('task-modal').classList.remove('open'); }
-
 async function saveTask() {
-  const { data: { session } } = await _sb.auth.getSession();
-  if (!session) return;
   const title = document.getElementById('task-title').value.trim();
   const due_date = document.getElementById('task-due').value || null;
   const duration_minutes = parseInt(document.getElementById('task-duration').value) || null;
@@ -2079,55 +2408,39 @@ async function saveTask() {
   if (editId) {
     const { error } = await _sb.from('tasks').update({ title, due_date, duration_minutes }).eq('id', editId);
     if (error) { showToast('✗ ' + error.message); return; }
-    const t = TASKS.find(x => x.id === editId);
-    if (t) Object.assign(t, { title, due_date, duration_minutes });
+    Object.assign(TASKS.find(x => x.id === editId) || {}, { title, due_date, duration_minutes });
     showToast('✓ Aufgabe aktualisiert');
   } else {
-    const { data, error } = await _sb.from('tasks').insert({
-      user_id: session.user.id, title, due_date, duration_minutes, done: false
-    }).select().single();
+    const { data, error } = await _sb.from('tasks').insert({ user_id: USER_ID, title, due_date, duration_minutes, done: false }).select().single();
     if (error) { showToast('✗ ' + error.message); return; }
-    if (data) TASKS.push(data);
+    TASKS.push(data);
     showToast('✓ Aufgabe erstellt');
   }
-  closeTaskModal();
-  renderTasks();
+  closeTaskModal(); renderTasks();
 }
-
 async function toggleTask(id) {
   const t = TASKS.find(x => x.id === id);
   if (!t) return;
-  const newDone = !t.done;
-  await _sb.from('tasks').update({ done: newDone }).eq('id', id);
-  t.done = newDone;
+  await _sb.from('tasks').update({ done: !t.done }).eq('id', id);
+  t.done = !t.done;
   renderTasks();
 }
-
 async function deleteTask() {
   const id = document.getElementById('edit-task-id').value;
   if (!id || !confirm('Aufgabe wirklich löschen?')) return;
   await _sb.from('tasks').delete().eq('id', id);
   TASKS = TASKS.filter(t => t.id !== id);
-  closeTaskModal();
-  renderTasks();
+  closeTaskModal(); renderTasks();
   showToast('✓ Aufgabe gelöscht');
 }
 
-// ── EMOJI GRID ────────────────────────────────────────────────
-const EMOJIS = ['💪','📚','🧘','💧','🏃','🎯','✍️','🌅','🥗','😴','💻','🎵','🚶','🧹','📱','🫀','🌿','⚡','🔥','⭐','🎨','🏋️','🤸','🧠','💊','🛁','☀️','🌙','🥤','📝'];
-document.getElementById('emoji-grid').innerHTML = EMOJIS.map(e =>
-  `<button class="emoji-btn" onclick="selectEmoji(this,'${e}')">${e}</button>`
-).join('');
-
-// ── INIT ──────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+//  START
+// ══════════════════════════════════════════════════════════════
 updateTimerDisplay();
-document.getElementById('pomo-total').textContent = pomosTotal;
-updateXPBar();
-
 (async () => {
   const { data: { session } } = await _sb.auth.getSession();
   if (!session) { document.getElementById('login-screen').style.display = 'flex'; return; }
-  document.getElementById('login-screen').style.display = 'none';
   await loadAll();
   document.getElementById('app').style.display = 'grid';
 })();
