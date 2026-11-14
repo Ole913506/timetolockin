@@ -47,9 +47,6 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 .nav-item:hover{background:var(--bg3);color:var(--text)}
 .nav-item.active{background:var(--gold-dim);color:var(--gold);border-color:rgba(201,168,76,0.2)}
 .sidebar-footer{padding:.75rem .5rem;border-top:1px solid var(--border);flex-shrink:0}
-.streak-badge{display:flex;align-items:center;gap:.5rem;padding:.5rem .65rem;background:var(--gold-dim);border:1px solid rgba(201,168,76,0.2);border-radius:8px;margin-bottom:.4rem}
-.streak-info .streak-num{font-size:.85rem;font-weight:700;color:var(--gold)}
-.streak-info .streak-label{font-size:.6rem;color:var(--text3)}
 .side-avatar{display:flex;gap:.65rem;align-items:center;padding:.55rem .6rem;border-radius:10px;cursor:pointer;background:linear-gradient(135deg,rgba(201,168,76,0.1),rgba(201,168,76,0.03));border:1px solid rgba(201,168,76,0.2);transition:border-color .15s}
 .side-avatar:hover{border-color:var(--gold)}
 .side-avatar-img{width:44px;height:60px;flex-shrink:0;border-radius:6px;overflow:hidden;border:1px solid var(--border2)}
@@ -75,11 +72,6 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 .btn-primary:hover{opacity:.9;color:var(--bg)}
 .btn.active-mode{border-color:var(--gold);color:var(--gold);background:var(--gold-dim)}
 
-/* ── TAGES-INTENTION BANNER ── */
-.intention-banner{background:linear-gradient(135deg,rgba(91,141,238,0.08),var(--bg2));border:1px solid rgba(91,141,238,0.2);border-radius:10px;padding:.75rem 1rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:.75rem}
-.intention-text{font-size:.78rem;color:var(--text);flex:1;font-style:italic}
-.intention-edit{font-size:.65rem;color:var(--text3);cursor:pointer;text-decoration:underline;flex-shrink:0}
-
 /* ── METRICS ── */
 .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1.5rem}
 .metric-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem}
@@ -89,54 +81,7 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 .m-val{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--text)}
 .m-sub{font-size:.65rem;color:var(--text3);margin-top:.2rem}
 
-/* ── HABIT CARDS ── */
-.habits-grid{display:flex;flex-direction:column;gap:.5rem}
-.habit-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem;display:flex;align-items:center;gap:.85rem;transition:all .2s;cursor:pointer}
-.habit-card:hover{border-color:var(--border2)}
-.habit-card.done{border-color:rgba(76,175,125,0.3);background:rgba(76,175,125,0.05)}
-.habit-check{width:28px;height:28px;border-radius:50%;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;transition:all .2s;cursor:pointer}
-.habit-card.done .habit-check{background:var(--green);border-color:var(--green);animation:checkPop .3s ease}
-.habit-info{flex:1;min-width:0}
-.habit-name{font-size:.82rem;color:var(--text);font-weight:500}
-.habit-card.done .habit-name{color:var(--text2);text-decoration:line-through}
-.habit-meta{font-size:.65rem;color:var(--text3);margin-top:.15rem}
-.habit-actions{display:flex;gap:.4rem;opacity:0;transition:opacity .15s}
-.habit-card:hover .habit-actions{opacity:1}
-.icon-btn{width:26px;height:26px;border-radius:6px;border:1px solid var(--border);background:var(--bg3);color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.75rem}
-.icon-btn:hover{border-color:var(--border2);color:var(--text)}
-
-/* ── WEEK VIEW ── */
-.week-grid{display:grid;grid-template-columns:1fr repeat(7,40px);gap:.4rem;margin-bottom:1.5rem;align-items:center}
-.week-day{font-size:.62rem;color:var(--text3);text-align:center}
-.week-day.today{color:var(--gold)}
-.week-dot{width:28px;height:28px;border-radius:50%;margin:0 auto;border:1px solid var(--border)}
-.week-dot.done{background:var(--green);border-color:var(--green)}
-.week-dot.today-dot{border-color:var(--gold)}
-.week-dot.missed{background:rgba(224,92,92,0.15);border-color:rgba(224,92,92,0.3)}
-.week-dot.frozen{background:rgba(91,141,238,0.2);border-color:rgba(91,141,238,0.4)}
-.week-habit-name{font-size:.72rem;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
-/* ── POMODORO ── */
-.pomodoro-wrap{display:flex;flex-direction:column;align-items:center;padding:2rem}
-.pomo-skill-box{width:100%;max-width:400px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:.85rem 1rem;margin-bottom:1.5rem}
-.pomo-skill-info{font-size:.65rem;color:var(--text3);margin-top:.45rem;line-height:1.6}
-.timer-circle{width:200px;height:200px;border-radius:50%;border:3px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:2rem;position:relative;background:var(--bg2)}
-.timer-circle.running{border-color:var(--gold)}
-.timer-display{font-family:'Syne',sans-serif;font-size:2.5rem;font-weight:800;color:var(--text)}
-.timer-label{font-size:.65rem;color:var(--text3);margin-top:.25rem;letter-spacing:.06em;text-transform:uppercase}
-.timer-btns{display:flex;gap:.75rem;margin-bottom:1.5rem;flex-wrap:wrap;justify-content:center}
-.pomodoro-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;width:100%;max-width:400px}
-.pomo-stat{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:.85rem;text-align:center}
-.pomo-stat-val{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--gold)}
-.pomo-stat-label{font-size:.62rem;color:var(--text3);margin-top:.2rem}
-
-/* ── JOURNAL ── */
-.journal-entry{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem;margin-bottom:.75rem}
-.journal-date{font-size:.65rem;color:var(--gold);margin-bottom:.5rem}
-.journal-text{font-size:.78rem;color:var(--text2);line-height:1.7;white-space:pre-wrap}
-.journal-input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:.75rem 1rem;color:var(--text);font-family:'DM Mono',monospace;font-size:.8rem;resize:vertical;min-height:120px;line-height:1.7}
-.journal-input:focus{outline:none;border-color:var(--gold)}
-
+.metrics{grid-template-columns:repeat(4,1fr)}
 /* ── ACHIEVEMENTS ── */
 .achieve-title{font-family:'Syne',sans-serif;font-size:.9rem;font-weight:800;color:var(--gold);margin-bottom:.25rem}
 .achieve-sub{font-size:.72rem;color:var(--text2)}
@@ -148,11 +93,6 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 .achieve-name{font-size:.72rem;font-weight:600;color:var(--text)}
 .achieve-desc{font-size:.62rem;color:var(--text3);margin-top:.1rem}
 .achieve-reward{font-size:.6rem;color:var(--gold);margin-top:.25rem}
-
-/* ── WOCHENRÜCKBLICK ── */
-.wochenbewertung{background:linear-gradient(135deg,rgba(201,168,76,0.07),var(--bg2));border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:1.25rem;margin-bottom:1.5rem}
-.woche-grade{font-family:'Syne',sans-serif;font-size:2.5rem;font-weight:800;text-align:center;margin-bottom:.5rem}
-.woche-text{font-size:.78rem;color:var(--text2);text-align:center;line-height:1.6}
 
 /* ── MODAL ── */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:500;align-items:center;justify-content:center}
@@ -278,6 +218,79 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 .title-chip.selected{border-color:var(--gold);color:var(--gold);background:var(--gold-dim)}
 .title-chip.locked{opacity:.4;cursor:default}
 
+.icon-btn{width:26px;height:26px;border-radius:6px;border:1px solid var(--border);background:var(--bg3);color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.75rem}
+.icon-btn:hover{border-color:var(--border2);color:var(--text)}
+
+/* ── FOKUS ── */
+.focus-layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:1.25rem;align-items:start}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.2rem}
+.timer-card{display:flex;flex-direction:column;align-items:center;padding:1.5rem 1.25rem}
+.skill-select-row{width:100%}
+.pomo-skill-info{font-size:.65rem;color:var(--text3);margin-top:.45rem;line-height:1.6}
+.ring-wrap{position:relative;width:240px;height:240px;margin:1.25rem 0}
+.ring-wrap svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:var(--bg4);stroke-width:7}
+.ring-fg{fill:none;stroke:var(--gold);stroke-width:7;stroke-linecap:round;transition:stroke-dashoffset .5s linear,stroke .3s}
+.ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.timer-display{font-family:'Syne',sans-serif;font-size:3rem;font-weight:800;color:var(--text);line-height:1}
+.timer-label{font-size:.65rem;color:var(--text3);margin-top:.45rem;letter-spacing:.1em;text-transform:uppercase}
+.mode-row{display:flex;gap:.4rem;flex-wrap:wrap;justify-content:center}
+.ctrl-row{display:flex;gap:.6rem;margin-top:1rem}
+.btn-lg{padding:.7rem 1.5rem;font-size:.85rem}
+.cycle-dots{display:flex;gap:.4rem;margin-top:1.1rem}
+.cycle-dot{width:10px;height:10px;border-radius:50%;border:1px solid var(--border2)}
+.cycle-dot.on{background:var(--gold);border-color:var(--gold)}
+.cycle-hint{font-size:.62rem;color:var(--text3);margin-top:.4rem}
+.auto-row{display:flex;align-items:center;gap:.45rem;font-size:.68rem;color:var(--text2);margin-top:.9rem;cursor:pointer}
+.auto-row input{accent-color:var(--gold)}
+.goal-head{display:flex;justify-content:space-between;align-items:center}
+.goal-adjust{display:flex;align-items:center;gap:.4rem}
+.goal-num{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--gold2);line-height:1}
+.goal-bar{height:8px;background:var(--bg3);border-radius:4px;overflow:hidden;margin:.7rem 0 .45rem}
+.goal-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:4px;transition:width .5s ease}
+.goal-sub{font-size:.65rem;color:var(--text3)}
+.mini-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-top:.75rem}
+.mini-stat{background:var(--bg3);border-radius:10px;padding:.65rem .4rem;text-align:center}
+.mini-val{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:800;color:var(--text)}
+.mini-label{font-size:.58rem;color:var(--text3);margin-top:.15rem}
+.log-list{display:flex;flex-direction:column;gap:.35rem;max-height:280px;overflow-y:auto;margin-top:.75rem}
+.log-item{display:flex;align-items:center;gap:.6rem;font-size:.72rem;padding:.5rem .65rem;border-radius:8px;background:var(--bg3)}
+.log-time{color:var(--text3);font-size:.65rem;width:38px;flex-shrink:0}
+.log-name{color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.log-xp{margin-left:auto;color:var(--gold);font-size:.65rem;white-space:nowrap}
+.log-empty{font-size:.72rem;color:var(--text3);text-align:center;padding:1.25rem .5rem}
+.timer-badge{display:none;font-size:.72rem;color:var(--text);background:var(--bg3);border:1px solid var(--gold);padding:.25rem .65rem;border-radius:6px;cursor:pointer;white-space:nowrap}
+.timer-badge.on{display:inline-block}
+
+/* ── STATISTIKEN ── */
+.stat-card{margin-bottom:1rem}
+.chart-area{position:relative;height:140px;display:flex;align-items:flex-end;gap:.5rem;margin-top:1rem}
+.bar-col{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:.25rem}
+.bar{width:100%;max-width:40px;border-radius:5px 5px 2px 2px;background:rgba(201,168,76,0.55);min-height:2px;transition:height .4s ease}
+.bar.hit{background:var(--gold)}
+.bar-val{font-size:.6rem;color:var(--text2)}
+.bar-labels{display:flex;gap:.5rem;margin-top:.35rem}
+.bar-labels div{flex:1;text-align:center;font-size:.6rem;color:var(--text3)}
+.bar-labels div.today{color:var(--gold)}
+.goal-line{position:absolute;left:0;right:0;border-top:1px dashed rgba(232,201,122,0.5);pointer-events:none}
+.goal-line span{position:absolute;right:0;top:-1.1em;font-size:.55rem;color:var(--gold)}
+.heat{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:1rem;max-width:420px}
+.heat-head{font-size:.58rem;color:var(--text3);text-align:center}
+.heat-cell{aspect-ratio:1;border-radius:5px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:.55rem;color:rgba(0,0,0,.55)}
+.heat-cell.future{background:transparent;border:1px dashed var(--border)}
+.heat-cell.today{outline:1px solid var(--gold2);outline-offset:1px}
+.legend{display:flex;flex-wrap:wrap;gap:.9rem;margin-top:.75rem;font-size:.6rem;color:var(--text3)}
+.legend span{display:flex;align-items:center;gap:.3rem}
+.legend i{width:10px;height:10px;border-radius:2px;display:inline-block}
+.dist-row{display:grid;grid-template-columns:minmax(0,150px) 1fr auto;gap:.75rem;align-items:center;margin-top:.6rem;font-size:.72rem}
+.dist-name{color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dist-track{height:8px;background:var(--bg3);border-radius:4px;overflow:hidden}
+.dist-fill{height:100%;border-radius:4px}
+.dist-val{color:var(--text3);font-size:.65rem;white-space:nowrap}
+
+@media(max-width:900px){
+  .focus-layout{grid-template-columns:1fr}
+}
 @media(max-width:768px){
   .app{grid-template-columns:1fr}
   .sidebar{position:fixed;top:0;left:0;bottom:0;z-index:150;width:min(78vw,270px);transform:translateX(-100%);transition:transform .25s ease;box-shadow:12px 0 30px rgba(0,0,0,.5)}
@@ -286,13 +299,8 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
   .topbar{padding:.75rem 1rem}
   .panel{padding:1rem}
   .metrics{grid-template-columns:1fr 1fr}
-  .week-grid{grid-template-columns:1fr repeat(7,32px);gap:.25rem}
   .achieve-grid{grid-template-columns:1fr}
   .cal-wrap{grid-template-columns:36px repeat(7,minmax(60px,1fr))}
-  .timer-circle{width:160px;height:160px;margin-bottom:1.5rem}
-  .timer-display{font-size:2rem}
-  .pomodoro-wrap{padding:1rem}
-  .pomodoro-stats{max-width:100%}
   .tpl-block-row{grid-template-columns:1fr 56px 56px 24px 24px;gap:.3rem}
   .week-nav{flex-wrap:wrap}
   .week-nav-title{width:100%;order:-1}
@@ -300,9 +308,12 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
   #toast{right:.75rem;left:.75rem;bottom:1rem}
   .av-hero{grid-template-columns:1fr;justify-items:center;text-align:center}
   .av-level-row,.av-pills{justify-content:center}
+  .ring-wrap{width:200px;height:200px}
+  .timer-display{font-size:2.5rem}
+  .mini-stats{grid-template-columns:repeat(2,1fr)}
+  .dist-row{grid-template-columns:minmax(0,100px) 1fr auto}
 }
 @media(max-width:420px){
-  .metrics{grid-template-columns:1fr}
   .date-badge{display:none}
 }
 </style>
@@ -314,7 +325,7 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
   <div style="width:90%;max-width:380px">
     <div style="text-align:center;margin-bottom:2rem">
       <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--text);margin-bottom:.4rem">time<span style="color:var(--gold)">tolockin</span></div>
-      <div style="font-size:.72rem;color:var(--text3)">Dein persönliches Fokus-System</div>
+      <div style="font-size:.72rem;color:var(--text3)">Dein Pomodoro-Fokus-System</div>
     </div>
     <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:1.75rem">
       <div style="margin-bottom:.85rem">
@@ -336,40 +347,28 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
   <aside class="sidebar">
     <div class="logo">
       <div class="logo-text">time<span>tolockin</span></div>
-      <div class="logo-sub">DEIN FOKUS-SYSTEM</div>
+      <div class="logo-sub">POMODORO-FOKUS-SYSTEM</div>
     </div>
     <nav class="nav">
-      <div class="nav-item active" data-nav="dashboard" onclick="goto('dashboard')">📊 Dashboard</div>
-      <div class="nav-item" data-nav="habits" onclick="goto('habits')">✅ Habits</div>
-      <div class="nav-item" data-nav="week" onclick="goto('week')">📅 Wochenübersicht</div>
+      <div class="nav-item active" data-nav="fokus" onclick="goto('fokus')">⏱ Fokus</div>
       <div class="nav-item" data-nav="stats" onclick="goto('stats')">📈 Statistiken</div>
       <div class="nav-item" data-nav="achievements" onclick="goto('achievements')">🏆 Achievements</div>
       <div class="nav-section">Held</div>
       <div class="nav-item" data-nav="avatar" onclick="goto('avatar','look')">🧙 Avatar</div>
       <div class="nav-item" data-nav="skills" onclick="goto('avatar','skills')">⚔️ Skills</div>
       <div class="nav-item" data-nav="shop" onclick="goto('avatar','shop')">🛒 Shop</div>
-      <div class="nav-section">Tools</div>
-      <div class="nav-item" data-nav="pomodoro" onclick="goto('pomodoro')">⏱ Pomodoro</div>
-      <div class="nav-item" data-nav="journal" onclick="goto('journal')">📓 Tagebuch</div>
+      <div class="nav-section">Planung</div>
       <div class="nav-item" data-nav="planner" onclick="goto('planner')">🗓 Zeitplaner</div>
       <div class="nav-section">Konto</div>
       <div class="nav-item" onclick="logout()">↪ Abmelden</div>
     </nav>
     <div class="sidebar-footer">
-      <div class="streak-badge">
-        <div style="font-size:1rem">🔥</div>
-        <div class="streak-info" style="flex:1">
-          <div class="streak-num" id="sidebar-streak">0</div>
-          <div class="streak-label">Tage Streak</div>
-        </div>
-        <div style="font-size:.68rem;color:var(--blue)" id="sidebar-jokers" title="Joker (Streak-Schutz)">🃏 0</div>
-      </div>
       <div class="side-avatar" onclick="goto('avatar','look')">
         <div class="side-avatar-img" id="side-avatar-img"></div>
         <div style="min-width:0;flex:1">
           <div class="side-avatar-lvl" id="side-avatar-lvl">Level 0</div>
           <div class="side-avatar-title" id="side-avatar-title">Anfänger</div>
-          <div class="side-avatar-meta"><span id="side-avatar-coins">🪙 0</span></div>
+          <div class="side-avatar-meta"><span id="side-avatar-coins">🪙 0</span><span id="side-avatar-today">🍅 0 heute</span></div>
         </div>
       </div>
     </div>
@@ -381,109 +380,111 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
     <div class="topbar">
       <div class="topbar-left">
         <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Menü">☰</button>
-        <div class="page-title" id="page-title">Dashboard</div>
+        <div class="page-title" id="page-title">Fokus</div>
       </div>
       <div class="topbar-right">
+        <div class="timer-badge" id="timer-badge" onclick="goto('fokus')" title="Zum Timer">⏱ 25:00</div>
         <div class="date-badge" id="today-date"></div>
         <div class="coin-badge" id="top-coins" onclick="goto('avatar','shop')" title="Münzen – zum Shop">🪙 0</div>
-        <button class="btn btn-primary" onclick="openAddHabit()">+ Habit</button>
       </div>
     </div>
 
-    <!-- DASHBOARD -->
-    <div class="panel active" id="panel-dashboard">
-      <div class="intention-banner">
-        <span style="font-size:1rem">🎯</span>
-        <span class="intention-text" id="intention-text">Noch keine Intention für heute gesetzt.</span>
-        <span class="intention-edit" id="intention-edit" onclick="openIntentionModal()">✏ Setzen</span>
-      </div>
-      <div class="metrics">
-        <div class="metric-card gold">
-          <div class="m-label">Heute erledigt</div>
-          <div class="m-val" id="m-today">0/0</div>
-          <div class="m-sub" id="m-today-sub">Noch nichts abgehakt</div>
+    <!-- FOKUS -->
+    <div class="panel active" id="panel-fokus">
+      <div class="focus-layout">
+        <div class="card timer-card">
+          <div class="skill-select-row">
+            <label class="form-label" for="pomo-skill">Woran arbeitest du?</label>
+            <select class="form-input" id="pomo-skill" onchange="selectPomoSkill(this.value)"></select>
+            <div class="pomo-skill-info" id="pomo-skill-info"></div>
+          </div>
+          <div class="ring-wrap">
+            <svg viewBox="0 0 120 120"><circle class="ring-bg" cx="60" cy="60" r="54"/><circle class="ring-fg" id="ring-fg" cx="60" cy="60" r="54"/></svg>
+            <div class="ring-center">
+              <div class="timer-display" id="timer-display">25:00</div>
+              <div class="timer-label" id="timer-label">FOKUS</div>
+            </div>
+          </div>
+          <div class="mode-row">
+            <button class="btn" id="mode-focus" onclick="setMode('focus')">🎯 Fokus 25</button>
+            <button class="btn" id="mode-deep" onclick="setMode('deep')" style="display:none">🧠 Deep 50</button>
+            <button class="btn" id="mode-short" onclick="setMode('short')">☕ Pause 5</button>
+            <button class="btn" id="mode-long" onclick="setMode('long')">🛋 Pause 15</button>
+          </div>
+          <div class="ctrl-row">
+            <button class="btn btn-primary btn-lg" id="timer-btn" onclick="toggleTimer()">▶ Start</button>
+            <button class="btn btn-lg" onclick="resetTimer()" title="Zurücksetzen">↺</button>
+            <button class="btn btn-lg" onclick="skipPhase()" title="Phase überspringen">⏭</button>
+          </div>
+          <div class="cycle-dots" id="cycle-dots"></div>
+          <div class="cycle-hint" id="cycle-hint"></div>
+          <label class="auto-row"><input type="checkbox" id="auto-next" onchange="setAutoNext(this.checked)"> Nächste Phase automatisch starten</label>
         </div>
-        <div class="metric-card green">
-          <div class="m-label">Streak</div>
-          <div class="m-val" id="m-streak">0</div>
-          <div class="m-sub" id="m-streak-sub">Tage in Folge</div>
-        </div>
-        <div class="metric-card">
-          <div class="m-label">Pomodoros heute</div>
-          <div class="m-val" id="m-pomos">0</div>
-          <div class="m-sub" id="m-pomos-sub">Fokus-Minuten: 0</div>
+
+        <div style="display:flex;flex-direction:column;gap:1rem;min-width:0">
+          <div class="card">
+            <div class="goal-head">
+              <div class="section-label">Tagesziel</div>
+              <div class="goal-adjust">
+                <button class="icon-btn" onclick="changeGoal(-1)" aria-label="Ziel verringern">−</button>
+                <span id="goal-target" style="font-size:.72rem;color:var(--text2);min-width:1.2rem;text-align:center">4</span>
+                <button class="icon-btn" onclick="changeGoal(1)" aria-label="Ziel erhöhen">+</button>
+              </div>
+            </div>
+            <div style="display:flex;align-items:baseline;gap:.4rem;margin-top:.6rem">
+              <div class="goal-num" id="goal-num">0</div>
+              <div style="color:var(--text3);font-size:.75rem" id="goal-of">/ 4 Pomodoros</div>
+            </div>
+            <div class="goal-bar"><div class="goal-fill" id="goal-fill" style="width:0%"></div></div>
+            <div class="goal-sub" id="goal-sub"></div>
+            <div class="mini-stats">
+              <div class="mini-stat"><div class="mini-val" id="t-pomos">0</div><div class="mini-label">Pomodoros</div></div>
+              <div class="mini-stat"><div class="mini-val" id="t-min">0</div><div class="mini-label">Minuten</div></div>
+              <div class="mini-stat"><div class="mini-val" id="t-xp">0</div><div class="mini-label">XP</div></div>
+              <div class="mini-stat"><div class="mini-val" id="t-coins">0</div><div class="mini-label">Münzen</div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="section-label">Heutige Sessions</div>
+            <div class="log-list" id="log-list"></div>
+          </div>
         </div>
       </div>
-      <div id="wochenrueckblick" style="display:none"></div>
-      <div class="section-header">
-        <div class="section-label">Heute – <span id="dash-progress"></span></div>
-      </div>
-      <div class="habits-grid" id="dash-habits"></div>
     </div>
 
-    <!-- HABITS -->
-    <div class="panel" id="panel-habits">
-      <div class="section-header">
-        <div class="section-label">Alle Habits (<span id="habit-count">0</span>)</div>
-      </div>
-      <div class="habits-grid" id="all-habits"></div>
-      <div id="no-habits" style="display:none;text-align:center;padding:3rem;color:var(--text3)">
-        <div style="font-size:2rem;margin-bottom:.75rem">✅</div>
-        <div style="font-size:.82rem;color:var(--text2);margin-bottom:.5rem">Noch keine Habits</div>
-        <div style="font-size:.72rem">Klicke auf „+ Habit" um deinen ersten zu erstellen</div>
-      </div>
-    </div>
-
-    <!-- STATS -->
+    <!-- STATISTIKEN -->
     <div class="panel" id="panel-stats">
-      <div class="section-header" style="margin-bottom:1.5rem"><div class="section-label">Statistiken & Fortschritt</div></div>
       <div class="metrics">
-        <div class="metric-card gold" style="text-align:center">
-          <div class="m-val" style="color:var(--gold)" id="stat-streak-days">0</div>
-          <div class="m-label" style="margin-top:.25rem">Tage Streak</div>
-          <div class="m-sub" id="stat-streak-start">–</div>
-        </div>
-        <div class="metric-card green" style="text-align:center">
-          <div class="m-val" style="color:var(--green)" id="stat-streak-weeks">0</div>
-          <div class="m-label" style="margin-top:.25rem">Wochen Streak</div>
-          <div class="m-sub">Vollständige Wochen</div>
-        </div>
-        <div class="metric-card" style="text-align:center">
-          <div class="m-val" style="color:var(--blue)" id="stat-total-sessions">0</div>
-          <div class="m-label" style="margin-top:.25rem">Pomodoro Sessions</div>
-          <div class="m-sub" id="stat-pomo-hours">0 Stunden Fokus</div>
+        <div class="metric-card gold"><div class="m-label">Heute</div><div class="m-val" id="s-today">0</div><div class="m-sub" id="s-today-sub">Pomodoros</div></div>
+        <div class="metric-card"><div class="m-label">Diese Woche</div><div class="m-val" id="s-week">0</div><div class="m-sub" id="s-week-sub">0 Min Fokus</div></div>
+        <div class="metric-card green"><div class="m-label">Gesamt</div><div class="m-val" id="s-total">0</div><div class="m-sub" id="s-total-sub">Pomodoros</div></div>
+        <div class="metric-card"><div class="m-label">Bester Tag</div><div class="m-val" id="s-best">0</div><div class="m-sub" id="s-best-sub">–</div></div>
+      </div>
+      <div class="card stat-card">
+        <div class="section-label">Letzte 7 Tage</div>
+        <div class="chart-area" id="chart-7"></div>
+        <div class="bar-labels" id="chart-7-labels"></div>
+      </div>
+      <div class="card stat-card">
+        <div class="section-label">Letzte 5 Wochen</div>
+        <div class="heat" id="heatmap"></div>
+        <div class="legend">
+          <span><i style="background:var(--bg3)"></i>Kein Pomodoro</span>
+          <span><i style="background:rgba(201,168,76,0.4)"></i>Unter Tagesziel</span>
+          <span><i style="background:var(--gold)"></i>Tagesziel erreicht</span>
         </div>
       </div>
-      <div class="section-label" style="margin-bottom:.75rem">Habits im Detail</div>
-      <div id="habit-stats-list" style="display:flex;flex-direction:column;gap:.65rem"></div>
-      <div class="section-label" style="margin:1.5rem 0 .75rem">30-Tage Übersicht</div>
-      <div id="heatmap" style="display:flex;flex-wrap:wrap;gap:4px"></div>
-      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:.75rem;margin-top:.75rem;font-size:.62rem;color:var(--text3)">
-        <span style="display:flex;align-items:center;gap:.3rem"><span style="width:10px;height:10px;border-radius:2px;background:var(--green);display:inline-block"></span>Alle erledigt</span>
-        <span style="display:flex;align-items:center;gap:.3rem"><span style="width:10px;height:10px;border-radius:2px;background:rgba(201,168,76,0.4);display:inline-block"></span>Teilweise</span>
-        <span style="display:flex;align-items:center;gap:.3rem"><span style="width:10px;height:10px;border-radius:2px;background:rgba(224,92,92,0.2);display:inline-block"></span>Nichts</span>
-        <span style="display:flex;align-items:center;gap:.3rem"><span style="width:10px;height:10px;border-radius:2px;background:rgba(91,141,238,0.3);display:inline-block"></span>Streak-Schutz / Joker</span>
+      <div class="card stat-card">
+        <div class="section-label">Fokuszeit pro Skill</div>
+        <div id="skill-dist"></div>
       </div>
-    </div>
-
-    <!-- WEEK -->
-    <div class="panel" id="panel-week">
-      <div class="section-header" style="margin-bottom:1rem;flex-wrap:wrap">
-        <div class="section-label">Wochenübersicht</div>
-        <div style="display:flex;gap:.4rem">
-          <button class="btn" onclick="changeWeek(-1)">← Vorherige</button>
-          <button class="btn" onclick="changeWeek(0)">Heute</button>
-          <button class="btn" onclick="changeWeek(1)">Nächste →</button>
-        </div>
-      </div>
-      <div id="week-view"></div>
     </div>
 
     <!-- ACHIEVEMENTS -->
     <div class="panel" id="panel-achievements">
       <div class="section-header" style="margin-bottom:1.25rem">
         <div class="section-label">Achievements</div>
-        <div id="achieve-count" style="font-size:.68rem;color:var(--gold)">0 / 8 freigeschaltet</div>
+        <div id="achieve-count" style="font-size:.68rem;color:var(--gold)">0 / 9 freigeschaltet</div>
       </div>
       <div class="achieve-grid" id="achieve-grid"></div>
     </div>
@@ -521,9 +522,9 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 
       <div id="av-skills" style="display:none">
         <div class="info-box">
-          <b>So funktioniert's:</b> Wähle vor jedem Pomodoro, an welchem Skill du arbeitest. Ein fertiger Fokus-Block (25 Min) gibt diesem Skill <b>25 XP</b>.
+          <b>So funktioniert's:</b> Wähle im Timer, an welchem Skill du arbeitest. Ein fertiger Fokus-Block (25 Min) gibt diesem Skill <b>25 XP</b>.
           Dein <b>Avatar-Level ist die Summe aller Skill-Level</b>. Ab Skill-Level 5 gibt es <b>+10 % XP</b>, ab Level 10 <b>+20 %</b> auf diesen Skill.
-          Titel gibt es bei Skill-Level 5, 10 und 20. Alle 10 Avatar-Level bekommst du einen <b>Joker</b> geschenkt.
+          Titel gibt es bei Skill-Level 5, 10 und 20. Alle 10 Avatar-Level bekommst du <b>3 Boost-Pomodoros</b> geschenkt (doppelte XP).
         </div>
         <div class="section-header">
           <div class="section-label">Deine Skills (<span id="skill-count">0</span>)</div>
@@ -534,7 +535,7 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 
       <div id="av-shop" style="display:none">
         <div class="info-box">
-          <b>Münzen verdienen:</b> 🪙 10 pro Pomodoro · 🪙 3 pro Habit · 🪙 10 Bonus, wenn alle Habits eines Tages erledigt sind · 🪙 5 pro Tagebuch-Tag · dazu Münzen für Achievements.
+          <b>Münzen verdienen:</b> 🪙 10 pro Fokus-Block (20 bei Deep Focus) · 🪙 15 Bonus, wenn du dein Tagesziel erreichst · dazu Münzen für Achievements.
           <div style="margin-top:.35rem">Dein Guthaben: <b id="shop-balance" style="color:var(--gold)">🪙 0</b></div>
         </div>
         <div class="section-label" style="margin-bottom:.75rem">Perks</div>
@@ -549,53 +550,6 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
         <div class="title-list" id="title-list" style="margin-bottom:1.25rem"></div>
         <div class="section-label" style="margin-bottom:.6rem">Als Nächstes erreichbar</div>
         <div class="title-list" id="title-next"></div>
-      </div>
-    </div>
-
-    <!-- POMODORO -->
-    <div class="panel" id="panel-pomodoro">
-      <div class="pomodoro-wrap">
-        <div class="pomo-skill-box">
-          <label class="form-label">Woran arbeitest du?</label>
-          <select class="form-input" id="pomo-skill" onchange="selectPomoSkill(this.value)"></select>
-          <div class="pomo-skill-info" id="pomo-skill-info"></div>
-        </div>
-        <div class="timer-circle" id="timer-circle">
-          <div class="timer-display" id="timer-display">25:00</div>
-          <div class="timer-label" id="timer-label">FOKUS</div>
-        </div>
-        <div class="timer-btns">
-          <button class="btn" id="mode-focus" onclick="setMode('focus')">🎯 Fokus</button>
-          <button class="btn" id="mode-deep" onclick="setMode('deep')" style="display:none">🧠 Deep Focus 50</button>
-          <button class="btn" id="mode-short" onclick="setMode('short')">☕ Kurze Pause</button>
-          <button class="btn" id="mode-long" onclick="setMode('long')">🛋 Lange Pause</button>
-        </div>
-        <div style="display:flex;gap:.75rem;margin-bottom:2rem">
-          <button class="btn btn-primary" id="timer-btn" onclick="toggleTimer()">▶ Start</button>
-          <button class="btn" onclick="resetTimer()">↺ Reset</button>
-        </div>
-        <div class="pomodoro-stats">
-          <div class="pomo-stat"><div class="pomo-stat-val" id="pomo-count">0</div><div class="pomo-stat-label">Heute</div></div>
-          <div class="pomo-stat"><div class="pomo-stat-val" id="pomo-minutes">0</div><div class="pomo-stat-label">Minuten</div></div>
-          <div class="pomo-stat"><div class="pomo-stat-val" id="pomo-total">0</div><div class="pomo-stat-label">Gesamt</div></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- JOURNAL -->
-    <div class="panel" id="panel-journal">
-      <div id="journal-intention-reminder" style="display:none;background:rgba(91,141,238,0.08);border:1px solid rgba(91,141,238,0.2);border-radius:10px;padding:.75rem 1rem;margin-bottom:1rem;font-size:.75rem;color:var(--text2)">
-        💡 Vergiss nicht, heute Abend deine Intention für morgen zu setzen →
-        <span onclick="openIntentionModal()" style="color:var(--blue);cursor:pointer;text-decoration:underline">Jetzt setzen</span>
-      </div>
-      <div class="section-header">
-        <div class="section-label">Heutiger Eintrag</div>
-        <button class="btn btn-primary" onclick="saveJournal()">Speichern</button>
-      </div>
-      <textarea class="journal-input" id="journal-today" placeholder="Was hast du heute gemacht? Was war gut? Was möchtest du morgen besser machen?"></textarea>
-      <div style="margin-top:1.5rem">
-        <div class="section-label" style="margin-bottom:.75rem">Frühere Einträge</div>
-        <div id="journal-entries"></div>
       </div>
     </div>
 
@@ -636,50 +590,8 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
         <div id="no-tpls" style="display:none;text-align:center;padding:3rem;color:var(--text3);font-size:.75rem">Noch keine Vorlagen — klicke auf „+ Vorlage"</div>
       </div>
     </div>
-  </main>
-</div>
 
-<!-- HABIT MODAL -->
-<div class="modal-overlay" id="habit-modal">
-  <div class="modal">
-    <h3 id="modal-title">Neues Habit</h3>
-    <input type="hidden" id="edit-habit-id">
-    <div class="form-group">
-      <label class="form-label">Name</label>
-      <input class="form-input" id="habit-name" placeholder="z.B. Sport treiben, Lesen, Meditieren...">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Icon</label>
-      <div class="emoji-grid" id="emoji-grid"></div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Häufigkeit</label>
-      <div style="display:flex;gap:.4rem;margin-bottom:.6rem">
-        <button class="btn freq-btn" onclick="selectFrequency('daily')" id="freq-daily" style="flex:1">Täglich</button>
-        <button class="btn freq-btn" onclick="selectFrequency('weekly')" id="freq-weekly" style="flex:1">Wöchentlich</button>
-        <button class="btn freq-btn" onclick="selectFrequency('weekday')" id="freq-weekday" style="flex:1">Wochentag</button>
-      </div>
-      <div id="weekday-picker" style="display:none;flex-wrap:wrap;gap:.4rem">
-        <button class="btn weekday-btn" onclick="toggleWeekday(1)" data-day="1">Mo</button>
-        <button class="btn weekday-btn" onclick="toggleWeekday(2)" data-day="2">Di</button>
-        <button class="btn weekday-btn" onclick="toggleWeekday(3)" data-day="3">Mi</button>
-        <button class="btn weekday-btn" onclick="toggleWeekday(4)" data-day="4">Do</button>
-        <button class="btn weekday-btn" onclick="toggleWeekday(5)" data-day="5">Fr</button>
-        <button class="btn weekday-btn" onclick="toggleWeekday(6)" data-day="6">Sa</button>
-        <button class="btn weekday-btn" onclick="toggleWeekday(7)" data-day="7">So</button>
-      </div>
-      <input type="hidden" id="habit-frequency" value="daily">
-      <input type="hidden" id="habit-weekdays" value="">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Ziel (optional)</label>
-      <input class="form-input" id="habit-goal" placeholder="z.B. 10.000 Schritte, 30 Minuten...">
-    </div>
-    <div class="modal-actions">
-      <button class="btn" onclick="closeHabitModal()">Abbrechen</button>
-      <button class="btn btn-primary" onclick="saveHabit()">Speichern</button>
-    </div>
-  </div>
+  </main>
 </div>
 
 <!-- SKILL MODAL -->
@@ -705,21 +617,6 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
       <button class="btn" id="skill-delete-btn" onclick="deleteSkill()" style="display:none;color:var(--red);border-color:rgba(224,92,92,0.3)">Löschen</button>
       <button class="btn" onclick="closeSkillModal()">Abbrechen</button>
       <button class="btn btn-primary" onclick="saveSkill()">Speichern</button>
-    </div>
-  </div>
-</div>
-
-<!-- INTENTION MODAL -->
-<div class="modal-overlay" id="intention-modal">
-  <div class="modal">
-    <h3>🎯 Intention für morgen</h3>
-    <p style="font-size:.75rem;color:var(--text2);margin-bottom:1rem;line-height:1.6">Was ist dein wichtigstes Vorhaben oder dein Fokus für morgen? Setze das heute Abend, damit du morgen früh sofort weißt worum es geht.</p>
-    <div class="form-group">
-      <textarea class="form-input" id="intention-input" rows="3" placeholder="z.B. Heute konzentriere ich mich auf..." style="resize:none"></textarea>
-    </div>
-    <div class="modal-actions">
-      <button class="btn" onclick="closeIntentionModal()">Abbrechen</button>
-      <button class="btn btn-primary" onclick="saveIntention()">Speichern</button>
     </div>
   </div>
 </div>
@@ -852,15 +749,16 @@ const _sb = window.supabase.createClient(SUPA_URL, SUPA_KEY);
 
 // ── STATE ────────────────────────────────────────────────────
 let USER_ID = null;
-let HABITS = [], ALL_COMPLETIONS = [], COMPLETION_INDEX = new Set(), TODAY_COMPLETIONS = new Set();
 let SKILLS = [], SESSIONS = [], PROFILE = null;
-let JOURNAL_COUNT = 0, JOURNAL_TODAY_EXISTS = false;
 let TIME_BLOCKS = [], TASKS = [], DAY_TEMPLATES = [], TEMPLATE_BLOCKS = [];
-let currentWeekOffset = 0, plannerWeekOffset = 0, activePlannerTab = 'week', activeAvatarTab = 'look';
-let timerInterval = null, timerSeconds = 25 * 60, timerRunning = false, timerMode = 'focus';
-let toastTimer;
+let plannerWeekOffset = 0, activePlannerTab = 'week', activeAvatarTab = 'look';
+let timerInterval = null, timerSeconds = 25 * 60, timerRunning = false, timerMode = 'focus', timerEndsAt = 0, lastFocusMode = 'focus';
+let toastTimer, goalSaveTimer;
 const MODES = { focus: 25 * 60, deep: 50 * 60, short: 5 * 60, long: 15 * 60 };
-const MODE_LABELS = { focus: 'FOKUS', deep: 'DEEP FOCUS', short: 'PAUSE', long: 'LANGE PAUSE' };
+const MODE_LABELS = { focus: 'FOKUS', deep: 'DEEP FOCUS', short: 'KURZE PAUSE', long: 'LANGE PAUSE' };
+const MODE_COLORS = { focus: '#c9a84c', deep: '#b46be0', short: '#4caf7d', long: '#5b8dee' };
+function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+function lsSet(k, v) { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} }
 
 // ── HELPERS ──────────────────────────────────────────────────
 function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
@@ -952,7 +850,7 @@ const ITEMS = {
     { id: 'blue', name: 'Blau', color: '#3d7be0', unlock: { type: 'level', n: 10 } },
     { id: 'pink', name: 'Pink', color: '#e66aa8', unlock: { type: 'shop', price: 60 } },
     { id: 'green', name: 'Grün', color: '#3fae6b', unlock: { type: 'shop', price: 60 } },
-    { id: 'gold', name: 'Gold', color: '#e8c97a', unlock: { type: 'achieve', id: 'fortnight' } },
+    { id: 'gold', name: 'Gold', color: '#e8c97a', unlock: { type: 'achieve', id: 'goal_days5' } },
     { id: 'white', name: 'Silber', color: '#eef0f4', unlock: { type: 'level', n: 20 } },
   ],
   top: [
@@ -961,7 +859,7 @@ const ITEMS = {
     { id: 'shirt', name: 'Hemd & Krawatte', unlock: { type: 'level', n: 5 }, map: { y: 11, rows: ['..TTTTTRRTTTTT..', '..TTTTTRRTTTTT..', '..TTTTTRRTTTTT..', '..TTTTTRRTTTTT..', '..TTTTTTRTTTTT..', '..tttttttttttt..'] } },
     { id: 'robe', name: 'Magierrobe', unlock: { type: 'level', n: 15 }, map: { y: 10, rows: ['.....T....T.....', '..TTTTTTTTTTTT..', '..TTTTTYYTTTTT..', '..TTTTTYYTTTTT..', '..TTTTTYYTTTTT..', '..TTTTTYYTTTTT..', '..TTTTTYYTTTTT..', '..ss.TTYYTT.ss..', '....TTTYYTTT....', '....TTTYYTTT....', '....TTTYYTTT....', '....tttttttt....'] } },
     { id: 'armor', name: 'Rüstung', unlock: { type: 'level', n: 20 }, map: { y: 11, rows: ['..XXXXXXXXXXXX..', '..XxXXXXXXXXxX..', '..XXxXXXXXXxXX..', '..XXXXXYYXXXXX..', '..XXxXXXXXXxXX..', '..xxBBBBBBBBxx..'] } },
-    { id: 'goldarmor', name: 'Goldrüstung', unlock: { type: 'achieve', id: 'month1' }, colors: { X: '#e8c97a', x: '#b08a2e', Y: '#d63c4a' }, map: { y: 11, rows: ['..XXXXXXXXXXXX..', '..XxXXXXXXXXxX..', '..XXxXXXXXXxXX..', '..XXXXXYYXXXXX..', '..XXxXXXXXXxXX..', '..xxBBBBBBBBxx..'] } },
+    { id: 'goldarmor', name: 'Goldrüstung', unlock: { type: 'achieve', id: 'pomo200' }, colors: { X: '#e8c97a', x: '#b08a2e', Y: '#d63c4a' }, map: { y: 11, rows: ['..XXXXXXXXXXXX..', '..XxXXXXXXXXxX..', '..XXxXXXXXXxXX..', '..XXXXXYYXXXXX..', '..XXxXXXXXXxXX..', '..xxBBBBBBBBxx..'] } },
   ],
   pants: [
     { id: 'jeans', name: 'Lange Hose', unlock: { type: 'free' }, map: { y: 17, rows: ['.....PPPPPP.....', '.....PP..PP.....', '.....Pp..pP.....', '.....PP..PP.....', '.....pp..pp.....'] } },
@@ -971,19 +869,19 @@ const ITEMS = {
   face: [
     { id: 'none', name: 'Nichts', unlock: { type: 'free' } },
     { id: 'sunglasses', name: 'Sonnenbrille', unlock: { type: 'level', n: 5 }, map: { y: 5, rows: ['....KKKKKKKK....', '.....KK..KK.....'] } },
-    { id: 'glasses', name: 'Lesebrille', unlock: { type: 'achieve', id: 'journal10' }, map: { y: 5, rows: ['....K..KK..K....', '.....KK..KK.....'] } },
+    { id: 'glasses', name: 'Lesebrille', unlock: { type: 'achieve', id: 'hours10' }, map: { y: 5, rows: ['....K..KK..K....', '.....KK..KK.....'] } },
   ],
   head: [
     { id: 'none', name: 'Nichts', unlock: { type: 'free' } },
-    { id: 'headband', name: 'Stirnband', unlock: { type: 'achieve', id: 'first_habit' }, map: { y: 3, rows: ['....RRRRRRRR....'] } },
+    { id: 'headband', name: 'Stirnband', unlock: { type: 'achieve', id: 'first_pomo' }, map: { y: 3, rows: ['....RRRRRRRR....'] } },
     { id: 'cap', name: 'Cap', unlock: { type: 'shop', price: 40 }, colors: { C: '#e05c5c', c: '#a83a3a' }, map: { y: 1, rows: ['.....CCCCCC.....', '....CCCCCCCC....', '....ccccccccCC..'] } },
     { id: 'wizard', name: 'Zauberhut', unlock: { type: 'achieve', id: 'pomo_total' }, colors: { C: '#5b3fa0', c: '#3f2a75' }, map: { y: 0, rows: ['.......CC.......', '......CCCC......', '.....CCYCCC.....', '..cccccccccccc..'] } },
     { id: 'helmet', name: 'Ritterhelm', unlock: { type: 'level', n: 25 }, map: { y: 0, rows: ['.....XXXXXX.....', '....XXXXXXXX....', '....XxXXXXxX....', '....XXXXXXXX....', '....X......X....'] } },
-    { id: 'crown', name: 'Krone', unlock: { type: 'achieve', id: 'month1' }, map: { y: 0, rows: ['....Y.Y..Y.Y....', '....YYYYYYYY....', '....YRYYYYRY....'] } },
+    { id: 'crown', name: 'Krone', unlock: { type: 'achieve', id: 'pomo200' }, map: { y: 0, rows: ['....Y.Y..Y.Y....', '....YYYYYYYY....', '....YRYYYYRY....'] } },
   ],
   back: [
     { id: 'none', name: 'Nichts', unlock: { type: 'free' } },
-    { id: 'cape_red', name: 'Roter Umhang', unlock: { type: 'achieve', id: 'week1' }, colors: { C: '#c0392b', c: '#8e2a20' } },
+    { id: 'cape_red', name: 'Roter Umhang', unlock: { type: 'achieve', id: 'pomo8' }, colors: { C: '#c0392b', c: '#8e2a20' } },
     { id: 'cape_blue', name: 'Blauer Umhang', unlock: { type: 'shop', price: 150 }, colors: { C: '#3d6fd1', c: '#2a4f99' } },
     { id: 'cape_purple', name: 'Königsumhang', unlock: { type: 'level', n: 30 }, colors: { C: '#7d3fa8', c: '#572c75' } },
   ],
@@ -991,7 +889,7 @@ const ITEMS = {
     { id: 'plain', name: 'Schlicht', unlock: { type: 'free' } },
     { id: 'night', name: 'Nacht', unlock: { type: 'free' } },
     { id: 'forest', name: 'Wald', unlock: { type: 'level', n: 3 } },
-    { id: 'sunset', name: 'Sonnenuntergang', unlock: { type: 'achieve', id: 'all_done' } },
+    { id: 'sunset', name: 'Sonnenuntergang', unlock: { type: 'achieve', id: 'goal_day' } },
     { id: 'space', name: 'Weltall', unlock: { type: 'shop', price: 120 } },
     { id: 'gold', name: 'Goldhalle', unlock: { type: 'level', n: 30 } },
   ],
@@ -1000,7 +898,7 @@ const ITEMS = {
     { id: 'blue', name: 'Blau', color: '#5b8dee', unlock: { type: 'achieve', id: 'pomo5' } },
     { id: 'green', name: 'Grün', color: '#4caf7d', unlock: { type: 'level', n: 10 } },
     { id: 'purple', name: 'Violett', color: '#b46be0', unlock: { type: 'shop', price: 200 } },
-    { id: 'gold', name: 'Gold', color: '#f2c94c', unlock: { type: 'achieve', id: 'month1' } },
+    { id: 'gold', name: 'Gold', color: '#f2c94c', unlock: { type: 'achieve', id: 'pomo200' } },
   ],
 };
 const CAPE_MAP = { y: 10, rows: ['....CC....CC....', '..CCCCCCCCCCCC..', '.CCCCCCCCCCCCCC.', '.CCCCCCCCCCCCCC.', '.CCCCCCCCCCCCCC.', '.CCCCCCCCCCCCCC.', '.CCCCCCCCCCCCCC.', '.CCCCCCCCCCCCCC.', '.CCCCCCCCCCCCCC.', '.CCCCCCCCCCCCCC.', '.cCCCCCCCCCCCCc.', '.cccccccccccccc.'] };
@@ -1148,7 +1046,7 @@ async function ensureProfile() {
   }
   data.inventory = data.inventory || [];
   data.achievements = data.achievements || [];
-  data.used_jokers = data.used_jokers || [];
+  data.daily_goal = data.daily_goal || 4;
   PROFILE = data;
 }
 async function saveProfile(fields) {
@@ -1159,129 +1057,88 @@ async function saveProfile(fields) {
 }
 async function addCoins(n, label) {
   if (!PROFILE || !n) return;
-  const coins = Math.max(0, (PROFILE.coins || 0) + n);
-  await saveProfile({ coins });
+  await saveProfile({ coins: Math.max(0, (PROFILE.coins || 0) + n) });
   floatText((n > 0 ? '+' : '') + n + ' 🪙', n > 0 ? 'var(--gold)' : 'var(--red)');
   updateHud();
   if (label) showToast(`${n > 0 ? '+' : ''}${n} 🪙 · ${label}`);
 }
+function dailyGoal() { return PROFILE?.daily_goal || 4; }
 
-// Kopfzeile, Sidebar und Avatar-Kopf aktualisieren
 function updateHud() {
   if (!PROFILE) return;
-  const lvl = avatarLevel(), title = activeTitle();
   document.getElementById('side-avatar-img').innerHTML = renderAvatarSVG(avatarCfg());
-  document.getElementById('side-avatar-lvl').textContent = 'Level ' + lvl;
-  document.getElementById('side-avatar-title').textContent = title;
+  document.getElementById('side-avatar-lvl').textContent = 'Level ' + avatarLevel();
+  document.getElementById('side-avatar-title').textContent = activeTitle();
   document.getElementById('side-avatar-coins').textContent = '🪙 ' + (PROFILE.coins || 0);
+  document.getElementById('side-avatar-today').textContent = '🍅 ' + sessionsToday().length + ' heute';
   document.getElementById('top-coins').textContent = '🪙 ' + (PROFILE.coins || 0);
-  document.getElementById('sidebar-jokers').textContent = '🃏 ' + (PROFILE.jokers || 0);
   if (document.getElementById('panel-avatar').classList.contains('active')) renderAvatarHero();
 }
 
-async function checkJokerGrant() {
-  const g = Math.floor(avatarLevel() / 10);
-  if (g > (PROFILE.jokers_granted || 0)) {
-    const diff = g - (PROFILE.jokers_granted || 0);
-    await saveProfile({ jokers: (PROFILE.jokers || 0) + diff, jokers_granted: g });
-    showBanner('🃏', 'Geschenk', `+${diff} Joker`, `Für Avatar-Level ${g * 10}. Ein Joker rettet deinen Streak, wenn du 2 Tage in Folge verpasst.`);
+// Alle 10 Avatar-Level: 3 Boost-Pomodoros geschenkt
+async function checkMilestones() {
+  if (!PROFILE) return;
+  const g = Math.floor(avatarLevel() / 10), done = PROFILE.milestones_granted || 0;
+  if (g > done) {
+    const diff = g - done;
+    await saveProfile({ boost_pomos: (PROFILE.boost_pomos || 0) + diff * 3, milestones_granted: g });
+    showBanner('⚡', 'Geschenk', `+${diff * 3} Boost-Pomodoros`, `Für Avatar-Level ${g * 10}: deine nächsten Fokus-Blöcke geben doppelte XP.`);
     updateHud();
   }
 }
 
+// Gibt einem Skill XP und zeigt Level-Ups, neue Ränge und Freischaltungen an
+async function grantSkillXp(skill, xp) {
+  const avBefore = avatarLevel(), before = skillLevel(skill.xp), newXp = skill.xp + xp;
+  const { error } = await _sb.from('skills').update({ xp: newXp }).eq('id', skill.id);
+  if (error) { showToast('✗ XP konnten nicht gespeichert werden: ' + error.message); return false; }
+  skill.xp = newXp;
+  const after = skillLevel(newXp);
+  if (after > before) {
+    const t = SKILL_TITLES.find(t => t.lvl > before && t.lvl <= after);
+    const perk = before < 10 && after >= 10 ? ' · Perk: +20 % XP' : before < 5 && after >= 5 ? ' · Perk: +10 % XP' : '';
+    showBanner(skill.emoji || '⭐', 'Skill Level Up!', `${skill.name} Level ${after}`, `Avatar-Level jetzt ${avatarLevel()}${t ? ` · Neuer Titel: ${skill.name}-${t.suffix}` : ''}${perk}`);
+    const newRank = rankIndex(avatarLevel());
+    if (newRank > rankIndex(avBefore)) showBanner('👑', 'Neuer Rang', RANK_NAMES[newRank], 'Neuer Titel freigeschaltet.');
+    const unlockedNow = [];
+    Object.values(ITEMS).forEach(items => items.forEach(it => { if (it.unlock?.type === 'level' && it.unlock.n > avBefore && it.unlock.n <= avatarLevel()) unlockedNow.push(it.name); }));
+    if (unlockedNow.length) showBanner('🎁', 'Freigeschaltet', unlockedNow.join(', '), 'Probier es im Avatar-Editor aus.');
+    await checkMilestones();
+  }
+  return true;
+}
+
 // ══════════════════════════════════════════════════════════════
-//  STREAK & JOKER
+//  SESSIONS (Auswertung)
 // ══════════════════════════════════════════════════════════════
-function rebuildCompletionIndex() {
-  COMPLETION_INDEX = new Set(ALL_COMPLETIONS.map(c => c.habit_id + '|' + c.completed_date));
-  const t = todayStr();
-  TODAY_COMPLETIONS = new Set(ALL_COMPLETIONS.filter(c => c.completed_date === t).map(c => c.habit_id));
-}
-function doneOn(habitId, ds) { return COMPLETION_INDEX.has(habitId + '|' + ds); }
-function habitExistsOn(h, ds) { return !h.created_at || ymd(h.created_at) <= ds; }
-function dueHabitsOn(ds) { return HABITS.filter(h => habitExistsOn(h, ds) && isHabitDueToday(h, ds)); }
-// 'none' = nichts fällig · 'done' · 'missed' · 'joker'
-function dayStatus(ds, used) {
-  const due = dueHabitsOn(ds);
-  if (!due.length) return 'none';
-  if (due.every(h => doneOn(h.id, ds))) return 'done';
-  if ((used || PROFILE?.used_jokers || []).includes(ds)) return 'joker';
-  return 'missed';
-}
-// Regel: 1 verpasster Tag ist automatisch okay. Bei 2 verpassten Tagen in Folge bricht der Streak – außer ein Joker springt ein.
-function calcStreak() {
-  if (!HABITS.length) return 0;
-  let streak = 0, missed = 0;
-  const t = todayStr();
-  for (let i = 0; i < 400; i++) {
-    const ds = addDays(t, -i), st = dayStatus(ds);
-    if (st === 'none') continue;
-    if (st === 'done') { streak++; missed = 0; }
-    else if (st === 'joker') { missed = 0; }
-    else if (i === 0) { /* heute läuft noch */ }
-    else { missed++; if (missed >= 2) break; }
-  }
-  return streak;
-}
-// Setzt automatisch Joker ein, wenn ein laufender Streak sonst brechen würde
-async function autoUseJokers() {
-  if (!PROFILE || !(PROFILE.jokers > 0) || !HABITS.length) return;
-  const used = [...(PROFILE.used_jokers || [])];
-  let jokers = PROFILE.jokers, changed = 0, missed = 0;
-  const t = todayStr();
-  for (let i = 1; i < 400; i++) {
-    const ds = addDays(t, -i), st = dayStatus(ds, used);
-    if (st === 'none') continue;
-    if (st === 'done' || st === 'joker') { missed = 0; continue; }
-    missed++;
-    if (missed >= 2) {
-      let older = null;
-      for (let j = i + 1; j < i + 60; j++) { const s = dayStatus(addDays(t, -j), used); if (s !== 'none') { older = s; break; } }
-      if ((older === 'done' || older === 'joker') && jokers > 0) { used.push(ds); jokers--; changed++; missed = 0; }
-      else break;
-    }
-  }
-  if (changed) {
-    await saveProfile({ jokers, used_jokers: used });
-    showBanner('🃏', 'Joker eingesetzt', 'Streak gerettet!', `${changed} Joker verbraucht. Übrig: ${jokers}.`);
-  }
-}
-function isStreakFrozen(ds) {
-  if (ds >= todayStr()) return false;
-  const st = dayStatus(ds);
-  if (st === 'joker') return true;
-  if (st !== 'missed') return false;
-  const prev = dayStatus(addDays(ds, -1)), next = dayStatus(addDays(ds, 1));
-  return (prev === 'done' || prev === 'joker') && (next === 'done' || next === 'joker');
-}
-function calcHabitStreak(habitId) {
-  let streak = 0, missed = 0;
-  const t = todayStr();
-  for (let i = 0; i < 365; i++) {
-    const ds = addDays(t, -i);
-    if (doneOn(habitId, ds)) { streak++; missed = 0; }
-    else if (i === 0) missed = 0;
-    else { missed++; if (missed >= 2) break; }
-  }
-  return streak;
+function sessionDay(s) { return ymd(new Date(s.created_at)); }
+function sessionsOn(ds) { return SESSIONS.filter(s => sessionDay(s) === ds); }
+function sessionsToday() { return sessionsOn(todayStr()); }
+function countsByDay() { const m = {}; SESSIONS.forEach(s => { const d = sessionDay(s); m[d] = (m[d] || 0) + 1; }); return m; }
+function totalMinutes(list = SESSIONS) { return list.reduce((a, s) => a + (s.minutes || 25), 0); }
+function fmtMin(min) {
+  const h = Math.floor(min / 60), m = min % 60;
+  if (!h) return `${m} Min`;
+  return m ? `${h} Std ${m} Min` : `${h} Std`;
 }
 
 // ══════════════════════════════════════════════════════════════
 //  ACHIEVEMENTS
 // ══════════════════════════════════════════════════════════════
 const ACHIEVEMENTS = [
-  { id: 'first_habit', icon: '✅', name: 'Erster Schritt', desc: 'Ersten Habit erstellt', coins: 20 },
-  { id: 'all_done', icon: '⭐', name: 'Perfektion', desc: 'Alle Habits an einem Tag erledigt', coins: 30 },
+  { id: 'first_pomo', icon: '🍅', name: 'Erster Fokus', desc: 'Ersten Fokus-Block abgeschlossen', coins: 20 },
+  { id: 'goal_day', icon: '🎯', name: 'Ziel erreicht', desc: 'Tagesziel zum ersten Mal geschafft', coins: 30 },
   { id: 'pomo5', icon: '⚡', name: 'Fokus-Block', desc: '5 Pomodoros an einem Tag', coins: 40 },
-  { id: 'week1', icon: '🔥', name: 'Erste Woche', desc: '7 Tage Streak erreicht', coins: 75 },
-  { id: 'journal10', icon: '📓', name: 'Selbstreflexion', desc: '10 Tagebucheinträge geschrieben', coins: 50 },
-  { id: 'fortnight', icon: '🏆', name: '14 Tage', desc: '14 Tage Streak erreicht', coins: 100 },
-  { id: 'pomo_total', icon: '🎯', name: 'Marathonläufer', desc: '50 Pomodoros insgesamt', coins: 100 },
-  { id: 'month1', icon: '💎', name: 'Unaufhaltbar', desc: '30 Tage Streak erreicht', coins: 250 },
+  { id: 'hours10', icon: '📚', name: '10 Stunden', desc: '10 Stunden Fokus insgesamt', coins: 50 },
+  { id: 'pomo8', icon: '🔥', name: 'Deep Day', desc: '8 Pomodoros an einem Tag', coins: 75 },
+  { id: 'pomo_total', icon: '🏃', name: 'Marathonläufer', desc: '50 Pomodoros insgesamt', coins: 100 },
+  { id: 'goal_days5', icon: '🏆', name: 'Fokus-Woche', desc: 'Tagesziel an 5 verschiedenen Tagen erreicht', coins: 100 },
+  { id: 'skill10', icon: '🧠', name: 'Spezialist', desc: 'Einen Skill auf Level 10 gebracht', coins: 100 },
+  { id: 'pomo200', icon: '💎', name: 'Unaufhaltbar', desc: '200 Pomodoros insgesamt', coins: 250 },
 ];
 function achievementRewards(id) {
-  const out = [];
-  Object.entries(ITEMS).forEach(([slot, items]) => items.forEach(it => { if (it.unlock?.type === 'achieve' && it.unlock.id === id) out.push(it.name + (slot === 'hairColor' ? ' (Haarfarbe)' : slot === 'aura' ? ' (Aura)' : slot === 'bg' ? ' (Hintergrund)' : '')); }));
+  const out = [], label = { hairColor: ' (Haarfarbe)', aura: ' (Aura)', bg: ' (Hintergrund)' };
+  Object.entries(ITEMS).forEach(([slot, items]) => items.forEach(it => { if (it.unlock?.type === 'achieve' && it.unlock.id === id) out.push(it.name + (label[slot] || '')); }));
   return out;
 }
 async function unlockAchievement(id) {
@@ -1295,17 +1152,17 @@ async function unlockAchievement(id) {
 }
 async function checkAchievements() {
   if (!PROFILE) return;
-  const streak = calcStreak();
-  const pomosToday = sessionsToday().length;
-  if (HABITS.length > 0) await unlockAchievement('first_habit');
-  if (streak >= 7) await unlockAchievement('week1');
-  if (streak >= 14) await unlockAchievement('fortnight');
-  if (streak >= 30) await unlockAchievement('month1');
-  if (pomosToday >= 5) await unlockAchievement('pomo5');
-  if (SESSIONS.length >= 50) await unlockAchievement('pomo_total');
-  if (JOURNAL_COUNT >= 10) await unlockAchievement('journal10');
-  const due = dueHabitsOn(todayStr());
-  if (due.length && due.every(h => TODAY_COMPLETIONS.has(h.id))) await unlockAchievement('all_done');
+  const counts = Object.values(countsByDay()), total = SESSIONS.length;
+  const maxDay = Math.max(0, ...counts), goalDays = counts.filter(c => c >= dailyGoal()).length;
+  if (total >= 1) await unlockAchievement('first_pomo');
+  if (goalDays >= 1) await unlockAchievement('goal_day');
+  if (maxDay >= 5) await unlockAchievement('pomo5');
+  if (totalMinutes() >= 600) await unlockAchievement('hours10');
+  if (maxDay >= 8) await unlockAchievement('pomo8');
+  if (total >= 50) await unlockAchievement('pomo_total');
+  if (goalDays >= 5) await unlockAchievement('goal_days5');
+  if (SKILLS.some(s => skillLevel(s.xp) >= 10)) await unlockAchievement('skill10');
+  if (total >= 200) await unlockAchievement('pomo200');
 }
 function renderAchievements() {
   const unlocked = PROFILE?.achievements || [];
@@ -1351,10 +1208,11 @@ function renderAvatarHero() {
   document.getElementById('av-rank').textContent = RANK_NAMES[ri];
   document.getElementById('av-rank-next').textContent = !SKILLS.length
     ? 'Lege unter ⚔️ Skills deinen ersten Skill an, um zu leveln.'
-    : ri < RANK_NAMES.length - 1 ? `Nächster Rang „${RANK_NAMES[ri + 1]}" bei Level ${(ri + 1) * RANK_STEP} · nächster Joker bei Level ${(Math.floor(lvl / 10) + 1) * 10}` : 'Höchster Rang erreicht!';
-  const pills = [`<span class="av-pill gold">🪙 ${PROFILE.coins || 0} Münzen</span>`, `<span class="av-pill blue">🃏 ${PROFILE.jokers || 0} Joker</span>`];
+    : ri < RANK_NAMES.length - 1 ? `Nächster Rang „${RANK_NAMES[ri + 1]}" bei Level ${(ri + 1) * RANK_STEP} · nächstes Boost-Geschenk bei Level ${(Math.floor(lvl / 10) + 1) * 10}` : 'Höchster Rang erreicht!';
+  const pills = [`<span class="av-pill gold">🪙 ${PROFILE.coins || 0} Münzen</span>`, `<span class="av-pill">🍅 ${SESSIONS.length} Pomodoros · ${fmtMin(totalMinutes())}</span>`];
   if (PROFILE.boost_pomos > 0) pills.push(`<span class="av-pill purple">⚡ XP×2 für ${PROFILE.boost_pomos} Pomodoro${PROFILE.boost_pomos > 1 ? 's' : ''}</span>`);
-  if (hasPerk('deepfocus')) pills.push(`<span class="av-pill">🧠 Deep Focus</span>`);
+  if (hasPerk('deepfocus')) pills.push(`<span class="av-pill blue">🧠 Deep Focus</span>`);
+  if (hasPerk('magnet')) pills.push(`<span class="av-pill blue">🧲 +50 % Münzen</span>`);
   pills.push(`<span class="av-pill">⚔️ ${SKILLS.length} Skill${SKILLS.length !== 1 ? 's' : ''}</span>`);
   document.getElementById('av-pills').innerHTML = pills.join('');
 }
@@ -1484,9 +1342,9 @@ async function saveSkill() {
     const { data, error } = await _sb.from('skills').insert({ user_id: USER_ID, name, emoji, color: selectedSkillColor }).select().single();
     if (error) { showToast('✗ ' + error.message); return; }
     SKILLS.push(data);
-    if (!localStorage.getItem('ttl_sel_skill')) setSelectedSkill(data.id);
+    if (!lsGet('ttl_sel_skill')) setSelectedSkill(data.id);
     showToast(`✓ Skill „${name}" angelegt · Avatar-Level +1`);
-    await checkJokerGrant();
+    await checkMilestones();
   }
   closeSkillModal();
   renderSkills(); renderPomoSkillSelect(); updateHud(); renderAvatarHero();
@@ -1498,7 +1356,7 @@ async function deleteSkill() {
   const { error } = await _sb.from('skills').delete().eq('id', id);
   if (error) { showToast('✗ ' + error.message); return; }
   SKILLS = SKILLS.filter(x => x.id !== id);
-  if (localStorage.getItem('ttl_sel_skill') === id) setSelectedSkill('');
+  if (lsGet('ttl_sel_skill') === id) setSelectedSkill('');
   closeSkillModal();
   renderSkills(); renderPomoSkillSelect(); updateHud(); renderAvatarHero();
   showToast('✓ Skill gelöscht');
@@ -1506,18 +1364,21 @@ async function deleteSkill() {
 
 // Shop
 const PERKS = [
-  { id: 'joker', icon: '🃏', name: 'Joker', price: 150, desc: 'Rettet deinen Streak automatisch, wenn du 2 Tage in Folge verpasst. Du kannst höchstens 3 gekaufte Joker gleichzeitig besitzen.' },
   { id: 'boost', icon: '⚡', name: 'XP-Boost', price: 100, desc: 'Doppelte Skill-XP für deine nächsten 3 Fokus-Blöcke. Stapelbar.' },
-  { id: 'deepfocus', icon: '🧠', name: 'Deep Focus 50', price: 250, once: true, desc: 'Schaltet dauerhaft einen 50-Minuten-Fokusmodus frei. Gibt 50 Basis-XP und 20 Münzen.' },
+  { id: 'elixir', icon: '🧪', name: 'Skill-Elixier', price: 120, desc: 'Sofort +50 XP auf den Skill, der gerade im Timer ausgewählt ist.' },
+  { id: 'deepfocus', icon: '🧠', name: 'Deep Focus 50', price: 250, once: true, desc: 'Schaltet dauerhaft einen 50-Minuten-Fokusmodus frei. Gibt doppelt so viel XP und Münzen wie ein normaler Block.' },
+  { id: 'magnet', icon: '🧲', name: 'Münz-Magnet', price: 400, once: true, desc: 'Dauerhaft +50 % Münzen für jeden Fokus-Block.' },
 ];
 function hasPerk(id) { return (PROFILE?.inventory || []).includes('perk:' + id); }
 function renderShop() {
-  const coins = PROFILE.coins || 0;
+  const coins = PROFILE.coins || 0, sel = getSelectedSkill();
   document.getElementById('shop-balance').textContent = '🪙 ' + coins;
   document.getElementById('shop-perks').innerHTML = PERKS.map(p => {
     const owned = p.once && hasPerk(p.id);
-    const extra = p.id === 'joker' ? `Du hast: ${PROFILE.jokers || 0}` : p.id === 'boost' ? `Aktiv: ${PROFILE.boost_pomos || 0} Pomodoros` : '';
-    const disabled = owned || coins < p.price || (p.id === 'joker' && (PROFILE.jokers || 0) >= 3);
+    let extra = '', blocked = false;
+    if (p.id === 'boost') extra = `Aktiv: ${PROFILE.boost_pomos || 0} Pomodoros`;
+    if (p.id === 'elixir') { extra = sel ? `Geht auf: ${esc(sel.emoji || '⭐')} ${esc(sel.name)}` : 'Wähle zuerst im Timer einen Skill aus.'; blocked = !sel; }
+    const disabled = owned || blocked || coins < p.price;
     return `<div class="shop-card ${owned ? 'owned' : ''}">
       <div class="shop-icon">${p.icon}</div>
       <div class="shop-name">${p.name}</div>
@@ -1530,14 +1391,14 @@ function renderShop() {
   }).join('');
   const cosmetics = [];
   Object.entries(ITEMS).forEach(([slot, items]) => items.forEach(it => { if (it.unlock?.type === 'shop') cosmetics.push({ slot, it }); }));
+  const slotNames = { hairColor: 'Haarfarbe', head: 'Kopf', back: 'Rücken', bg: 'Hintergrund', aura: 'Aura' };
   document.getElementById('shop-cosmetics').innerHTML = cosmetics.map(({ slot, it }) => {
     const owned = isUnlocked(slot, it);
     const preview = renderAvatarSVG(Object.assign(avatarCfg(), { [slot]: it.id }));
-    const slotName = { hairColor: 'Haarfarbe', head: 'Kopf', back: 'Rücken', bg: 'Hintergrund', aura: 'Aura' }[slot] || slot;
     return `<div class="shop-card ${owned ? 'owned' : ''}">
       <div style="display:flex;gap:.75rem;align-items:center">
         <div class="shop-preview">${preview}</div>
-        <div><div class="shop-name">${esc(it.name)}</div><div class="shop-desc">${slotName}</div></div>
+        <div><div class="shop-name">${esc(it.name)}</div><div class="shop-desc">${slotNames[slot] || slot}</div></div>
       </div>
       <div class="shop-foot">
         <span class="shop-price">${owned ? '✓ Im Besitz' : '🪙 ' + it.unlock.price}</span>
@@ -1546,18 +1407,31 @@ function renderShop() {
     </div>`;
   }).join('');
 }
+let buying = false;
 async function buyPerk(id) {
+  if (buying) return;
   const p = PERKS.find(x => x.id === id);
   if (!p || (PROFILE.coins || 0) < p.price) { showToast('⚠ Nicht genug Münzen'); return; }
-  if (id === 'joker' && (PROFILE.jokers || 0) >= 3) { showToast('⚠ Du hast schon 3 Joker'); return; }
   if (p.once && hasPerk(id)) return;
-  const fields = { coins: PROFILE.coins - p.price };
-  if (id === 'joker') fields.jokers = (PROFILE.jokers || 0) + 1;
-  if (id === 'boost') fields.boost_pomos = (PROFILE.boost_pomos || 0) + 3;
-  if (id === 'deepfocus') fields.inventory = [...PROFILE.inventory, 'perk:deepfocus'];
-  await saveProfile(fields);
-  showToast(`✓ ${p.name} gekauft`);
-  updateHud(); renderShop(); renderAvatarHero(); updateModeButtons(); renderPomoSkillSelect();
+  buying = true;
+  try {
+    if (id === 'elixir') {
+      const sk = getSelectedSkill();
+      if (!sk) { showToast('⚠ Wähle zuerst im Timer einen Skill aus'); return; }
+      if (!(await grantSkillXp(sk, 50))) return;
+      await saveProfile({ coins: PROFILE.coins - p.price });
+      floatText('+50 XP', sk.color);
+      showToast(`🧪 +50 XP auf ${sk.name}`);
+      await checkAchievements();
+    } else {
+      const fields = { coins: PROFILE.coins - p.price };
+      if (id === 'boost') fields.boost_pomos = (PROFILE.boost_pomos || 0) + 3;
+      if (p.once) fields.inventory = [...PROFILE.inventory, 'perk:' + id];
+      await saveProfile(fields);
+      showToast(`✓ ${p.name} gekauft`);
+    }
+    updateHud(); renderShop(); renderAvatarHero(); updateModeButtons(); renderPomoSkillSelect();
+  } finally { buying = false; }
 }
 async function buyCosmetic(slot, id) {
   const it = findItem(slot, id);
@@ -1588,7 +1462,7 @@ async function chooseTitle(t) {
 // ══════════════════════════════════════════════════════════════
 //  NAVIGATION
 // ══════════════════════════════════════════════════════════════
-const PAGE_TITLES = { dashboard: 'Dashboard', habits: 'Habits', week: 'Wochenübersicht', stats: 'Statistiken', achievements: 'Achievements', pomodoro: 'Pomodoro Timer', journal: 'Tagebuch', planner: 'Zeitplaner', avatar: 'Avatar' };
+const PAGE_TITLES = { fokus: 'Fokus', stats: 'Statistiken', achievements: 'Achievements', planner: 'Zeitplaner', avatar: 'Avatar' };
 function toggleSidebar() {
   document.querySelector('.sidebar').classList.toggle('open');
   document.getElementById('sidebar-backdrop').classList.toggle('open');
@@ -1603,15 +1477,12 @@ function goto(id, sub) {
   document.getElementById('panel-' + id).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.nav === id));
   document.getElementById('page-title').textContent = PAGE_TITLES[id] || id;
-  if (id === 'dashboard') renderDashboard();
-  if (id === 'week') renderWeekView();
-  if (id === 'journal') { loadJournal(); loadIntention(); }
-  if (id === 'habits') renderAllHabits();
+  if (id === 'fokus') renderFokus();
   if (id === 'stats') renderStats();
   if (id === 'achievements') renderAchievements();
-  if (id === 'pomodoro') { renderPomoSkillSelect(); updatePomoStats(); updateModeButtons(); }
   if (id === 'planner') switchPlannerTab(activePlannerTab);
   if (id === 'avatar') switchAvatarTab(sub || activeAvatarTab);
+  updateTimerDisplay();
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -1619,527 +1490,290 @@ function goto(id, sub) {
 // ══════════════════════════════════════════════════════════════
 function logout() { _sb.auth.signOut().then(() => window.location.reload()); }
 
-function sessionsToday() {
-  const midnight = new Date(); midnight.setHours(0, 0, 0, 0);
-  return SESSIONS.filter(s => new Date(s.created_at) >= midnight);
-}
-
 async function loadAll() {
   const { data: { session } } = await _sb.auth.getSession();
   if (!session) return;
   USER_ID = session.user.id;
 
-  // Alte Browser-Daten (altes XP-System) einmalig entfernen
-  if (!localStorage.getItem('ttl_v2')) {
-    Object.keys(localStorage).filter(k => k.startsWith('ttl_')).forEach(k => localStorage.removeItem(k));
-    localStorage.setItem('ttl_v2', '1');
+  // Reste der alten Version (Intentionen usw.) aus dem Browser entfernen
+  if (!lsGet('ttl_v3')) {
+    try { Object.keys(localStorage).filter(k => k.startsWith('ttl_') && k !== 'ttl_sel_skill').forEach(k => localStorage.removeItem(k)); } catch (e) {}
+    lsSet('ttl_v3', '1');
   }
 
-  const since = addDays(todayStr(), -400);
   const wb = addDays(todayStr(), -28), we = addDays(todayStr(), 28);
-  const [habitsR, complR, sessR, skillsR, journalR, journalTodayR, blocksR, tasksR, tplR, tplBlocksR] = await Promise.all([
-    _sb.from('habits').select('*').eq('user_id', USER_ID).order('created_at'),
-    _sb.from('habit_completions').select('*').eq('user_id', USER_ID).gte('completed_date', since),
-    _sb.from('pomodoro_sessions').select('id,skill_id,minutes,xp,created_at').eq('user_id', USER_ID).order('created_at'),
+  const [sessR, skillsR, blocksR, tasksR, tplR, tplBlocksR] = await Promise.all([
+    _sb.from('pomodoro_sessions').select('id,skill_id,minutes,xp,coins,created_at').eq('user_id', USER_ID).order('created_at'),
     _sb.from('skills').select('*').eq('user_id', USER_ID).order('created_at'),
-    _sb.from('journal_entries').select('id', { count: 'exact', head: true }).eq('user_id', USER_ID),
-    _sb.from('journal_entries').select('id').eq('user_id', USER_ID).eq('entry_date', todayStr()).maybeSingle(),
     _sb.from('time_blocks').select('*').eq('user_id', USER_ID).gte('date', wb).lte('date', we),
     _sb.from('tasks').select('*').eq('user_id', USER_ID).order('created_at'),
     _sb.from('day_templates').select('*').eq('user_id', USER_ID).order('created_at'),
     _sb.from('template_blocks').select('*').eq('user_id', USER_ID),
   ]);
-  if (skillsR.error) showToast('✗ Tabelle "skills" fehlt – bitte zuerst die SQL-Datei in Supabase ausführen');
-  HABITS = habitsR.data || [];
-  ALL_COMPLETIONS = complR.data || [];
-  rebuildCompletionIndex();
+  if (sessR.error || skillsR.error) showToast('✗ Datenbank nicht aktuell – bitte zuerst die SQL-Datei in Supabase ausführen');
   SESSIONS = sessR.data || [];
   SKILLS = skillsR.data || [];
-  JOURNAL_COUNT = journalR.count || 0;
-  JOURNAL_TODAY_EXISTS = !!journalTodayR.data;
   TIME_BLOCKS = blocksR.data || [];
   TASKS = tasksR.data || [];
   DAY_TEMPLATES = tplR.data || [];
   TEMPLATE_BLOCKS = tplBlocksR.data || [];
 
   await ensureProfile();
-  await autoUseJokers();
-  await checkJokerGrant();
+  await checkMilestones();
 
   document.getElementById('today-date').textContent = formatDate(todayStr());
-  renderDashboard();
+  document.getElementById('auto-next').checked = lsGet('ttl_auto_next') === '1';
+  renderFokus();
   updateHud();
-  loadIntention();
-  renderPomoSkillSelect(); updatePomoStats(); updateModeButtons();
   await checkAchievements();
 }
 
 // ══════════════════════════════════════════════════════════════
-//  INTENTION
+//  FOKUS-SEITE
 // ══════════════════════════════════════════════════════════════
-function loadIntention() {
-  const val = localStorage.getItem('ttl_intention_' + todayStr()) || '';
-  document.getElementById('intention-text').textContent = val || 'Noch keine Intention für heute gesetzt.';
-  document.getElementById('intention-edit').textContent = val ? '✏ Ändern' : '✏ Setzen';
-  document.getElementById('journal-intention-reminder').style.display = new Date().getHours() >= 17 ? 'block' : 'none';
-}
-function openIntentionModal() {
-  document.getElementById('intention-input').value = localStorage.getItem('ttl_intention_' + addDays(todayStr(), 1)) || '';
-  document.getElementById('intention-modal').classList.add('open');
-}
-function closeIntentionModal() { document.getElementById('intention-modal').classList.remove('open'); }
-function saveIntention() {
-  const val = document.getElementById('intention-input').value.trim();
-  if (!val) { showToast('⚠ Bitte eine Intention eingeben'); return; }
-  localStorage.setItem('ttl_intention_' + addDays(todayStr(), 1), val);
-  const todayKey = 'ttl_intention_' + todayStr();
-  if (!localStorage.getItem(todayKey)) localStorage.setItem(todayKey, val);
-  closeIntentionModal(); loadIntention();
-  showToast('✓ Intention für morgen gesetzt');
-}
+function getSelectedSkill() { const id = lsGet('ttl_sel_skill'); return SKILLS.find(s => s.id === id) || null; }
+function setSelectedSkill(id) { lsSet('ttl_sel_skill', id || null); }
+function selectPomoSkill(id) { setSelectedSkill(id); renderPomoSkillSelect(); if (document.getElementById('av-shop').style.display !== 'none') renderShop(); }
+function focusMinutes(mode) { return mode === 'deep' ? 50 : 25; }
+function focusCoins(minutes) { return Math.round(minutes / 25 * 10 * (hasPerk('magnet') ? 1.5 : 1)); }
+function setAutoNext(on) { lsSet('ttl_auto_next', on ? '1' : '0'); }
 
-// ══════════════════════════════════════════════════════════════
-//  WOCHENRÜCKBLICK (Sonntags)
-// ══════════════════════════════════════════════════════════════
-function renderWochenrueckblick() {
-  const el = document.getElementById('wochenrueckblick');
-  if (dOf(todayStr()).getDay() !== 0) { el.style.display = 'none'; return; }
-  const pastDays = getWeekDays(0).filter(d => d <= todayStr());
-  let totalPossible = 0, totalDone = 0;
-  pastDays.forEach(d => {
-    const due = dueHabitsOn(d);
-    totalPossible += due.length;
-    totalDone += due.filter(h => doneOn(h.id, d)).length;
-  });
-  const pct = totalPossible > 0 ? Math.round(totalDone / totalPossible * 100) : 0;
-  const weekStart = dOf(pastDays[0]);
-  const weekPomos = SESSIONS.filter(s => new Date(s.created_at) >= weekStart);
-  let grade, gradeColor, msg;
-  if (pct >= 90) { grade = '🥇'; gradeColor = 'var(--gold)'; msg = 'Außergewöhnliche Woche! Du hast fast alles geschafft.'; }
-  else if (pct >= 70) { grade = '🥈'; gradeColor = 'var(--text2)'; msg = 'Sehr gute Woche. Noch ein kleiner Schritt zur Perfektion.'; }
-  else if (pct >= 50) { grade = '🥉'; gradeColor = '#cd7f32'; msg = 'Solide Woche. Nächste Woche legst du noch eine Schippe drauf.'; }
-  else { grade = '💪'; gradeColor = 'var(--red)'; msg = 'Schwierige Woche. Morgen ist ein neuer Start — du schaffst das.'; }
-  el.style.display = 'block';
-  el.innerHTML = `<div class="wochenbewertung">
-    <div class="section-label" style="margin-bottom:.75rem;text-align:center">📅 Wochenrückblick</div>
-    <div class="woche-grade" style="color:${gradeColor}">${grade}</div>
-    <div class="woche-text">${msg}</div>
-    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:1.5rem;margin-top:1rem;font-size:.72rem;color:var(--text3)">
-      <span>✅ ${totalDone}/${totalPossible} Habits</span>
-      <span style="color:${pct >= 70 ? 'var(--gold)' : 'var(--text3)'}">📊 ${pct}%</span>
-      <span>⏱ ${weekPomos.length} Pomodoros</span>
-    </div>
-    <textarea class="journal-input" id="woche-reflection" placeholder="Was lief gut? Was möchtest du nächste Woche verbessern?" style="margin-top:1rem;min-height:80px"></textarea>
-    <button onclick="saveWochenreflexion()" class="btn btn-primary" style="width:100%;margin-top:.5rem">Reflexion speichern</button>
-  </div>`;
-}
-async function saveWochenreflexion() {
-  const content = document.getElementById('woche-reflection')?.value?.trim();
-  if (!content) return;
-  // Hängt die Reflexion an den heutigen Tagebucheintrag an, statt ihn zu überschreiben
-  const { data: existing } = await _sb.from('journal_entries').select('content').eq('user_id', USER_ID).eq('entry_date', todayStr()).maybeSingle();
-  const full = (existing?.content ? existing.content + '\n\n' : '') + '[Wochenrückblick] ' + content;
-  const { error } = await _sb.from('journal_entries').upsert({ user_id: USER_ID, entry_date: todayStr(), content: full }, { onConflict: 'user_id,entry_date' });
-  if (error) { showToast('✗ ' + error.message); return; }
-  if (!JOURNAL_TODAY_EXISTS) { JOURNAL_TODAY_EXISTS = true; JOURNAL_COUNT++; await addCoins(5, 'Tagebuch'); }
-  document.getElementById('woche-reflection').value = '';
-  showToast('✓ Wochenreflexion gespeichert');
-}
-
-// ══════════════════════════════════════════════════════════════
-//  STATISTIKEN
-// ══════════════════════════════════════════════════════════════
-function calcWeekStreak() {
-  if (!HABITS.length) return 0;
-  let streak = 0;
-  for (let w = 0; w < 52; w++) {
-    const pastDays = getWeekDays(-w).filter(d => d <= todayStr());
-    const relevant = pastDays.filter(d => dayStatus(d) !== 'none');
-    if (!relevant.length) { if (w > 0) break; continue; }
-    const complete = relevant.every(d => { const st = dayStatus(d); return st === 'done' || st === 'joker' || (d === todayStr()); });
-    if (complete) streak++;
-    else if (w > 0) break;
-  }
-  return streak;
-}
-function calcHabitRate(habitId) {
-  const h = HABITS.find(x => x.id === habitId);
-  let due = 0, done = 0;
-  for (let i = 6; i >= 0; i--) {
-    const d = addDays(todayStr(), -i);
-    if (!h || !habitExistsOn(h, d) || !isHabitDueToday(h, d)) continue;
-    due++; if (doneOn(habitId, d)) done++;
-  }
-  return due ? Math.round(done / due * 100) : 0;
-}
-function renderStats() {
-  const dayStreak = calcStreak(), weekStreak = calcWeekStreak();
-  const totalMin = SESSIONS.reduce((a, s) => a + (s.minutes || 25), 0);
-  document.getElementById('stat-streak-days').textContent = dayStreak;
-  document.getElementById('stat-streak-weeks').textContent = weekStreak;
-  document.getElementById('stat-total-sessions').textContent = SESSIONS.length;
-  document.getElementById('stat-pomo-hours').textContent = Math.round(totalMin / 6) / 10 + ' Stunden Fokus';
-  document.getElementById('stat-streak-start').textContent = dayStreak > 0 ? `${PROFILE?.jokers || 0} Joker übrig` : '–';
-  document.getElementById('habit-stats-list').innerHTML = HABITS.map(h => {
-    const hStreak = calcHabitStreak(h.id);
-    const total = ALL_COMPLETIONS.filter(c => c.habit_id === h.id).length;
-    const rate = calcHabitRate(h.id);
-    const color = rate >= 80 ? 'var(--green)' : rate >= 50 ? 'var(--gold)' : 'var(--red)';
-    return `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;gap:.5rem">
-        <div style="font-size:.78rem;color:var(--text)">${esc(h.emoji || '⭐')} ${esc(h.name)}</div>
-        <div style="display:flex;gap:.75rem;font-size:.68rem;color:var(--text3)">
-          <span>🔥 ${hStreak}d</span><span>✓ ${total}x</span><span style="color:${color}">${rate}%</span>
-        </div>
-      </div>
-      <div style="height:4px;background:var(--bg3);border-radius:2px;overflow:hidden">
-        <div style="height:100%;width:${Math.min(100, rate)}%;background:${color};border-radius:2px;transition:width .4s ease"></div>
-      </div>
-    </div>`;
-  }).join('') || '<div style="color:var(--text3);font-size:.75rem">Noch keine Habits</div>';
-  const days30 = Array.from({ length: 30 }, (_, i) => addDays(todayStr(), i - 29));
-  document.getElementById('heatmap').innerHTML = days30.map(d => {
-    const due = dueHabitsOn(d);
-    if (!due.length) return `<div style="width:24px;height:24px;border-radius:4px;background:var(--bg3)" title="${d}"></div>`;
-    const done = due.filter(h => doneOn(h.id, d)).length, ratio = done / due.length, frozen = isStreakFrozen(d);
-    const bg = frozen ? 'rgba(91,141,238,0.3)' : ratio === 1 ? 'var(--green)' : ratio > 0 ? 'rgba(201,168,76,0.5)' : 'rgba(224,92,92,0.15)';
-    return `<div title="${d.slice(8)}.${d.slice(5, 7)}: ${done}/${due.length}${frozen ? ' (Streak-Schutz)' : ''}" style="width:24px;height:24px;border-radius:4px;background:${bg}"></div>`;
-  }).join('');
-}
-
-// ══════════════════════════════════════════════════════════════
-//  HABITS
-// ══════════════════════════════════════════════════════════════
-function isHabitDueToday(h, dateStr) {
-  const ds = dateStr || todayStr();
-  if (!h.frequency || h.frequency === 'daily') return true;
-  if (h.frequency === 'weekly') return weekdayNum(ds) === (new Date(h.created_at || Date.now()).getDay() || 7);
-  if (h.frequency === 'weekday') return (h.weekdays || '').split(',').filter(Boolean).map(Number).includes(weekdayNum(ds));
-  return true;
-}
-function renderDashboard() {
-  const dueToday = dueHabitsOn(todayStr());
-  const doneCount = dueToday.filter(h => TODAY_COMPLETIONS.has(h.id)).length, totalCount = dueToday.length;
-  const streak = calcStreak(), pt = sessionsToday();
-  document.getElementById('m-today').textContent = `${doneCount}/${totalCount}`;
-  document.getElementById('m-today-sub').textContent = doneCount === totalCount && totalCount > 0 ? '🎉 Alles erledigt!'
-    : doneCount > 0 ? `${totalCount - doneCount} noch offen` : totalCount === 0 ? 'Heute nichts fällig' : 'Noch nichts abgehakt';
-  document.getElementById('m-streak').textContent = streak;
-  document.getElementById('m-streak-sub').textContent = `Tage in Folge · 🃏 ${PROFILE?.jokers || 0} Joker`;
-  document.getElementById('m-pomos').textContent = pt.length;
-  document.getElementById('m-pomos-sub').textContent = 'Fokus-Minuten: ' + pt.reduce((a, s) => a + (s.minutes || 25), 0);
-  document.getElementById('dash-progress').textContent = `${doneCount}/${totalCount} erledigt`;
-  document.getElementById('sidebar-streak').textContent = streak;
-  renderWochenrueckblick();
-  const grid = document.getElementById('dash-habits');
-  if (!dueToday.length) {
-    grid.innerHTML = `<div style="text-align:center;padding:2rem;color:var(--text3);font-size:.78rem">${HABITS.length ? 'Heute ist kein Habit fällig 🎉' : 'Noch keine Habits — klicke auf „+ Habit"'}</div>`;
-    return;
-  }
-  grid.innerHTML = dueToday.map(renderHabitCard).join('');
-}
-function renderHabitCard(h) {
-  const done = TODAY_COMPLETIONS.has(h.id), hStreak = calcHabitStreak(h.id);
-  const freqLabel = h.frequency === 'weekly' ? 'Wöchentlich'
-    : h.frequency === 'weekday' ? ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'].filter((_, i) => (h.weekdays || '').split(',').includes(String(i + 1))).join('/') : '';
-  return `<div class="habit-card ${done ? 'done' : ''}" onclick="toggleHabit('${h.id}')">
-    <div class="habit-check">${done ? '✓' : ''}</div>
-    <div class="habit-info">
-      <div class="habit-name">${esc(h.emoji || '⭐')} ${esc(h.name)}</div>
-      <div class="habit-meta">${h.goal ? esc(h.goal) + ' · ' : ''}${freqLabel ? freqLabel + ' · ' : ''}${hStreak > 0 ? `🔥 ${hStreak} Tage` : 'Noch kein Streak'}</div>
-    </div>
-    <div class="habit-actions">
-      <button class="icon-btn" onclick="event.stopPropagation();openEditHabit('${h.id}')">✏</button>
-      <button class="icon-btn" onclick="event.stopPropagation();deleteHabit('${h.id}')" style="color:var(--red)">✕</button>
-    </div>
-  </div>`;
-}
-let habitBusy = false;
-async function toggleHabit(habitId) {
-  if (habitBusy) return; habitBusy = true;
-  try {
-    const t = todayStr();
-    if (TODAY_COMPLETIONS.has(habitId)) {
-      const { error } = await _sb.from('habit_completions').delete().eq('habit_id', habitId).eq('user_id', USER_ID).eq('completed_date', t);
-      if (error) { showToast('✗ ' + error.message); return; }
-      ALL_COMPLETIONS = ALL_COMPLETIONS.filter(c => !(c.habit_id === habitId && c.completed_date === t));
-      rebuildCompletionIndex();
-      await addCoins(-3, 'Habit rückgängig gemacht');
-    } else {
-      const { data, error } = await _sb.from('habit_completions').insert({ habit_id: habitId, user_id: USER_ID, completed_date: t }).select().single();
-      if (error) { showToast('✗ ' + error.message); return; }
-      ALL_COMPLETIONS.push(data);
-      rebuildCompletionIndex();
-      await addCoins(3, 'Habit erledigt');
-      const due = dueHabitsOn(t);
-      if (due.every(h => TODAY_COMPLETIONS.has(h.id)) && PROFILE.last_full_day !== t) {
-        await saveProfile({ last_full_day: t });
-        await addCoins(10, '🎉 Alle Habits für heute erledigt – Bonus');
-      }
-    }
-    renderDashboard();
-    await checkAchievements();
-    if (document.getElementById('panel-habits').classList.contains('active')) renderAllHabits();
-  } finally { habitBusy = false; }
-}
-function renderAllHabits() {
-  const grid = document.getElementById('all-habits'), empty = document.getElementById('no-habits');
-  document.getElementById('habit-count').textContent = HABITS.length;
-  if (!HABITS.length) { grid.innerHTML = ''; empty.style.display = 'block'; return; }
-  empty.style.display = 'none';
-  grid.innerHTML = HABITS.map(renderHabitCard).join('');
-}
-
-let selectedEmoji = '⭐', selectedWeekdays = new Set();
-const EMOJIS = ['💪', '📚', '🧘', '💧', '🏃', '🎯', '✍️', '🌅', '🥗', '😴', '💻', '🎵', '🚶', '🧹', '📱', '🫀', '🌿', '⚡', '🔥', '⭐', '🎨', '🏋️', '🤸', '🧠', '💊', '🛁', '☀️', '🌙', '🥤', '📝'];
-document.getElementById('emoji-grid').innerHTML = EMOJIS.map(e => `<button class="emoji-btn" onclick="selectEmoji(this,'${e}')">${e}</button>`).join('');
-function openAddHabit() {
-  document.getElementById('modal-title').textContent = 'Neues Habit';
-  document.getElementById('edit-habit-id').value = '';
-  document.getElementById('habit-name').value = '';
-  document.getElementById('habit-goal').value = '';
-  selectedEmoji = '⭐'; selectedWeekdays = new Set();
-  document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
-  document.querySelectorAll('.weekday-btn').forEach(b => b.classList.remove('selected'));
-  document.getElementById('habit-weekdays').value = '';
-  selectFrequency('daily');
-  document.getElementById('habit-modal').classList.add('open');
-}
-function openEditHabit(id) {
-  const h = HABITS.find(h => h.id === id);
-  if (!h) return;
-  document.getElementById('modal-title').textContent = 'Habit bearbeiten';
-  document.getElementById('edit-habit-id').value = id;
-  document.getElementById('habit-name').value = h.name;
-  document.getElementById('habit-goal').value = h.goal || '';
-  selectedEmoji = h.emoji || '⭐';
-  document.querySelectorAll('.emoji-btn').forEach(b => b.classList.toggle('selected', b.textContent === selectedEmoji));
-  selectFrequency(h.frequency || 'daily');
-  selectedWeekdays = new Set((h.weekdays || '').split(',').filter(Boolean).map(Number));
-  document.querySelectorAll('.weekday-btn').forEach(b => b.classList.toggle('selected', selectedWeekdays.has(parseInt(b.dataset.day))));
-  document.getElementById('habit-weekdays').value = Array.from(selectedWeekdays).join(',');
-  document.getElementById('habit-modal').classList.add('open');
-}
-function closeHabitModal() { document.getElementById('habit-modal').classList.remove('open'); }
-function selectEmoji(btn, emoji) {
-  selectedEmoji = emoji;
-  document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-}
-async function saveHabit() {
-  const name = document.getElementById('habit-name').value.trim();
-  const goal = document.getElementById('habit-goal').value.trim();
-  const editId = document.getElementById('edit-habit-id').value;
-  const frequency = document.getElementById('habit-frequency').value;
-  const weekdays = document.getElementById('habit-weekdays').value;
-  if (!name) { showToast('⚠ Bitte einen Namen eingeben'); return; }
-  if (frequency === 'weekday' && !weekdays) { showToast('⚠ Bitte mindestens einen Wochentag wählen'); return; }
-  if (editId) {
-    const { error } = await _sb.from('habits').update({ name, emoji: selectedEmoji, goal, frequency, weekdays: weekdays || null }).eq('id', editId);
-    if (error) { showToast('✗ ' + error.message); return; }
-    Object.assign(HABITS.find(h => h.id === editId) || {}, { name, emoji: selectedEmoji, goal, frequency, weekdays });
-    showToast('✓ Habit aktualisiert');
-  } else {
-    const { data, error } = await _sb.from('habits').insert({ user_id: USER_ID, name, emoji: selectedEmoji, goal: goal || null, frequency, weekdays: weekdays || null }).select().single();
-    if (error) { showToast('✗ ' + error.message); return; }
-    HABITS.push(data);
-    showToast('✓ Habit erstellt');
-  }
-  closeHabitModal(); renderDashboard(); renderAllHabits();
-  await checkAchievements();
-}
-async function deleteHabit(id) {
-  if (!confirm('Habit wirklich löschen? Alle bisherigen Daten gehen verloren.')) return;
-  await _sb.from('habits').delete().eq('id', id);
-  HABITS = HABITS.filter(h => h.id !== id);
-  ALL_COMPLETIONS = ALL_COMPLETIONS.filter(c => c.habit_id !== id);
-  rebuildCompletionIndex();
-  showToast('✓ Habit gelöscht'); renderDashboard(); renderAllHabits();
-}
-function selectFrequency(freq) {
-  document.getElementById('habit-frequency').value = freq;
-  document.querySelectorAll('.freq-btn').forEach(b => b.classList.remove('selected'));
-  document.getElementById('freq-' + freq).classList.add('selected');
-  document.getElementById('weekday-picker').style.display = freq === 'weekday' ? 'flex' : 'none';
-}
-function toggleWeekday(day) {
-  if (selectedWeekdays.has(day)) selectedWeekdays.delete(day); else selectedWeekdays.add(day);
-  document.querySelectorAll('.weekday-btn').forEach(b => b.classList.toggle('selected', selectedWeekdays.has(parseInt(b.dataset.day))));
-  document.getElementById('habit-weekdays').value = Array.from(selectedWeekdays).join(',');
-}
-
-// ── WOCHENANSICHT ────────────────────────────────────────────
-function changeWeek(dir) { currentWeekOffset = dir === 0 ? 0 : currentWeekOffset + dir; renderWeekView(); }
-function renderWeekView() {
-  const days = getWeekDays(currentWeekOffset), dayNames = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'], today = todayStr();
-  let html = `<div class="week-grid"><div></div>${days.map((d, i) => `<div class="week-day ${d === today ? 'today' : ''}">${dayNames[i]}<br><span style="font-size:.55rem">${d.slice(8)}</span></div>`).join('')}</div>`;
-  HABITS.forEach(h => {
-    html += `<div class="week-grid" style="margin-bottom:.35rem">
-      <div class="week-habit-name">${esc(h.emoji || '⭐')} ${esc(h.name)}</div>
-      ${days.map(d => {
-        const done = doneOn(h.id, d), frozen = isStreakFrozen(d);
-        const relevant = d <= today && habitExistsOn(h, d) && isHabitDueToday(h, d);
-        const cls = done ? 'done' : frozen && relevant ? 'frozen' : (relevant && d < today) ? 'missed' : '';
-        return `<div class="week-dot ${cls} ${d === today ? 'today-dot' : ''}" title="${d}${frozen ? ' (Streak-Schutz)' : ''}"></div>`;
-      }).join('')}
-    </div>`;
-  });
-  if (!HABITS.length) html += '<div style="text-align:center;padding:2rem;color:var(--text3);font-size:.78rem">Noch keine Habits</div>';
-  document.getElementById('week-view').innerHTML = html;
-}
-
-// ══════════════════════════════════════════════════════════════
-//  POMODORO
-// ══════════════════════════════════════════════════════════════
-function getSelectedSkill() { const id = localStorage.getItem('ttl_sel_skill'); return SKILLS.find(s => s.id === id) || null; }
-function setSelectedSkill(id) { if (id) localStorage.setItem('ttl_sel_skill', id); else localStorage.removeItem('ttl_sel_skill'); }
-function selectPomoSkill(id) { setSelectedSkill(id); renderPomoSkillSelect(); }
 function renderPomoSkillSelect() {
-  const sel = document.getElementById('pomo-skill');
+  const sel = document.getElementById('pomo-skill'), info = document.getElementById('pomo-skill-info');
   const cur = getSelectedSkill();
   if (!SKILLS.length) {
     sel.innerHTML = '<option value="">— Noch keine Skills —</option>';
-    document.getElementById('pomo-skill-info').innerHTML = 'Lege unter <a onclick="goto(\'avatar\',\'skills\')" style="color:var(--gold);cursor:pointer;text-decoration:underline">⚔️ Skills</a> einen Skill an, damit deine Pomodoros XP geben.';
+    info.innerHTML = 'Lege unter <a onclick="goto(\'avatar\',\'skills\')" style="color:var(--gold);cursor:pointer;text-decoration:underline">⚔️ Skills</a> einen Skill an, damit deine Pomodoros XP geben.';
     return;
   }
   sel.innerHTML = '<option value="">— Kein Skill (nur Münzen) —</option>' + SKILLS.map(s =>
     `<option value="${s.id}" ${cur && cur.id === s.id ? 'selected' : ''}>${esc(s.emoji || '⭐')} ${esc(s.name)} · Level ${skillLevel(s.xp)}</option>`).join('');
-  const info = document.getElementById('pomo-skill-info');
-  if (!cur) { info.innerHTML = 'Ohne Skill bekommst du nur Münzen, keine XP.'; return; }
-  const p = skillProgress(cur.xp), bonus = skillBonus(p.L), mins = timerMode === 'deep' ? 50 : 25;
-  const boost = (PROFILE?.boost_pomos || 0) > 0;
+  const mins = focusMinutes(timerMode === 'deep' ? 'deep' : lastFocusMode === 'deep' && hasPerk('deepfocus') && timerMode !== 'focus' ? 'deep' : 'focus');
+  const coins = focusCoins(mins);
+  if (!cur) { info.innerHTML = `Ohne Skill gibt es nur Münzen (+${coins} 🪙), keine XP.`; return; }
+  const p = skillProgress(cur.xp), bonus = skillBonus(p.L), boost = (PROFILE?.boost_pomos || 0) > 0;
   const xp = Math.round(mins * (1 + bonus) * (boost ? 2 : 1));
-  info.innerHTML = `Nächster Fokus-Block: <b style="color:var(--gold)">+${xp} XP</b> auf ${esc(cur.name)}${bonus ? ` (inkl. +${Math.round(bonus * 100)} % Perk)` : ''}${boost ? ` · ⚡ Boost aktiv (${PROFILE.boost_pomos} übrig)` : ''}<br>${p.cur}/${p.need} XP bis Level ${p.L + 1}`;
+  info.innerHTML = `Nächster Fokus-Block: <b style="color:var(--gold)">+${xp} XP</b> auf ${esc(cur.name)} · +${coins} 🪙${bonus ? ` · inkl. +${Math.round(bonus * 100)} % Perk` : ''}${boost ? ` · ⚡ Boost aktiv (${PROFILE.boost_pomos} übrig)` : ''}<br>${p.cur}/${p.need} XP bis Level ${p.L + 1}`;
 }
 function updateModeButtons() {
   document.getElementById('mode-deep').style.display = hasPerk('deepfocus') ? '' : 'none';
   ['focus', 'deep', 'short', 'long'].forEach(m => document.getElementById('mode-' + m).classList.toggle('active-mode', m === timerMode));
 }
-function updatePomoStats() {
-  const pt = sessionsToday();
-  document.getElementById('pomo-count').textContent = pt.length;
-  document.getElementById('pomo-minutes').textContent = pt.reduce((a, s) => a + (s.minutes || 25), 0);
-  document.getElementById('pomo-total').textContent = SESSIONS.length;
-  document.getElementById('m-pomos').textContent = pt.length;
+function renderGoal() {
+  const n = sessionsToday().length, g = dailyGoal(), reached = n >= g;
+  document.getElementById('goal-num').textContent = n;
+  document.getElementById('goal-of').textContent = `/ ${g} Pomodoro${g !== 1 ? 's' : ''}`;
+  document.getElementById('goal-target').textContent = g;
+  document.getElementById('goal-fill').style.width = Math.min(100, Math.round(n / g * 100)) + '%';
+  document.getElementById('goal-sub').innerHTML = reached
+    ? (PROFILE?.last_goal_day === todayStr() ? '🎉 Tagesziel erreicht – Bonus von 🪙 15 kassiert!' : '🎉 Tagesziel erreicht!')
+    : `Noch ${g - n} Pomodoro${g - n !== 1 ? 's' : ''} (≈ ${fmtMin((g - n) * 25)} Fokus) · Bonus beim Erreichen: 🪙 15`;
 }
-function setMode(mode) {
-  if (mode === 'deep' && !hasPerk('deepfocus')) return;
-  timerMode = mode; timerSeconds = MODES[mode]; timerRunning = false;
-  clearInterval(timerInterval);
-  document.getElementById('timer-btn').textContent = '▶ Start';
-  document.getElementById('timer-circle').classList.remove('running');
-  document.getElementById('timer-label').textContent = MODE_LABELS[mode];
-  updateTimerDisplay(); updateModeButtons(); renderPomoSkillSelect();
+function changeGoal(d) {
+  if (!PROFILE) return;
+  const g = Math.min(16, Math.max(1, dailyGoal() + d));
+  PROFILE.daily_goal = g;
+  renderGoal();
+  clearTimeout(goalSaveTimer);
+  goalSaveTimer = setTimeout(() => saveProfile({ daily_goal: g }), 500);
 }
+function renderTodayStats() {
+  const list = sessionsToday();
+  document.getElementById('t-pomos').textContent = list.length;
+  document.getElementById('t-min').textContent = totalMinutes(list);
+  document.getElementById('t-xp').textContent = list.reduce((a, s) => a + (s.xp || 0), 0);
+  document.getElementById('t-coins').textContent = list.reduce((a, s) => a + (s.coins || 0), 0);
+}
+function renderLog() {
+  const list = [...sessionsToday()].reverse(), el = document.getElementById('log-list');
+  if (!list.length) { el.innerHTML = '<div class="log-empty">Noch keine Session heute – starte deinen ersten Fokus-Block.</div>'; return; }
+  el.innerHTML = list.map(s => {
+    const sk = SKILLS.find(k => k.id === s.skill_id);
+    const time = new Date(s.created_at).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+    return `<div class="log-item">
+      <span class="log-time">${time}</span>
+      <span class="log-name">${sk ? esc(sk.emoji || '⭐') + ' ' + esc(sk.name) : '<span style="color:var(--text3)">Ohne Skill</span>'}</span>
+      <span style="color:var(--text3);font-size:.62rem;white-space:nowrap">${s.minutes || 25} Min</span>
+      <span class="log-xp">${s.xp ? '+' + s.xp + ' XP · ' : ''}+${s.coins || 0} 🪙</span>
+    </div>`;
+  }).join('');
+}
+// 4 Fokus-Blöcke = 1 Zyklus, danach lange Pause
+function renderCycle() {
+  const n = sessionsToday().length;
+  const filled = timerMode === 'long' && n > 0 && n % 4 === 0 ? 4 : n % 4;
+  document.getElementById('cycle-dots').innerHTML = [0, 1, 2, 3].map(i => `<div class="cycle-dot ${i < filled ? 'on' : ''}"></div>`).join('');
+  const left = 4 - (n % 4);
+  document.getElementById('cycle-hint').textContent = timerMode === 'long' && filled === 4 ? 'Zyklus geschafft – gönn dir die lange Pause' : `Noch ${left} Fokus-Block${left !== 1 ? 'e' : ''} bis zur langen Pause`;
+}
+function renderFokus() {
+  renderPomoSkillSelect(); updateModeButtons(); updateTimerDisplay();
+  renderGoal(); renderTodayStats(); renderLog(); renderCycle();
+}
+
+// ── TIMER ────────────────────────────────────────────────────
+const RING_C = 2 * Math.PI * 54;
 function updateTimerDisplay() {
   const m = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
   const s = (timerSeconds % 60).toString().padStart(2, '0');
   document.getElementById('timer-display').textContent = `${m}:${s}`;
-  if (timerRunning) document.title = `${m}:${s} · timetolockin`; else document.title = 'timetolockin';
+  const ring = document.getElementById('ring-fg');
+  ring.style.strokeDasharray = RING_C;
+  ring.style.strokeDashoffset = RING_C * (1 - timerSeconds / MODES[timerMode]);
+  ring.style.stroke = MODE_COLORS[timerMode];
+  const started = timerRunning || timerSeconds < MODES[timerMode];
+  const badge = document.getElementById('timer-badge');
+  badge.textContent = `${timerRunning ? '⏱' : '⏸'} ${m}:${s}`;
+  badge.classList.toggle('on', started && !document.getElementById('panel-fokus').classList.contains('active'));
+  document.title = timerRunning ? `${m}:${s} · ${MODE_LABELS[timerMode]}` : 'timetolockin';
+}
+function setMode(mode, force) {
+  if (mode === 'deep' && !hasPerk('deepfocus')) return;
+  if (!force && timerSeconds < MODES[timerMode] && mode !== timerMode && !confirm('Der laufende Timer wird abgebrochen. Weiter?')) return;
+  clearInterval(timerInterval);
+  timerMode = mode; timerSeconds = MODES[mode]; timerRunning = false;
+  if (mode === 'focus' || mode === 'deep') lastFocusMode = mode;
+  document.getElementById('timer-btn').textContent = '▶ Start';
+  document.getElementById('timer-label').textContent = MODE_LABELS[mode];
+  updateTimerDisplay(); updateModeButtons(); renderPomoSkillSelect(); renderCycle();
 }
 // Läuft über die echte Uhrzeit, damit der Timer auch im Hintergrund-Tab stimmt
-let timerEndsAt = 0;
 function toggleTimer() {
   if (timerRunning) {
     clearInterval(timerInterval); timerRunning = false;
     timerSeconds = Math.max(0, Math.round((timerEndsAt - Date.now()) / 1000));
-    document.getElementById('timer-btn').textContent = '▶ Start';
-    document.getElementById('timer-circle').classList.remove('running');
+    document.getElementById('timer-btn').textContent = '▶ Weiter';
     updateTimerDisplay();
     return;
   }
+  try { if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission(); } catch (e) {}
   timerRunning = true;
   timerEndsAt = Date.now() + timerSeconds * 1000;
   document.getElementById('timer-btn').textContent = '⏸ Pause';
-  document.getElementById('timer-circle').classList.add('running');
+  updateTimerDisplay();
   timerInterval = setInterval(() => {
     timerSeconds = Math.max(0, Math.round((timerEndsAt - Date.now()) / 1000));
     updateTimerDisplay();
     if (timerSeconds <= 0) finishTimer();
   }, 500);
 }
-async function finishTimer() {
-  clearInterval(timerInterval); timerRunning = false;
-  document.getElementById('timer-btn').textContent = '▶ Start';
-  document.getElementById('timer-circle').classList.remove('running');
-  document.title = 'timetolockin';
-  try { // kurzer Signalton
-    const ctx = new (window.AudioContext || window.webkitAudioContext)(), o = ctx.createOscillator(), g = ctx.createGain();
-    o.frequency.value = 880; g.gain.setValueAtTime(0.15, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.8);
-    o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime + 0.8);
+function beep() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [0, 0.35].forEach(t => {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.frequency.value = 880; g.gain.setValueAtTime(0.15, ctx.currentTime + t); g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + t + 0.6);
+      o.connect(g); g.connect(ctx.destination); o.start(ctx.currentTime + t); o.stop(ctx.currentTime + t + 0.6);
+    });
   } catch (e) {}
-  if (timerMode === 'focus' || timerMode === 'deep') await completeFocusBlock(timerMode === 'deep' ? 50 : 25);
-  else showToast('☕ Pause vorbei — weiter geht\'s!');
-  timerSeconds = MODES[timerMode];
-  updateTimerDisplay();
 }
-async function completeFocusBlock(minutes) {
-  const skill = getSelectedSkill();
-  let xp = 0, levelUp = null;
-  const avBefore = avatarLevel();
-  if (skill) {
-    const before = skillLevel(skill.xp);
-    const boost = (PROFILE.boost_pomos || 0) > 0;
-    xp = Math.round(minutes * (1 + skillBonus(before)) * (boost ? 2 : 1));
-    const newXp = skill.xp + xp;
-    const { error } = await _sb.from('skills').update({ xp: newXp }).eq('id', skill.id);
-    if (error) { showToast('✗ XP konnten nicht gespeichert werden: ' + error.message); xp = 0; }
-    else {
-      skill.xp = newXp;
-      if (boost) await saveProfile({ boost_pomos: PROFILE.boost_pomos - 1 });
-      const after = skillLevel(newXp);
-      if (after > before) levelUp = { skill, after };
+function notify(text) {
+  try { if ('Notification' in window && Notification.permission === 'granted' && document.hidden) new Notification('timetolockin', { body: text }); } catch (e) {}
+}
+let finishing = false;
+async function finishTimer() {
+  if (finishing) return; finishing = true;
+  clearInterval(timerInterval); timerRunning = false;
+  beep();
+  try {
+    if (timerMode === 'focus' || timerMode === 'deep') {
+      notify('Fokus-Block geschafft! Zeit für eine Pause.');
+      await completeFocusBlock(focusMinutes(timerMode));
+      const n = sessionsToday().length;
+      setMode(n % 4 === 0 ? 'long' : 'short', true);
+    } else {
+      notify('Pause vorbei – weiter geht\'s!');
+      showToast('☕ Pause vorbei — weiter geht\'s!');
+      setMode(lastFocusMode === 'deep' && hasPerk('deepfocus') ? 'deep' : 'focus', true);
     }
-  }
-  const { data } = await _sb.from('pomodoro_sessions').insert({ user_id: USER_ID, skill_id: skill?.id || null, xp, minutes }).select('id,skill_id,minutes,xp,created_at').single();
-  SESSIONS.push(data || { skill_id: skill?.id || null, minutes, xp, created_at: new Date().toISOString() });
-  if (xp) floatText(`+${xp} XP`, skill.color);
-  await addCoins(minutes / 25 * 10, skill ? `Fokus-Block fertig · +${xp} XP auf ${skill.name}` : 'Fokus-Block fertig');
-  if (levelUp) {
-    const t = SKILL_TITLES.find(t => t.lvl === levelUp.after);
-    const perk = levelUp.after === 5 ? ' · Perk: +10 % XP' : levelUp.after === 10 ? ' · Perk: +20 % XP' : '';
-    showBanner(levelUp.skill.emoji || '⭐', 'Skill Level Up!', `${levelUp.skill.name} Level ${levelUp.after}`, `Avatar-Level jetzt ${avatarLevel()}${t ? ` · Neuer Titel: ${levelUp.skill.name}-${t.suffix}` : ''}${perk}`);
-    const newRank = rankIndex(avatarLevel());
-    if (newRank > rankIndex(avBefore)) showBanner('👑', 'Neuer Rang', RANK_NAMES[newRank], 'Neuer Titel freigeschaltet.');
-    const unlockedNow = [];
-    Object.entries(ITEMS).forEach(([slot, items]) => items.forEach(it => { if (it.unlock?.type === 'level' && it.unlock.n > avBefore && it.unlock.n <= avatarLevel()) unlockedNow.push(it.name); }));
-    if (unlockedNow.length) showBanner('🎁', 'Freigeschaltet', unlockedNow.join(', '), 'Probier es im Avatar-Editor aus.');
-    await checkJokerGrant();
-  }
-  updatePomoStats(); renderPomoSkillSelect(); updateHud();
-  await checkAchievements();
+    if (document.getElementById('auto-next').checked) toggleTimer();
+  } finally { finishing = false; }
+}
+function skipPhase() {
+  const isFocus = timerMode === 'focus' || timerMode === 'deep';
+  if (isFocus) {
+    if (timerSeconds < MODES[timerMode] && !confirm('Fokus-Block überspringen? Dafür gibt es keine XP und keine Münzen.')) return;
+    setMode((sessionsToday().length + 1) % 4 === 0 ? 'long' : 'short', true);
+  } else setMode(lastFocusMode === 'deep' && hasPerk('deepfocus') ? 'deep' : 'focus', true);
 }
 function resetTimer() {
   clearInterval(timerInterval); timerRunning = false; timerSeconds = MODES[timerMode];
   document.getElementById('timer-btn').textContent = '▶ Start';
-  document.getElementById('timer-circle').classList.remove('running');
   updateTimerDisplay();
 }
+async function completeFocusBlock(minutes) {
+  const skill = getSelectedSkill();
+  let xp = 0;
+  if (skill) {
+    const boost = (PROFILE.boost_pomos || 0) > 0;
+    xp = Math.round(minutes * (1 + skillBonus(skillLevel(skill.xp))) * (boost ? 2 : 1));
+    if (await grantSkillXp(skill, xp)) { if (boost) await saveProfile({ boost_pomos: PROFILE.boost_pomos - 1 }); }
+    else xp = 0;
+  }
+  const coins = focusCoins(minutes);
+  const row = { user_id: USER_ID, skill_id: skill?.id || null, xp, minutes, coins };
+  const { data, error } = await _sb.from('pomodoro_sessions').insert(row).select('id,skill_id,minutes,xp,coins,created_at').single();
+  if (error) showToast('✗ Session nicht gespeichert: ' + error.message);
+  SESSIONS.push(data || { ...row, created_at: new Date().toISOString() });
+  if (xp) floatText(`+${xp} XP`, skill.color);
+  await addCoins(coins, skill ? `Fokus-Block fertig · +${xp} XP auf ${skill.name}` : 'Fokus-Block fertig');
+  const n = sessionsToday().length, t = todayStr();
+  if (n >= dailyGoal() && PROFILE.last_goal_day !== t) {
+    await saveProfile({ last_goal_day: t });
+    await addCoins(15);
+    showBanner('🎯', 'Tagesziel erreicht', `${n} Pomodoros heute`, '+15 🪙 Bonus. Stark!');
+  }
+  renderFokus(); updateHud();
+  await checkAchievements();
+}
+window.addEventListener('beforeunload', e => { if (timerRunning) { e.preventDefault(); e.returnValue = ''; } });
 
 // ══════════════════════════════════════════════════════════════
-//  TAGEBUCH
+//  STATISTIKEN
 // ══════════════════════════════════════════════════════════════
-async function loadJournal() {
-  const { data: entries } = await _sb.from('journal_entries').select('*').eq('user_id', USER_ID).order('entry_date', { ascending: false }).limit(10);
-  const t = todayStr();
-  const todayEntry = (entries || []).find(e => e.entry_date === t);
-  document.getElementById('journal-today').value = todayEntry?.content || '';
-  const older = (entries || []).filter(e => e.entry_date !== t);
-  document.getElementById('journal-entries').innerHTML = older.map(e =>
-    `<div class="journal-entry"><div class="journal-date">${formatDate(e.entry_date)}</div><div class="journal-text">${esc(e.content)}</div></div>`
-  ).join('') || '<div style="color:var(--text3);font-size:.75rem">Noch keine früheren Einträge</div>';
-}
-async function saveJournal() {
-  const content = document.getElementById('journal-today').value.trim();
-  if (!content) { showToast('⚠ Nichts zu speichern'); return; }
-  const { error } = await _sb.from('journal_entries').upsert({ user_id: USER_ID, entry_date: todayStr(), content }, { onConflict: 'user_id,entry_date' });
-  if (error) { showToast('✗ ' + error.message); return; }
-  if (!JOURNAL_TODAY_EXISTS) {
-    JOURNAL_TODAY_EXISTS = true; JOURNAL_COUNT++;
-    await addCoins(5, 'Tagebuch gespeichert');
-  } else showToast('✓ Tagebuch aktualisiert');
-  await checkAchievements();
-  loadJournal();
+function renderStats() {
+  const counts = countsByDay(), t = todayStr(), week = getWeekDays(0), g = dailyGoal();
+  const weekList = SESSIONS.filter(s => week.includes(sessionDay(s)));
+  let best = 0, bestDay = null;
+  Object.entries(counts).forEach(([d, c]) => { if (c > best) { best = c; bestDay = d; } });
+  document.getElementById('s-today').textContent = counts[t] || 0;
+  document.getElementById('s-today-sub').textContent = `von ${g} (Tagesziel) · ${fmtMin(totalMinutes(sessionsToday()))}`;
+  document.getElementById('s-week').textContent = weekList.length;
+  document.getElementById('s-week-sub').textContent = `${fmtMin(totalMinutes(weekList))} Fokus (Mo–So)`;
+  document.getElementById('s-total').textContent = SESSIONS.length;
+  document.getElementById('s-total-sub').textContent = `${fmtMin(totalMinutes())} Fokus insgesamt`;
+  document.getElementById('s-best').textContent = best;
+  document.getElementById('s-best-sub').textContent = bestDay ? formatDate(bestDay) : 'Noch keine Sessions';
+
+  // 7-Tage-Balken
+  const days7 = Array.from({ length: 7 }, (_, i) => addDays(t, i - 6));
+  const vals = days7.map(d => counts[d] || 0), max = Math.max(g, ...vals, 1);
+  document.getElementById('chart-7').innerHTML =
+    `<div class="goal-line" style="bottom:${g / max * 100}%"><span>Ziel ${g}</span></div>` +
+    days7.map((d, i) => `<div class="bar-col"><div class="bar-val">${vals[i] || ''}</div><div class="bar ${vals[i] >= g ? 'hit' : ''}" style="height:calc(${vals[i] / max} * (100% - 1rem))" title="${formatDate(d)}: ${vals[i]} Pomodoros"></div></div>`).join('');
+  document.getElementById('chart-7-labels').innerHTML = days7.map(d =>
+    `<div class="${d === t ? 'today' : ''}">${['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'][dOf(d).getDay()]}</div>`).join('');
+
+  // 5-Wochen-Heatmap (Mo–So)
+  const start = addDays(week[0], -28);
+  let heat = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'].map(n => `<div class="heat-head">${n}</div>`).join('');
+  for (let i = 0; i < 35; i++) {
+    const d = addDays(start, i), c = counts[d] || 0;
+    if (d > t) { heat += '<div class="heat-cell future"></div>'; continue; }
+    const bg = c === 0 ? 'var(--bg3)' : c >= g ? 'var(--gold)' : `rgba(201,168,76,${(0.2 + 0.45 * c / g).toFixed(2)})`;
+    heat += `<div class="heat-cell ${d === t ? 'today' : ''}" style="background:${bg}" title="${formatDate(d)}: ${c} Pomodoros">${c || ''}</div>`;
+  }
+  document.getElementById('heatmap').innerHTML = heat;
+
+  // Fokuszeit pro Skill
+  const rows = SKILLS.map(s => ({ name: `${s.emoji || '⭐'} ${s.name}`, color: s.color, min: skillMinutes(s.id) }));
+  const noSkill = totalMinutes(SESSIONS.filter(s => !s.skill_id || !SKILLS.some(k => k.id === s.skill_id)));
+  if (noSkill) rows.push({ name: 'Ohne Skill', color: '#5a5a6a', min: noSkill });
+  rows.sort((a, b) => b.min - a.min);
+  const maxMin = Math.max(1, ...rows.map(r => r.min));
+  document.getElementById('skill-dist').innerHTML = rows.length && SESSIONS.length
+    ? rows.map(r => `<div class="dist-row"><div class="dist-name">${esc(r.name)}</div><div class="dist-track"><div class="dist-fill" style="width:${r.min / maxMin * 100}%;background:${r.color}"></div></div><div class="dist-val">${fmtMin(r.min)}</div></div>`).join('')
+    : '<div class="log-empty">Noch keine Fokuszeit erfasst.</div>';
 }
 
 // ══════════════════════════════════════════════════════════════
