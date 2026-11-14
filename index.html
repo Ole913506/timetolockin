@@ -383,7 +383,7 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
         <div class="page-title" id="page-title">Fokus</div>
       </div>
       <div class="topbar-right">
-        <div class="timer-badge" id="timer-badge" onclick="goto('fokus')" title="Zum Timer">⏱ 25:00</div>
+        <div class="timer-badge" id="timer-badge" onclick="goto('fokus')" title="Zum Timer">⏱ 30:00</div>
         <div class="date-badge" id="today-date"></div>
         <div class="coin-badge" id="top-coins" onclick="goto('avatar','shop')" title="Münzen – zum Shop">🪙 0</div>
       </div>
@@ -401,13 +401,13 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
           <div class="ring-wrap">
             <svg viewBox="0 0 120 120"><circle class="ring-bg" cx="60" cy="60" r="54"/><circle class="ring-fg" id="ring-fg" cx="60" cy="60" r="54"/></svg>
             <div class="ring-center">
-              <div class="timer-display" id="timer-display">25:00</div>
+              <div class="timer-display" id="timer-display">30:00</div>
               <div class="timer-label" id="timer-label">FOKUS</div>
             </div>
           </div>
           <div class="mode-row">
-            <button class="btn" id="mode-focus" onclick="setMode('focus')">🎯 Fokus 25</button>
-            <button class="btn" id="mode-deep" onclick="setMode('deep')" style="display:none">🧠 Deep 50</button>
+            <button class="btn" id="mode-focus" onclick="setMode('focus')">🎯 Fokus 30</button>
+            <button class="btn" id="mode-deep" onclick="setMode('deep')" style="display:none">🧠 Deep 60</button>
             <button class="btn" id="mode-short" onclick="setMode('short')">☕ Pause 5</button>
             <button class="btn" id="mode-long" onclick="setMode('long')">🛋 Pause 15</button>
           </div>
@@ -522,7 +522,7 @@ button,input,textarea,select{font-family:'DM Mono',monospace}
 
       <div id="av-skills" style="display:none">
         <div class="info-box">
-          <b>So funktioniert's:</b> Wähle im Timer, an welchem Skill du arbeitest. Ein fertiger Fokus-Block (25 Min) gibt diesem Skill <b>25 XP</b>.
+          <b>So funktioniert's:</b> Wähle im Timer, an welchem Skill du arbeitest. Ein fertiger Fokus-Block (30 Min) gibt diesem Skill <b>30 XP</b>.
           Dein <b>Avatar-Level ist die Summe aller Skill-Level</b>. Ab Skill-Level 5 gibt es <b>+10 % XP</b>, ab Level 10 <b>+20 %</b> auf diesen Skill.
           Titel gibt es bei Skill-Level 5, 10 und 20. Alle 10 Avatar-Level bekommst du <b>3 Boost-Pomodoros</b> geschenkt (doppelte XP).
         </div>
@@ -752,9 +752,9 @@ let USER_ID = null;
 let SKILLS = [], SESSIONS = [], PROFILE = null;
 let TIME_BLOCKS = [], TASKS = [], DAY_TEMPLATES = [], TEMPLATE_BLOCKS = [];
 let plannerWeekOffset = 0, activePlannerTab = 'week', activeAvatarTab = 'look';
-let timerInterval = null, timerSeconds = 25 * 60, timerRunning = false, timerMode = 'focus', timerEndsAt = 0, lastFocusMode = 'focus';
+let timerInterval = null, timerSeconds = 30 * 60, timerRunning = false, timerMode = 'focus', timerEndsAt = 0, lastFocusMode = 'focus';
 let toastTimer, goalSaveTimer;
-const MODES = { focus: 25 * 60, deep: 50 * 60, short: 5 * 60, long: 15 * 60 };
+const MODES = { focus: 30 * 60, deep: 60 * 60, short: 5 * 60, long: 15 * 60 };
 const MODE_LABELS = { focus: 'FOKUS', deep: 'DEEP FOCUS', short: 'KURZE PAUSE', long: 'LANGE PAUSE' };
 const MODE_COLORS = { focus: '#c9a84c', deep: '#b46be0', short: '#4caf7d', long: '#5b8dee' };
 function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
@@ -977,7 +977,7 @@ function renderAvatarSVG(cfgIn, opts = {}) {
 // ══════════════════════════════════════════════════════════════
 //  SKILLS, LEVEL, TITEL
 // ══════════════════════════════════════════════════════════════
-// Level L ist erreicht bei 15·(L²−1) XP → Level 10 = 1.485 XP ≈ 60 Pomodoros ≈ 25 Std.
+// Level L ist erreicht bei 15·(L²−1) XP → Level 10 = 1.485 XP ≈ 50 Pomodoros à 30 Min ≈ 25 Std.
 function skillLevel(xp) { return Math.max(1, Math.floor(Math.sqrt((xp || 0) / 15 + 1))); }
 function xpAtLevel(L) { return 15 * (L * L - 1); }
 function skillProgress(xp) {
@@ -1115,7 +1115,7 @@ function sessionDay(s) { return ymd(new Date(s.created_at)); }
 function sessionsOn(ds) { return SESSIONS.filter(s => sessionDay(s) === ds); }
 function sessionsToday() { return sessionsOn(todayStr()); }
 function countsByDay() { const m = {}; SESSIONS.forEach(s => { const d = sessionDay(s); m[d] = (m[d] || 0) + 1; }); return m; }
-function totalMinutes(list = SESSIONS) { return list.reduce((a, s) => a + (s.minutes || 25), 0); }
+function totalMinutes(list = SESSIONS) { return list.reduce((a, s) => a + (s.minutes || 30), 0); }
 function fmtMin(min) {
   const h = Math.floor(min / 60), m = min % 60;
   if (!h) return `${m} Min`;
@@ -1281,7 +1281,7 @@ function setAvatarName(v) {
 // Skills
 const SKILL_COLORS = ['#c9a84c', '#5b8dee', '#4caf7d', '#e05c5c', '#9b59b6', '#e08a3c', '#3fb6c4', '#e66aa8'];
 let selectedSkillColor = SKILL_COLORS[0];
-function skillMinutes(id) { return SESSIONS.filter(s => s.skill_id === id).reduce((a, s) => a + (s.minutes || 25), 0); }
+function skillMinutes(id) { return SESSIONS.filter(s => s.skill_id === id).reduce((a, s) => a + (s.minutes || 30), 0); }
 function renderSkills() {
   document.getElementById('skill-count').textContent = SKILLS.length;
   const list = document.getElementById('skill-list');
@@ -1305,7 +1305,7 @@ function renderSkills() {
       </div>
       <div class="skill-bar"><div class="skill-bar-fill" style="width:${p.pct}%;background:${s.color}"></div></div>
       <div class="skill-foot">
-        <span>${p.cur} / ${p.need} XP bis Level ${p.L + 1} (≈ ${Math.ceil((p.need - p.cur) / (25 * (1 + bonus)))} Pomodoros)</span>
+        <span>${p.cur} / ${p.need} XP bis Level ${p.L + 1} (≈ ${Math.ceil((p.need - p.cur) / (30 * (1 + bonus)))} Pomodoros)</span>
         <span>${bonus ? `<span class="badge">+${Math.round(bonus * 100)} % XP</span> ` : ''}${nextT ? `Nächster Titel bei Level ${nextT.lvl}` : 'Alle Titel erreicht'}</span>
       </div>
     </div>`;
@@ -1366,7 +1366,7 @@ async function deleteSkill() {
 const PERKS = [
   { id: 'boost', icon: '⚡', name: 'XP-Boost', price: 100, desc: 'Doppelte Skill-XP für deine nächsten 3 Fokus-Blöcke. Stapelbar.' },
   { id: 'elixir', icon: '🧪', name: 'Skill-Elixier', price: 120, desc: 'Sofort +50 XP auf den Skill, der gerade im Timer ausgewählt ist.' },
-  { id: 'deepfocus', icon: '🧠', name: 'Deep Focus 50', price: 250, once: true, desc: 'Schaltet dauerhaft einen 50-Minuten-Fokusmodus frei. Gibt doppelt so viel XP und Münzen wie ein normaler Block.' },
+  { id: 'deepfocus', icon: '🧠', name: 'Deep Focus 60', price: 250, once: true, desc: 'Schaltet dauerhaft einen 60-Minuten-Fokusmodus frei. Gibt doppelt so viel XP und Münzen wie ein normaler Block.' },
   { id: 'magnet', icon: '🧲', name: 'Münz-Magnet', price: 400, once: true, desc: 'Dauerhaft +50 % Münzen für jeden Fokus-Block.' },
 ];
 function hasPerk(id) { return (PROFILE?.inventory || []).includes('perk:' + id); }
@@ -1534,8 +1534,8 @@ async function loadAll() {
 function getSelectedSkill() { const id = lsGet('ttl_sel_skill'); return SKILLS.find(s => s.id === id) || null; }
 function setSelectedSkill(id) { lsSet('ttl_sel_skill', id || null); }
 function selectPomoSkill(id) { setSelectedSkill(id); renderPomoSkillSelect(); if (document.getElementById('av-shop').style.display !== 'none') renderShop(); }
-function focusMinutes(mode) { return mode === 'deep' ? 50 : 25; }
-function focusCoins(minutes) { return Math.round(minutes / 25 * 10 * (hasPerk('magnet') ? 1.5 : 1)); }
+function focusMinutes(mode) { return mode === 'deep' ? 60 : 30; }
+function focusCoins(minutes) { return Math.round(minutes / 30 * 10 * (hasPerk('magnet') ? 1.5 : 1)); }
 function setAutoNext(on) { lsSet('ttl_auto_next', on ? '1' : '0'); }
 
 function renderPomoSkillSelect() {
@@ -1567,7 +1567,7 @@ function renderGoal() {
   document.getElementById('goal-fill').style.width = Math.min(100, Math.round(n / g * 100)) + '%';
   document.getElementById('goal-sub').innerHTML = reached
     ? (PROFILE?.last_goal_day === todayStr() ? '🎉 Tagesziel erreicht – Bonus von 🪙 15 kassiert!' : '🎉 Tagesziel erreicht!')
-    : `Noch ${g - n} Pomodoro${g - n !== 1 ? 's' : ''} (≈ ${fmtMin((g - n) * 25)} Fokus) · Bonus beim Erreichen: 🪙 15`;
+    : `Noch ${g - n} Pomodoro${g - n !== 1 ? 's' : ''} (≈ ${fmtMin((g - n) * 30)} Fokus) · Bonus beim Erreichen: 🪙 15`;
 }
 function changeGoal(d) {
   if (!PROFILE) return;
