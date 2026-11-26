@@ -1070,7 +1070,7 @@ function updateHud() {
   document.getElementById('side-avatar-lvl').textContent = 'Level ' + avatarLevel();
   document.getElementById('side-avatar-title').textContent = activeTitle();
   document.getElementById('side-avatar-coins').textContent = '🪙 ' + (PROFILE.coins || 0);
-  document.getElementById('side-avatar-today').textContent = '🍅 ' + sessionsToday().length + ' heute';
+  document.getElementById('side-avatar-today').textContent = '🍅 ' + pomoCount(sessionsToday()) + ' heute';
   document.getElementById('top-coins').textContent = '🪙 ' + (PROFILE.coins || 0);
   if (document.getElementById('panel-avatar').classList.contains('active')) renderAvatarHero();
 }
@@ -1082,7 +1082,7 @@ async function checkMilestones() {
   if (g > done) {
     const diff = g - done;
     await saveProfile({ boost_pomos: (PROFILE.boost_pomos || 0) + diff * 3, milestones_granted: g });
-    showBanner('⚡', 'Geschenk', `+${diff * 3} Boost-Pomodoros`, `Für Avatar-Level ${g * 10}: deine nächsten Fokus-Blöcke geben doppelte XP.`);
+    showBanner('⚡', 'Geschenk', `+${diff * 3} Boost-Pomodoros`, `Für Avatar-Level ${g * 10}: deine nächsten ${diff * 3} Pomodoros geben doppelte XP.`);
     updateHud();
   }
 }
@@ -1114,7 +1114,10 @@ async function grantSkillXp(skill, xp) {
 function sessionDay(s) { return ymd(new Date(s.created_at)); }
 function sessionsOn(ds) { return SESSIONS.filter(s => sessionDay(s) === ds); }
 function sessionsToday() { return sessionsOn(todayStr()); }
-function countsByDay() { const m = {}; SESSIONS.forEach(s => { const d = sessionDay(s); m[d] = (m[d] || 0) + 1; }); return m; }
+// Ein Pomodoro = 30 Min. Ein Deep-Focus-Block (60 Min) zählt überall als 2.
+function pomoWeight(s) { return Math.max(1, Math.round((s.minutes || 30) / 30)); }
+function pomoCount(list) { return list.reduce((a, s) => a + pomoWeight(s), 0); }
+function countsByDay() { const m = {}; SESSIONS.forEach(s => { const d = sessionDay(s); m[d] = (m[d] || 0) + pomoWeight(s); }); return m; }
 function totalMinutes(list = SESSIONS) { return list.reduce((a, s) => a + (s.minutes || 30), 0); }
 function fmtMin(min) {
   const h = Math.floor(min / 60), m = min % 60;
@@ -1152,7 +1155,7 @@ async function unlockAchievement(id) {
 }
 async function checkAchievements() {
   if (!PROFILE) return;
-  const counts = Object.values(countsByDay()), total = SESSIONS.length;
+  const counts = Object.values(countsByDay()), total = pomoCount(SESSIONS);
   const maxDay = Math.max(0, ...counts), goalDays = counts.filter(c => c >= dailyGoal()).length;
   if (total >= 1) await unlockAchievement('first_pomo');
   if (goalDays >= 1) await unlockAchievement('goal_day');
@@ -1209,7 +1212,7 @@ function renderAvatarHero() {
   document.getElementById('av-rank-next').textContent = !SKILLS.length
     ? 'Lege unter ⚔️ Skills deinen ersten Skill an, um zu leveln.'
     : ri < RANK_NAMES.length - 1 ? `Nächster Rang „${RANK_NAMES[ri + 1]}" bei Level ${(ri + 1) * RANK_STEP} · nächstes Boost-Geschenk bei Level ${(Math.floor(lvl / 10) + 1) * 10}` : 'Höchster Rang erreicht!';
-  const pills = [`<span class="av-pill gold">🪙 ${PROFILE.coins || 0} Münzen</span>`, `<span class="av-pill">🍅 ${SESSIONS.length} Pomodoros · ${fmtMin(totalMinutes())}</span>`];
+  const pills = [`<span class="av-pill gold">🪙 ${PROFILE.coins || 0} Münzen</span>`, `<span class="av-pill">🍅 ${pomoCount(SESSIONS)} Pomodoros · ${fmtMin(totalMinutes())}</span>`];
   if (PROFILE.boost_pomos > 0) pills.push(`<span class="av-pill purple">⚡ XP×2 für ${PROFILE.boost_pomos} Pomodoro${PROFILE.boost_pomos > 1 ? 's' : ''}</span>`);
   if (hasPerk('deepfocus')) pills.push(`<span class="av-pill blue">🧠 Deep Focus</span>`);
   if (hasPerk('magnet')) pills.push(`<span class="av-pill blue">🧲 +50 % Münzen</span>`);
@@ -1364,9 +1367,9 @@ async function deleteSkill() {
 
 // Shop
 const PERKS = [
-  { id: 'boost', icon: '⚡', name: 'XP-Boost', price: 100, desc: 'Doppelte Skill-XP für deine nächsten 3 Fokus-Blöcke. Stapelbar.' },
+  { id: 'boost', icon: '⚡', name: 'XP-Boost', price: 100, desc: 'Doppelte Skill-XP für deine nächsten 3 Pomodoros. Ein Deep-Focus-Block verbraucht 2 davon. Stapelbar.' },
   { id: 'elixir', icon: '🧪', name: 'Skill-Elixier', price: 120, desc: 'Sofort +50 XP auf den Skill, der gerade im Timer ausgewählt ist.' },
-  { id: 'deepfocus', icon: '🧠', name: 'Deep Focus 60', price: 250, once: true, desc: 'Schaltet dauerhaft einen 60-Minuten-Fokusmodus frei. Gibt doppelt so viel XP und Münzen wie ein normaler Block.' },
+  { id: 'deepfocus', icon: '🧠', name: 'Deep Focus 60', price: 250, once: true, desc: 'Schaltet dauerhaft einen 60-Minuten-Fokusmodus frei. Zählt in allem als 2 Pomodoros: XP, Münzen, Tagesziel, Zyklus, Achievements und Boost. Danach gibt es 10 Min Pause.' },
   { id: 'magnet', icon: '🧲', name: 'Münz-Magnet', price: 400, once: true, desc: 'Dauerhaft +50 % Münzen für jeden Fokus-Block.' },
 ];
 function hasPerk(id) { return (PROFILE?.inventory || []).includes('perk:' + id); }
@@ -1552,15 +1555,17 @@ function renderPomoSkillSelect() {
   const coins = focusCoins(mins);
   if (!cur) { info.innerHTML = `Ohne Skill gibt es nur Münzen (+${coins} 🪙), keine XP.`; return; }
   const p = skillProgress(cur.xp), bonus = skillBonus(p.L), boost = (PROFILE?.boost_pomos || 0) > 0;
-  const xp = Math.round(mins * (1 + bonus) * (boost ? 2 : 1));
+  const w = mins / 30, charges = Math.min(PROFILE?.boost_pomos || 0, w);
+  const xp = Math.round(mins * (1 + bonus) * (1 + charges / w));
   info.innerHTML = `Nächster Fokus-Block: <b style="color:var(--gold)">+${xp} XP</b> auf ${esc(cur.name)} · +${coins} 🪙${bonus ? ` · inkl. +${Math.round(bonus * 100)} % Perk` : ''}${boost ? ` · ⚡ Boost aktiv (${PROFILE.boost_pomos} übrig)` : ''}<br>${p.cur}/${p.need} XP bis Level ${p.L + 1}`;
 }
 function updateModeButtons() {
   document.getElementById('mode-deep').style.display = hasPerk('deepfocus') ? '' : 'none';
+  document.getElementById('mode-short').textContent = `☕ Pause ${lastFocusMode === 'deep' ? 10 : 5}`;
   ['focus', 'deep', 'short', 'long'].forEach(m => document.getElementById('mode-' + m).classList.toggle('active-mode', m === timerMode));
 }
 function renderGoal() {
-  const n = sessionsToday().length, g = dailyGoal(), reached = n >= g;
+  const n = pomoCount(sessionsToday()), g = dailyGoal(), reached = n >= g;
   document.getElementById('goal-num').textContent = n;
   document.getElementById('goal-of').textContent = `/ ${g} Pomodoro${g !== 1 ? 's' : ''}`;
   document.getElementById('goal-target').textContent = g;
@@ -1593,18 +1598,18 @@ function renderLog() {
     return `<div class="log-item">
       <span class="log-time">${time}</span>
       <span class="log-name">${sk ? esc(sk.emoji || '⭐') + ' ' + esc(sk.name) : '<span style="color:var(--text3)">Ohne Skill</span>'}</span>
-      <span style="color:var(--text3);font-size:.62rem;white-space:nowrap">${s.minutes || 25} Min</span>
+      <span style="color:var(--text3);font-size:.62rem;white-space:nowrap">${s.minutes || 30} Min${pomoWeight(s) > 1 ? ' · ×' + pomoWeight(s) : ''}</span>
       <span class="log-xp">${s.xp ? '+' + s.xp + ' XP · ' : ''}+${s.coins || 0} 🪙</span>
     </div>`;
   }).join('');
 }
-// 4 Fokus-Blöcke = 1 Zyklus, danach lange Pause
+// 4 Pomodoros = 1 Zyklus, danach lange Pause (Deep Focus zählt als 2)
 function renderCycle() {
-  const n = sessionsToday().length;
-  const filled = timerMode === 'long' && n > 0 && n % 4 === 0 ? 4 : n % 4;
+  const n = pomoCount(sessionsToday());
+  const filled = timerMode === 'long' && n > 0 ? 4 : n % 4;
   document.getElementById('cycle-dots').innerHTML = [0, 1, 2, 3].map(i => `<div class="cycle-dot ${i < filled ? 'on' : ''}"></div>`).join('');
   const left = 4 - (n % 4);
-  document.getElementById('cycle-hint').textContent = timerMode === 'long' && filled === 4 ? 'Zyklus geschafft – gönn dir die lange Pause' : `Noch ${left} Fokus-Block${left !== 1 ? 'e' : ''} bis zur langen Pause`;
+  document.getElementById('cycle-hint').textContent = timerMode === 'long' && filled === 4 ? 'Zyklus geschafft – gönn dir die lange Pause' : `Noch ${left} Pomodoro${left !== 1 ? 's' : ''} bis zur langen Pause`;
 }
 function renderFokus() {
   renderPomoSkillSelect(); updateModeButtons(); updateTimerDisplay();
@@ -1619,20 +1624,22 @@ function updateTimerDisplay() {
   document.getElementById('timer-display').textContent = `${m}:${s}`;
   const ring = document.getElementById('ring-fg');
   ring.style.strokeDasharray = RING_C;
-  ring.style.strokeDashoffset = RING_C * (1 - timerSeconds / MODES[timerMode]);
+  ring.style.strokeDashoffset = RING_C * (1 - timerSeconds / modeSeconds(timerMode));
   ring.style.stroke = MODE_COLORS[timerMode];
-  const started = timerRunning || timerSeconds < MODES[timerMode];
+  const started = timerRunning || timerSeconds < modeSeconds(timerMode);
   const badge = document.getElementById('timer-badge');
   badge.textContent = `${timerRunning ? '⏱' : '⏸'} ${m}:${s}`;
   badge.classList.toggle('on', started && !document.getElementById('panel-fokus').classList.contains('active'));
   document.title = timerRunning ? `${m}:${s} · ${MODE_LABELS[timerMode]}` : 'timetolockin';
 }
+function modeSeconds(mode) { return mode === 'short' && lastFocusMode === 'deep' ? 10 * 60 : MODES[mode]; }
 function setMode(mode, force) {
   if (mode === 'deep' && !hasPerk('deepfocus')) return;
-  if (!force && timerSeconds < MODES[timerMode] && mode !== timerMode && !confirm('Der laufende Timer wird abgebrochen. Weiter?')) return;
+  if (!force && timerSeconds < modeSeconds(timerMode) && mode !== timerMode && !confirm('Der laufende Timer wird abgebrochen. Weiter?')) return;
   clearInterval(timerInterval);
-  timerMode = mode; timerSeconds = MODES[mode]; timerRunning = false;
+  timerMode = mode;
   if (mode === 'focus' || mode === 'deep') lastFocusMode = mode;
+  timerSeconds = modeSeconds(mode); timerRunning = false;
   document.getElementById('timer-btn').textContent = '▶ Start';
   document.getElementById('timer-label').textContent = MODE_LABELS[mode];
   updateTimerDisplay(); updateModeButtons(); renderPomoSkillSelect(); renderCycle();
@@ -1678,9 +1685,10 @@ async function finishTimer() {
   try {
     if (timerMode === 'focus' || timerMode === 'deep') {
       notify('Fokus-Block geschafft! Zeit für eine Pause.');
+      const before = pomoCount(sessionsToday());
       await completeFocusBlock(focusMinutes(timerMode));
-      const n = sessionsToday().length;
-      setMode(n % 4 === 0 ? 'long' : 'short', true);
+      const after = pomoCount(sessionsToday());
+      setMode(Math.floor(after / 4) > Math.floor(before / 4) ? 'long' : 'short', true);
     } else {
       notify('Pause vorbei – weiter geht\'s!');
       showToast('☕ Pause vorbei — weiter geht\'s!');
@@ -1692,12 +1700,13 @@ async function finishTimer() {
 function skipPhase() {
   const isFocus = timerMode === 'focus' || timerMode === 'deep';
   if (isFocus) {
-    if (timerSeconds < MODES[timerMode] && !confirm('Fokus-Block überspringen? Dafür gibt es keine XP und keine Münzen.')) return;
-    setMode((sessionsToday().length + 1) % 4 === 0 ? 'long' : 'short', true);
+    if (timerSeconds < modeSeconds(timerMode) && !confirm('Fokus-Block überspringen? Dafür gibt es keine XP und keine Münzen.')) return;
+    const n = pomoCount(sessionsToday()), w = timerMode === 'deep' ? 2 : 1;
+    setMode(Math.floor((n + w) / 4) > Math.floor(n / 4) ? 'long' : 'short', true);
   } else setMode(lastFocusMode === 'deep' && hasPerk('deepfocus') ? 'deep' : 'focus', true);
 }
 function resetTimer() {
-  clearInterval(timerInterval); timerRunning = false; timerSeconds = MODES[timerMode];
+  clearInterval(timerInterval); timerRunning = false; timerSeconds = modeSeconds(timerMode);
   document.getElementById('timer-btn').textContent = '▶ Start';
   updateTimerDisplay();
 }
@@ -1705,9 +1714,9 @@ async function completeFocusBlock(minutes) {
   const skill = getSelectedSkill();
   let xp = 0;
   if (skill) {
-    const boost = (PROFILE.boost_pomos || 0) > 0;
-    xp = Math.round(minutes * (1 + skillBonus(skillLevel(skill.xp))) * (boost ? 2 : 1));
-    if (await grantSkillXp(skill, xp)) { if (boost) await saveProfile({ boost_pomos: PROFILE.boost_pomos - 1 }); }
+    const w = Math.max(1, Math.round(minutes / 30)), charges = Math.min(PROFILE.boost_pomos || 0, w);
+    xp = Math.round(minutes * (1 + skillBonus(skillLevel(skill.xp))) * (1 + charges / w));
+    if (await grantSkillXp(skill, xp)) { if (charges) await saveProfile({ boost_pomos: PROFILE.boost_pomos - charges }); }
     else xp = 0;
   }
   const coins = focusCoins(minutes);
@@ -1717,7 +1726,7 @@ async function completeFocusBlock(minutes) {
   SESSIONS.push(data || { ...row, created_at: new Date().toISOString() });
   if (xp) floatText(`+${xp} XP`, skill.color);
   await addCoins(coins, skill ? `Fokus-Block fertig · +${xp} XP auf ${skill.name}` : 'Fokus-Block fertig');
-  const n = sessionsToday().length, t = todayStr();
+  const n = pomoCount(sessionsToday()), t = todayStr();
   if (n >= dailyGoal() && PROFILE.last_goal_day !== t) {
     await saveProfile({ last_goal_day: t });
     await addCoins(15);
@@ -1740,7 +1749,7 @@ function renderStats() {
   document.getElementById('s-today-sub').textContent = `von ${g} (Tagesziel) · ${fmtMin(totalMinutes(sessionsToday()))}`;
   document.getElementById('s-week').textContent = weekList.length;
   document.getElementById('s-week-sub').textContent = `${fmtMin(totalMinutes(weekList))} Fokus (Mo–So)`;
-  document.getElementById('s-total').textContent = SESSIONS.length;
+  document.getElementById('s-total').textContent = pomoCount(SESSIONS);
   document.getElementById('s-total-sub').textContent = `${fmtMin(totalMinutes())} Fokus insgesamt`;
   document.getElementById('s-best').textContent = best;
   document.getElementById('s-best-sub').textContent = bestDay ? formatDate(bestDay) : 'Noch keine Sessions';
